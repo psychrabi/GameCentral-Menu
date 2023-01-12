@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "category": "credit-card",
+        "description": "Credit Card",
+        "active": false
+    },
+    {
+        "id": 2,
+        "category": "balance",
+        "description": "Balance",
+        "active": true
+    },
+    {
+        "id": 3,
+        "category": "cash",
+        "description": "Cash",
+        "active": true
+    },
+    {
+        "id": 4,
+        "category": "paypal",
+        "description": "PayPal",
+        "active": false
+    }
+]

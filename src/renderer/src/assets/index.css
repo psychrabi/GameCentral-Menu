@@ -1,0 +1,299 @@
+.game-app aside,
+.game-app main {
+  margin: 0;
+  overflow-x: hidden;
+  padding: 0 0.5rem;
+}
+
+.game,
+.top .cover {
+  position: relative;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  width: 100%;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.games {
+  --grid-layout-gap: 0.5rem;
+  --grid-column-count: 10;
+  --grid-item--min-width: 8rem;
+  --gap-count: calc(var(--grid-column-count) - 1);
+  --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
+  --grid-item--max-width: calc(
+    (100% - var(--total-gap-width)) / var(--grid-column-count)
+  );
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr)
+  );
+  grid-gap: var(--grid-layout-gap);
+}
+
+@media screen and (min-width: 800px) {
+  .games {
+    --grid-item--min-width: 7rem;
+  }
+}
+
+@media (min-width: 2560px) {
+  .games {
+    --grid-column-count: 15;
+  }
+}
+
+@media screen and (min-width: 3840px) {
+  .games {
+    --grid-column-count: 20;
+  }
+}
+
+@media screen and (min-width: 5120px) {
+  .games {
+    --grid-column-count: 30;
+  }
+}
+
+.game-app main {
+  width: 100vw;
+  height: calc(100vh - 105px);
+}
+
+@media screen and (max-width: 1148px) {
+  .game-app main {
+    height: calc(100vh - 159px);
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.no-scrollbar::-webkit-scrollbar-thumb {
+  height: 6px;
+  border: 4px solid transparent;
+  background-clip: padding-box;
+  border-radius: 7px;
+  -webkit-border-radius: 7px;
+  background-color: rgba(0, 0, 0, 0.15);
+  box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.05),
+    inset 1px 1px 0 rgba(0, 0, 0, 0.05);
+  -webkit-box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.05),
+    inset 1px 1px 0 rgba(0, 0, 0, 0.05);
+}
+
+.no-scrollbar::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.no-scrollbar::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+.game {
+  transition: transform 0.1s;
+}
+
+.game:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.game:hover .overlay {
+  opacity: 1;
+}
+
+.overlay {
+  position: absolute;
+  background: rgba(14, 14, 14, 0.8);
+  width: 100%;
+  transition: 0.5s;
+  opacity: 0;
+  bottom: 0;
+  font-size: 1rem;
+  padding: 0.25rem;
+  text-align: center;
+}
+
+.top {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 160px 3fr;
+  grid-template-columns: 160px 3fr;
+  align-items: center;
+}
+
+.top .cover {
+  aspect-ratio: 3/4;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 10px;
+}
+
+.form-control-dark {
+  border-color: var(--bs-gray);
+}
+
+.form-control-dark:focus {
+  border-color: #fff;
+  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+}
+
+.text-small {
+  font-size: 85%;
+}
+
+.dropdown-toggle {
+  outline: 0;
+}
+
+.nav-link.active {
+  border-bottom: 2px solid #fff;
+}
+
+body,
+html {
+  height: 100%;
+  color: #555;
+}
+
+.login,
+.register {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: rgba(0, 0, 0, 0.5);
+  height: 100vh;
+  text-align: center;
+}
+
+.form-signin,
+.form-register {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[id="email"] {
+  margin-bottom: -1px;
+  border-radius: 0;
+  margin-bottom: -1px;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.form-signin input[id="password"] {
+  border-radius: 0;
+  margin-bottom: -1px;
+}
+
+.form-register input[id="confirm_password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+video {
+  object-fit: cover;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -99;
+}
+.product.card {
+  position: relative;
+  overflow: hidden;
+}
+
+.product > .card-body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  transition: all 0.5s ease;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.card:hover .card-body {
+  opacity: 1;
+}
+
+.card-title {
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.price {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.add-to-cart {
+  font-size: 0.75rem;
+  padding: 0.5rem 1rem;
+  margin-top: 0.25rem;
+}
+
+.h-custom {
+  height: 100vh !important;
+}
+
+.cart {
+  width: 100%;
+  margin: 0;
+  height: calc(100vh - 81px);
+  overflow-x: hidden;
+}
+.draggable {
+  /* -webkit-user-select: none; */
+  -webkit-app-region: drag;
+}
+.non-draggable {
+  -webkit-app-region: no-drag;
+}

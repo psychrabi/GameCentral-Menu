@@ -1,0 +1,54 @@
+.login, video {
+    height: 100vh
+}
+
+body, html {
+    height: 100%;
+    color: #555
+}
+
+.register {
+    display: flex;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: rgba(0, 0, 0, .5);
+    height: 100vh;
+    text-align: center
+}
+
+.form-register {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto
+}
+
+.form-register .form-floating:focus-within {
+    z-index: 2
+}
+
+.form-register input[type=text] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0
+}
+
+.form-register input[id=password] {
+    border-radius: 0;
+}
+
+.form-register input[id=confirm_password] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0
+}
+
+video {
+    object-fit: cover;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -99
+}
