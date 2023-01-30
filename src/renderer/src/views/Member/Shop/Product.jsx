@@ -1,17 +1,6 @@
-// import PropTypes from "prop-types";
+import PropTypes from 'prop-types'
 
-const Product = (props) => {
-  const { product, onAdd } = props
-
-  // Product.propTypes = {
-  //   id: PropTypes.string,
-  //   name: PropTypes.string,
-  //   product_image: PropTypes.string,
-  //   sales_price: PropTypes.number,
-  //   stock: PropTypes.number,
-  //   addToCart: PropTypes.func,
-  // };
-
+const Product = ({ product, onAdd }) => {
   return (
     <div className="product card" key={product.id}>
       <img src={product.product_image} alt={product.name} className="card-img-top" />
@@ -30,6 +19,17 @@ const Product = (props) => {
       </div>
     </div>
   )
+}
+
+Product.propTypes = {
+  onAdd: PropTypes.func,
+  product: PropTypes.shape({
+    id: PropTypes.string,
+    name: PropTypes.string,
+    product_image: PropTypes.any,
+    sales_price: PropTypes.number,
+    stock: PropTypes.number
+  })
 }
 
 export default Product

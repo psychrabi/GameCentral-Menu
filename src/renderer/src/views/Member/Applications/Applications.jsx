@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import Header from '../../../components/ui/Header'
-import DataList from '../../../components/ui/Grid'
+import Grid from '../../../components/ui/Grid'
 import categories from '../../../data/AppTypes.json'
 import { sortByName } from '../../../utils/sortByName'
 import { saveToLocalStorage } from '../../../utils/saveToLocalStorage'
@@ -99,7 +99,7 @@ function Applications() {
             setSearch={setSearch}
           />
           <div className="games" id="favorite-games-container">
-            <DataList handleShow={handleShow} games={filteredApps} />
+            <Grid handleShow={handleShow} games={filteredApps} />
           </div>
         </>
       )}

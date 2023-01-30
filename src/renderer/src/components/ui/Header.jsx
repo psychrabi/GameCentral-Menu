@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import Search from '../form/Search.jsx'
 
 const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }) => {
@@ -33,6 +34,16 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
       </div>
     </div>
   )
+}
+
+Headers.propTypes = {
+  categories: PropTypes.shape({
+    sort: PropTypes.func
+  }),
+  count: PropTypes.any,
+  handleCategoriesChange: PropTypes.any,
+  setSearch: PropTypes.any,
+  title: PropTypes.string
 }
 
 export default Headers

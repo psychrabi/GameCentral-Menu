@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, dialog } from 'electron'
 import * as path from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 
@@ -9,7 +9,7 @@ function createWindow() {
     height: 900,
     x: 0,
     y: 0,
-    fullscreen: false,
+    fullscreen: true,
     frame: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux'
@@ -19,7 +19,8 @@ function createWindow() {
       : {}),
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      devTools: !app.isPackaged
     }
   })
 
@@ -40,12 +41,32 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
   }
 
+  mainWindow.webContents.on('will-prevent-unload', (event) => {
+    const options = {
+      type: 'question',
+      buttons: ['Cancel', 'Exit'],
+      message: 'Exit the program?',
+      detail: 'Changes that you made may not be saved.'
+    }
+    const response = dialog.showMessageBoxSync(null, options)
+    if (response === 1) event.preventDefault()
+  })
+
   mainWindow.webContents.on('before-input-event', (event, input) => {
     if (input.control && input.alt && input.shift && input.key.toLowerCase() === 'x') {
       event.preventDefault()
       app.quit()
     }
     if (!is.dev && input.control && input.key.toLowerCase() === 'r') {
+      event.preventDefault()
+    }
+    if (input.alt && input.code === 'F4') {
+      event.preventDefault()
+    }
+    if (input.code === 'F11') {
+      event.preventDefault()
+    }
+    if (input.code === 'F12') {
       event.preventDefault()
     }
   })

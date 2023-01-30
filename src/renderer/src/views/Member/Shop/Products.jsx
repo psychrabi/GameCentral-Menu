@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 import Product from './Product'
 
 export default function Products(props) {
@@ -10,4 +10,11 @@ export default function Products(props) {
       ))}
     </div>
   )
+}
+
+Products.propTypes = {
+  onAdd: PropTypes.func,
+  products: PropTypes.shape({
+    map: PropTypes.func
+  })
 }

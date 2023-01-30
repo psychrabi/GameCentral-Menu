@@ -30,16 +30,16 @@ export default function Login() {
   //   ip4: null
   // })
 
-  // const setSystemInfo = (info) => {
-  //   setClientStats({
-  //     hostname: info.osInfo.hostname,
-  //     cpu: info.cpu.manufacturer + ' ' + info.cpu.brand,
-  //     graphics: info.graphics.controllers[0].model,
-  //     ram: (info.mem.total / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
-  //     os: info.osInfo.distro + ' build ' + info.osInfo.build,
-  //     ip4: info.networkInterfaces[0].ip4
-  //   })
-  // }
+  const setSystemInfo = (info) => {
+    setClientStats({
+      hostname: info.osInfo.hostname,
+      cpu: info.cpu.manufacturer + ' ' + info.cpu.brand,
+      graphics: info.graphics.controllers[0].model,
+      ram: (info.mem.total / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
+      os: info.osInfo.distro + ' build ' + info.osInfo.build,
+      ip4: info.networkInterfaces[0].ip4
+    })
+  }
 
   function onSubmit(ev) {
     ev.preventDefault()
@@ -90,12 +90,13 @@ export default function Login() {
   // useEffect(() => {
   //   if (!localStorage.getItem('systemInfo')) {
   //     setLoading(true)
-  //     window.ipcRender
-  //       .invoke('request-system-info', 'System Information Requested')
-  //       .then((result) => {
-  //         localStorage.setItem('systemInfo', JSON.stringify(result))
-  //         setSystemInfo(result)
-  //         setLoading(false) // Stop loading
+  //     window.electronAPI.IpcRenderer.invoke(
+  //       'request-system-info',
+  //       'System Information Requested'
+  //     ).then((result) => {
+  //       localStorage.setItem('systemInfo', JSON.stringify(result))
+  //       setSystemInfo(result)
+  //       setLoading(false) // Stop loading
   //       })
   //   } else {
   //     const SystemInfo = JSON.parse(localStorage.getItem('systemInfo'))

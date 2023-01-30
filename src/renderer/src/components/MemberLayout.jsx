@@ -59,11 +59,12 @@ export default function MemberLayout() {
     const h = Math.floor(d / 3600)
     const m = Math.floor((d % 3600) / 60)
     const s = Math.floor((d % 3600) % 60)
+    // eslint-disable-next-line prettier/prettier
     return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
   }
 
   useEffect(() => {
-    // setStartTime(parseInt(localStorage.getItem('start_time')))
+    startTime ?? setStartTime(parseInt(localStorage.getItem('start_time')))
     setSetSession(JSON.parse(localStorage.getItem('session')))
     const intervalId = setInterval(() => {
       // Calculate the duration of the session in seconds
@@ -131,7 +132,10 @@ export default function MemberLayout() {
                       alt="mdo"
                       width="36"
                       height="36"
-                      className={`rounded-circle ms-3 me-2 border border-3 ${sessionType === 'balance' ? 'border-success' : 'border-danger'}`} />
+                      className={`rounded-circle ms-3 me-2 border border-3 ${
+                        sessionType === 'balance' ? 'border-success' : 'border-danger'
+                      }`}
+                    />
                     <span>
                       {member.first_name} {member.last_name}
                       <br />

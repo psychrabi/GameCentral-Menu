@@ -1,12 +1,6 @@
 import productTypes from '../../data/ProductTypes.json'
 import PropTypes from 'prop-types'
 
-Headers.propTypes = {
-  header: PropTypes.string,
-  handleProductTypeChange: PropTypes.func,
-  appCount: PropTypes.number
-}
-
 const Headers = ({ header, handleProductTypeChange, appCount }) => {
   const sortedTypes = productTypes.sort((a, b) => (a.description < b.description ? -1 : 1))
 
@@ -35,6 +29,12 @@ const Headers = ({ header, handleProductTypeChange, appCount }) => {
       </select>
     </div>
   )
+}
+
+Headers.propTypes = {
+  appCount: PropTypes.any,
+  handleProductTypeChange: PropTypes.any,
+  header: PropTypes.any
 }
 
 export default Headers

@@ -1,7 +1,8 @@
+import PropTypes from 'prop-types'
 import PaymentModes from '../../../data/PaymentModes.json'
 
 const Cart = (props) => {
-  const { cartItems, onAdd, onRemove, onClear } = props
+  const { cartItems, onAdd, onRemove, onClear, handlePaymentModeChange, handleSubmitOrder } = props
 
   const itemsPrice = parseFloat(
     cartItems.reduce((acc, item) => acc + item.sales_price * item.quantity, 0)
@@ -75,6 +76,7 @@ const Cart = (props) => {
                           id={`radioNoLabel${key}`}
                           value={mode.category}
                           aria-label="..."
+                          onChange={handlePaymentModeChange}
                         />
                       </div>
                       <div className="rounded border w-100 px-2 py-1">
@@ -107,7 +109,11 @@ const Cart = (props) => {
                   <p className="mb-2">${totalPrice}</p>
                 </div>
                 <div className="d-grid">
-                  <button type="button" className="btn btn-primary btn-lg text-center">
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-lg text-center"
+                    onClick={handleSubmitOrder}
+                  >
                     <span>Submit order</span>
                   </button>
                 </div>
@@ -118,5 +124,18 @@ const Cart = (props) => {
       </div>
     )
   }
+}
+
+Cart.propTypes = {
+  cartItems: PropTypes.shape({
+    length: PropTypes.number,
+    map: PropTypes.func,
+    reduce: PropTypes.func
+  }),
+  handlePaymentModeChange: PropTypes.any,
+  handleSubmitOrder: PropTypes.any,
+  onAdd: PropTypes.func,
+  onClear: PropTypes.func,
+  onRemove: PropTypes.func
 }
 export default Cart

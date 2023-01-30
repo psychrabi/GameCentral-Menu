@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Header from '../../../components/ui/Header'
-import DataList from '../../../components/ui/Grid'
+import Grid from '../../../components/ui/Grid'
 import categories from '../../../data/GameTypes.json'
 import { sortByName } from '../../../utils/sortByName'
 import { useStateContext } from '../../../components/contexts/ContextProvider'
@@ -82,7 +82,7 @@ const Home = () => {
             setSearch={setSearch}
           />
           <div className="games" id="favorite-games-container">
-            <DataList handleShow={handleShow} games={filteredGames} />
+            <Grid handleShow={handleShow} games={filteredGames} />
           </div>
         </>
       )}

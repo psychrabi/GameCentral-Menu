@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 // import products from "../../../data/Products.json";
-import Product from './Product'
 import Cart from './Cart'
 import Header from '../../../components/ui/Header'
 import categories from '../../../data/ProductTypes.json'
@@ -100,6 +99,7 @@ export default function Shop() {
 
   const handleSubmitOrder = useCallback(() => {
     alert(`You have ${cartItems.length} items on cart totaling.Are you sure to checkout ?`)
+    console.log(paymentMode)
     removeFromLocalStorage('cart')
   }, [cartItems])
 
@@ -112,14 +112,6 @@ export default function Shop() {
   }, [productsList])
 
   useEffect(() => {
-    // if (productType !== "") {
-    //   setSearch("");
-    //   document.getElementById("search").value = "";
-    // }
-    // if (search !== "") {
-    //   setProductType("");
-    //   document.querySelector("#categories").selectedIndex = 0;
-    // }
     // Update the filtered apps list when the gameType or search changes
     const newProducts = updateFilteredProducts(productsList, productType, search)
     setFilteredProducts(sortByName(newProducts))
@@ -145,7 +137,14 @@ export default function Shop() {
         />
         <Products products={filteredProducts} onAdd={onAdd} />
       </div>
-      <Cart cartItems={cartItems} onAdd={onAdd} onRemove={onRemove} onClear={onClear} />
+      <Cart
+        cartItems={cartItems}
+        onAdd={onAdd}
+        onRemove={onRemove}
+        onClear={onClear}
+        handleSubmitOrder={handleSubmitOrder}
+        handlePaymentModeChange={handlePaymentModeChange}
+      />
     </div>
   )
 }
