@@ -10,7 +10,7 @@ const Games = lazy(() => import('./views/Member/Games/Games'))
 const Applications = lazy(() => import('./views/Member/Applications/Applications'))
 const Shop = lazy(() => import('./views/Member/Shop/Shop'))
 const Profile = lazy(() => import('./views/Member/Profile/Profile'))
-const NotFound = lazy(() => import('./views/NotFound'))
+// const NotFound = lazy(() => import('./views/NotFound'))
 
 const router = createHashRouter([
   {
@@ -37,8 +37,8 @@ const router = createHashRouter([
         path: '/profile',
         element: <Profile />
       }
-    ],
-    errorElement: <NotFound />
+    ]
+    // errorElement: <NotFound />
   },
   {
     exact: true,
@@ -49,8 +49,8 @@ const router = createHashRouter([
         path: '/login',
         element: <Login />
       }
-    ],
-    errorElement: <NotFound />
+    ]
+    // errorElement: <NotFound />
   }
 ])
 

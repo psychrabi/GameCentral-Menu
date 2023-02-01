@@ -37,13 +37,11 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
 }
 
 Headers.propTypes = {
-  categories: PropTypes.shape({
-    sort: PropTypes.func
-  }),
+  title: PropTypes.any.isRequired,
+  categories: PropTypes.array,
   count: PropTypes.any,
-  handleCategoriesChange: PropTypes.any,
-  setSearch: PropTypes.any,
-  title: PropTypes.string
+  handleCategoriesChange: PropTypes.func,
+  setSearch: PropTypes.any
 }
 
 export default Headers

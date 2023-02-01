@@ -14,7 +14,5 @@ export default function Products(props) {
 
 Products.propTypes = {
   onAdd: PropTypes.func,
-  products: PropTypes.shape({
-    map: PropTypes.func
-  })
+  products: PropTypes.array
 }

@@ -1,9 +1,14 @@
 import PropTypes from 'prop-types'
 import PaymentModes from '../../../data/PaymentModes.json'
 
-const Cart = (props) => {
-  const { cartItems, onAdd, onRemove, onClear, handlePaymentModeChange, handleSubmitOrder } = props
-
+const Cart = ({
+  cartItems,
+  onAdd,
+  onRemove,
+  onClear,
+  handlePaymentModeChange,
+  handleSubmitOrder
+}) => {
   const itemsPrice = parseFloat(
     cartItems.reduce((acc, item) => acc + item.sales_price * item.quantity, 0)
   ).toFixed(2)
@@ -127,11 +132,7 @@ const Cart = (props) => {
 }
 
 Cart.propTypes = {
-  cartItems: PropTypes.shape({
-    length: PropTypes.number,
-    map: PropTypes.func,
-    reduce: PropTypes.func
-  }),
+  cartItems: PropTypes.array,
   handlePaymentModeChange: PropTypes.any,
   handleSubmitOrder: PropTypes.any,
   onAdd: PropTypes.func,

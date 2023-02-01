@@ -4,7 +4,7 @@ import { Card } from 'react-bootstrap'
 const Grid = ({ games, handleShow }) => {
   return (
     <>
-      {games.map((game) => (
+      {games?.map((game) => (
         <Card key={game.id} onClick={() => handleShow(game)} className="game shadow-sm">
           <Card.Img src={game.poster} alt={game.name} />
         </Card>
@@ -14,9 +14,7 @@ const Grid = ({ games, handleShow }) => {
 }
 
 Grid.propTypes = {
-  games: PropTypes.shape({
-    map: PropTypes.func
-  }),
+  games: PropTypes.array,
   handleShow: PropTypes.func
 }
 
