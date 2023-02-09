@@ -1,21 +1,19 @@
-import { useEffect, useState, useMemo, useCallback } from 'react'
-import Header from '../../../components/ui/Header'
-import Grid from '../../../components/ui/Grid'
-import categories from '../../../data/GameTypes.json'
-import { sortByName } from '../../../utils/sortByName'
-import { saveToLocalStorage } from '../../../utils/saveToLocalStorage'
-import { useStateContext } from '../../../components/contexts/ContextProvider'
-import { Loading } from '../../../components/ui/Loading'
-import axiosClient from '../../../lib/axios-client'
-function Games() {
-  //TODO: Get Games from remote server instead of json
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useStateContext } from '../../components/contexts/ContextProvider'
+import Grid from '../../components/ui/Grid'
+import Header from '../../components/ui/Header'
+import { Loading } from '../../components/ui/Loading'
+import categories from '../../data/AppTypes.json'
+import axiosClient from '../../lib/axios-client'
+import { saveToLocalStorage } from '../../utils/saveToLocalStorage'
+import { sortByName } from '../../utils/sortByName'
+function Applications() {
   const { search, setSearch, setShow } = useStateContext()
   const [loading, setLoading] = useState(false)
 
   // Store the filtered list of games in a separate variable
-
   const [data, setData] = useState(JSON.parse(localStorage.getItem('data')))
-  const games = useMemo(() => data?.filter((g) => g.type === 'games'), [data])
+  const games = useMemo(() => data?.filter((g) => g.type === 'apps'), [data])
   const gamesList = useMemo(() => games, [games])
 
   // Use useState to store the current game, the list of games, and the show state
@@ -39,6 +37,7 @@ function Games() {
 
     if (!localStorage.getItem('data')) {
       setLoading(true)
+      //Get Games from remote server instead of json
       try {
         axiosClient.defaults.headers.common['Authorization'] = 'Bearer ' + member.token
         axiosClient.get(`/clientGames/${member.center_id}`).then(({ data }) => {
@@ -107,4 +106,4 @@ function Games() {
   )
 }
 
-export default Games
+export default Applications

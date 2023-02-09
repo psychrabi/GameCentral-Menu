@@ -1,4 +1,6 @@
-import { Carousel, Offcanvas } from 'react-bootstrap'
+import Offcanvas from 'react-bootstrap/Offcanvas'
+import Carousel from 'react-bootstrap/Carousel'
+import Button from 'react-bootstrap/Button'
 import { useCallback } from 'react'
 import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
 import { useStateContext } from '../contexts/ContextProvider.jsx'
@@ -10,7 +12,6 @@ const Details = () => {
 
   const handleClose = useCallback(() => {
     setShow(false)
-    removeFromLocalStorage('current-selected')
   }, [])
 
   const handleFavoriteClick = useCallback((game_id) => {
@@ -27,26 +28,38 @@ const Details = () => {
 
     axiosClient
       .post('/favorite-game', payload)
-      .then(() => {
-        console.log(game.name + ' : moved to favorites')
+      .then((response) => {
+        console.log(response.status)
+        if (response.status === 204) {
+          console.log(game.name + ' : removed from favorites')
+          localStorage.setItem(
+            'favorite_games',
+            JSON.stringify(favorite_games.filter((g) => g.id !== game.id))
+          )
+        } else {
+          console.log(game.name + ' : added to favorites')
+          localStorage.setItem('favorite_games', JSON.stringify([...favorite_games, game]))
+        }
+
         setShow(false)
-        localStorage.setItem('favorite_games', JSON.stringify([...favorite_games, game]))
       })
       .catch((error) => {
         console.error(error)
       })
   }, [])
 
-  const handleGamePlay = useCallback((filePath) => {
-    console.log(filePath)
-    // window.api.startGame(filePath)
-    // window.api.handleGameStarted()
-    // window.api.handleGameExeError()
+  const handleGamePlay = useCallback((filePath, parameters) => {
+    window.api.launchGame(filePath, parameters).then((result) => console.log(result))
   }, [])
 
   return (
     <div className="position-relative">
-      <Offcanvas show={show} onHide={handleClose} placement="end">
+      <Offcanvas
+        show={show}
+        onHide={handleClose}
+        placement="end"
+        onExited={() => removeFromLocalStorage('current-selected')}
+      >
         <Offcanvas.Header closeButton>
           <Offcanvas.Title>{game.name}</Offcanvas.Title>
         </Offcanvas.Header>
@@ -73,7 +86,14 @@ const Details = () => {
                   <button
                     className="d-flex btn btn-success me-auto align-items-center"
                     id="play-button"
-                    onClick={() => handleGamePlay(game.executable)}
+                    onClick={() => handleGamePlay(game.executable, game.parameters)}
+                  >
+                    <i className="bi bi-play"></i> Play{' '}
+                  </button>
+                  <button
+                    className="d-flex btn btn-success me-auto align-items-center"
+                    id="play-button"
+                    onClick={() => handleGamePlay(game.executable, game.parameters)}
                   >
                     <i className="bi bi-play"></i> Play{' '}
                   </button>

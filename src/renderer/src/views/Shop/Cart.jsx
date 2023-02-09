@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import PaymentModes from '../../../data/PaymentModes.json'
+import PaymentModes from '../../data/PaymentModes.json'
 
 const Cart = ({
   cartItems,

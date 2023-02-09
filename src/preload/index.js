@@ -1,8 +1,15 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  launchGame: (gamepath, args) => {
+    console.log(gamepath)
+    ipcRenderer.invoke('launch:game', gamepath, args)
+  },
+  getSystemInfo: ipcRenderer.invoke('request-system-info'),
+  selectExecutable: () => ipcRenderer.invoke('dialog:openDirectory')
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

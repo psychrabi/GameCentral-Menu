@@ -1,5 +1,4 @@
 const spawn = require('child_process').spawn
-const store = require('./store.jsx')
 
 class SpawnedProcess {
   constructor(path, id, event, args = [], openFunctions = [], exitFunctions = []) {
@@ -12,7 +11,6 @@ class SpawnedProcess {
     this.openFunctions = openFunctions
     this.exitFunctions = exitFunctions
     this.startDate = Date.now()
-    store.addProcess(parseInt(this.id))
     this.initListeners()
   }
 
@@ -23,29 +21,10 @@ class SpawnedProcess {
   initListeners() {
     this.openFunctions.forEach((f) => f())
     this.process.on('exit', async () => {
-      // Calculate playtimes
-      const playtime = Date.now() - this.startDate
-      const game = await store.getGame(this.id)
-      const newPlaytime = game.playTime + playtime
-
-      // Update client playtime
-      // this.event.reply("update-playtime", { id: this.id, newPlaytime });
-
-      // Remove process from store
-      store.removeProcess(this.id)
-
-      // Update store playtime
-      store.addPlaytime(this.id, playtime)
-
-      // Update store last played
-      store.setLastPlayed(this.id, Date.now())
-
-      // Sync localStorage
-
       // Execute exit functions
       this.exitFunctions.forEach((f) => f())
     })
   }
 }
 
-module.exports = SpawnedProcess
+export default SpawnedProcess

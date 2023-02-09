@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import Header from '../../../components/ui/Header'
-import Grid from '../../../components/ui/Grid'
-import categories from '../../../data/GameTypes.json'
-import { sortByName } from '../../../utils/sortByName'
-import { useStateContext } from '../../../components/contexts/ContextProvider'
-import { Loading } from '../../../components/ui/Loading'
-import axiosClient from '../../../lib/axios-client'
+import Header from '../../components/ui/Header'
+import Grid from '../../components/ui/Grid'
+import categories from '../../data/GameTypes.json'
+import { sortByName } from '../../utils/sortByName'
+import { useStateContext } from '../../components/contexts/ContextProvider'
+import { Loading } from '../../components/ui/Loading'
+import axiosClient from '../../lib/axios-client'
 
 const Home = () => {
   //TODO: Get Games from remote server instead of json
@@ -63,7 +63,7 @@ const Home = () => {
   }
 
   const handleShow = useCallback((g) => {
-    console.log(g)
+    // console.log(g)
     localStorage.setItem('current-selected', JSON.stringify(g))
     setShow(true)
   }, [])

@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 // import products from "../../../data/Products.json";
+import { useStateContext } from '../../components/contexts/ContextProvider'
+import Header from '../../components/ui/Header'
+import categories from '../../data/ProductTypes.json'
+import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage'
+import { saveToLocalStorage } from '../../utils/saveToLocalStorage'
+import { sortByName } from '../../utils/sortByName'
 import Cart from './Cart'
-import Header from '../../../components/ui/Header'
-import categories from '../../../data/ProductTypes.json'
-import { sortByName } from '../../../utils/sortByName'
-import { saveToLocalStorage } from '../../../utils/saveToLocalStorage'
-import { removeFromLocalStorage } from '../../../utils/removeFromLocalStorage'
-import { useStateContext } from '../../../components/contexts/ContextProvider'
 import Products from './Products'
 
 export default function Shop() {

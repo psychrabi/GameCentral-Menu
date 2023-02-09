@@ -1,17 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Outlet, Navigate, NavLink } from 'react-router-dom'
+import { Navigate, NavLink, Outlet } from 'react-router-dom'
 import axiosClient from '../lib/axios-client'
-import { useStateContext } from './contexts/ContextProvider'
-import Navigation from './ui/Navigation'
-import Details from './ui/Details'
 import { removeFromLocalStorage } from '../utils/removeFromLocalStorage.js'
+import { useStateContext } from './contexts/ContextProvider'
+import Notifications from './Notifications'
+import Details from './ui/Details'
+import { Loading } from './ui/Loading'
+import Navigation from './ui/Navigation'
 
 export default function MemberLayout() {
-  const { token, notification, setToken, show } = useStateContext()
+  const { token, notifications, setToken, show, setNotifications } = useStateContext()
 
   if (!token) {
     return <Navigate to="/login" />
   }
+  const [loading, setLoading] = useState(false)
 
   const [durationString, setDurationString] = useState('')
 
@@ -22,7 +25,7 @@ export default function MemberLayout() {
   const [session, setSetSession] = useState(JSON.parse(localStorage.getItem('session')))
   const sessionType = useMemo(() => localStorage.getItem('sessionType'), [])
 
-  const COST_PER_HOUR = 30
+  const COST_PER_HOUR = 60
 
   const [startTime, setStartTime] = useState(parseInt(localStorage.getItem('start_time')))
 
@@ -32,6 +35,7 @@ export default function MemberLayout() {
   )
 
   const onLogout = useCallback(() => {
+    setLoading(true)
     const endTime = Date.now()
     const usage_details = {
       session_cost: calculateCost((endTime - startTime) / 1000),
@@ -39,7 +43,6 @@ export default function MemberLayout() {
       sessionType: sessionType,
       session_id: session.id
     }
-    console.log(usage_details)
     axiosClient.post('/members/logout', usage_details).then(() => {
       setMember([])
       setToken(null)
@@ -47,6 +50,7 @@ export default function MemberLayout() {
       removeFromLocalStorage('session')
       removeFromLocalStorage('sessionType')
       removeFromLocalStorage('start_time')
+      setNotifications('You have been successfully logged out.')
       return <Navigate to="/login" />
     })
     // console.log(JSON.parse(localStorage.getItem("data")));
@@ -65,7 +69,15 @@ export default function MemberLayout() {
 
   useEffect(() => {
     startTime ?? setStartTime(parseInt(localStorage.getItem('start_time')))
+    setDurationString('00:00:00')
+    setCost('0.00')
     setSetSession(JSON.parse(localStorage.getItem('session')))
+
+    // const sessionDuration = (
+    //   ((member.balance + member.bonus_balance) / COST_PER_HOUR) *
+    //   (60 * 60)
+    // ).toFixed(0)
+    // console.log(sessionDuration)
     const intervalId = setInterval(() => {
       // Calculate the duration of the session in seconds
       const durationInSeconds = calculateDurationInSeconds()
@@ -74,8 +86,25 @@ export default function MemberLayout() {
       const cost = calculateCost(durationInSeconds)
       setCost(cost)
     }, 15000)
+    const intervalId2 = setInterval(() => {
+      console.log('session duration ended')
+      if (cost > member.balance + member.bonus_balance) {
+        setNotifications(
+          'Your session cost is higher than balance. Difference will be added to credit'
+        )
+      }
+      if (cost > member.balance + member.bonus_balance + 30) {
+        setNotifications(
+          'Your credit is more than 30. You will be logged out shortly and will not be able to login before clearing your credit.'
+        )
+        onLogout()
+      }
+    }, 60000)
     // Clear the interval when the component unmounts
-    return () => clearInterval(intervalId)
+    return () => {
+      clearInterval(intervalId)
+      clearInterval(intervalId2)
+    }
   }, [])
 
   const calculateDurationInSeconds = () => {
@@ -89,6 +118,7 @@ export default function MemberLayout() {
 
   return (
     <>
+      {loading && <Loading />}
       <header className="draggable">
         <div className="px-3 py-2 text-bg-dark">
           <div className="container-fluid px-0">
@@ -100,20 +130,18 @@ export default function MemberLayout() {
                 <i className="bi bi-bootstrap me-3" style={{ fontSize: '2rem' }}></i>
                 GameCentral Menu
               </NavLink>
-              {notification && <div className="notification">{notification}</div>}
-              {!notification && (
-                <ul className="nav col-8 col-md-8 col-lg-auto me-lg-auto mb-2 mb-md-0 justify-content-md-end">
-                  <li className="me-3">
-                    <span className="fw-bold">Start at :</span> {startTimeString}
-                  </li>
-                  <li className="me-3">
-                    <span className="fw-bold">Duration : </span> {durationString}
-                  </li>
-                  <li>
-                    <span className="fw-bold">Session Cost: </span> $ {cost}
-                  </li>
-                </ul>
-              )}
+
+              <ul className="nav col-8 col-md-8 col-lg-auto me-lg-auto mb-2 mb-md-0 justify-content-md-end">
+                <li className="me-3">
+                  <span className="fw-bold">Start at :</span> {startTimeString}
+                </li>
+                <li className="me-3">
+                  <span className="fw-bold">Duration : </span> {durationString}
+                </li>
+                <li>
+                  <span className="fw-bold">Session Cost: </span> $ {cost}
+                </li>
+              </ul>
               <Navigation />
               <div className="dropdown border-start non-draggable">
                 <NavLink
@@ -140,7 +168,7 @@ export default function MemberLayout() {
                       {member.first_name} {member.last_name}
                       <br />
                       <small>
-                        <b>Balance: </b> $ {member.balance}
+                        <b>Balance:</b> ${member.balance} (+{member.bonus_balance})
                       </small>
                     </span>
                   </div>
@@ -148,9 +176,8 @@ export default function MemberLayout() {
 
                 <ul className="dropdown-menu">
                   <li>
-                    <NavLink className="dropdown-item" to="/profile">
-                      {' '}
-                      Profile{' '}
+                    <NavLink className="dropdown-item" to="/profile/profile">
+                      Profile
                     </NavLink>
                   </li>
                   <li>
@@ -158,8 +185,7 @@ export default function MemberLayout() {
                   </li>
                   <li>
                     <span className="dropdown-item" onClick={() => onLogout()}>
-                      {' '}
-                      Sign out{' '}
+                      Sign out
                     </span>
                   </li>
                 </ul>
@@ -175,6 +201,7 @@ export default function MemberLayout() {
           </div>
         </main>
         {show && <Details />}
+        <Notifications notifications={notifications} />
       </div>
     </>
   )

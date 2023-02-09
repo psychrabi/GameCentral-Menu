@@ -297,3 +297,8 @@ video {
 .non-draggable {
   -webkit-app-region: no-drag;
 }
+
+.modal-90w {
+  width: 90%;
+  max-width: none!important;
+}

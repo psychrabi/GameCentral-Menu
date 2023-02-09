@@ -1,10 +1,10 @@
-const IGDB = require('./igdb.jsx')
+// const IGDB = require('./igdb.jsx')
 const store = require('./store.jsx')
 const SpawnedProcess = require('./process-handler.jsx')
 // const os = require("os")
 const si = require('systeminformation')
 
-let igdb = new IGDB('sz4fdut3dwthuoryprilvj8ce5fvg8', 'l56dya21c4u40vkjnvrvol1rttxfj3')
+// let igdb = new IGDB('sz4fdut3dwthuoryprilvj8ce5fvg8', 'l56dya21c4u40vkjnvrvol1rttxfj3')
 const fs = require('fs')
 const systemInfo = {
   baseboard: 'manufacturer, model',
@@ -86,7 +86,8 @@ module.exports = (ipcMain) => {
       if (err) {
         event.reply('game-exe-error', `${filepath} not found.`)
       } else {
-        if (new SpawnedProcess(filepath, id, event)) {
+        const gameLaunch = new SpawnedProcess(filepath, id, event)
+        if (gameLaunch) {
           event.reply('game-started', `${filepath} started.`)
         } else {
           event.reply('game-started', `${filepath} couldnot be started.`)
