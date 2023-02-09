@@ -123,7 +123,6 @@ export default function Profile() {
                     placeholder="Enter your phone number"
                     value={member.phone}
                     onChange={(ev) => setMember({ ...member, phone: ev.target.value })}
-
                   />
                 </div>
                 <div className="col-md-6">

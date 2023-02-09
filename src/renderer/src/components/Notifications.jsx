@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 const Notifications = ({ notifications }) => {
   if (notifications) {
     return (
@@ -19,6 +20,10 @@ const Notifications = ({ notifications }) => {
       </div>
     )
   }
+}
+
+Notifications.propTypes = {
+  notifications: PropTypes.any
 }
 
 export default Notifications
