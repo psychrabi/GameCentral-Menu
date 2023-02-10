@@ -100,7 +100,7 @@ export default function Login() {
         <div className="form">
           <div className="login">
             <h2 className="display-1 fw-normal text-light position-absolute top-0 start-0 mt-5 ms-5 hostname">
-              {clientStats.hostname ?? 'GameCenter Menu Client'}
+              {clientStats?.hostname ?? 'GameCenter Menu Client'}
             </h2>
             <video className="video url-video" autoPlay={true} muted loop>
               <source type="video/mp4" src={video} id="url-video" />
@@ -153,22 +153,22 @@ export default function Login() {
               <ul className="list-unstyled text-start text-small">
                 <li>
                   {' '}
-                  CPU : <span className="cpu">{clientStats.cpu}</span>
+                  CPU : <span className="cpu">{clientStats?.cpu}</span>
                 </li>
                 <li>
                   {' '}
-                  Graphics : <span className="graphics">{clientStats.graphics}</span>{' '}
+                  Graphics : <span className="graphics">{clientStats?.graphics}</span>{' '}
                 </li>
                 <li>
                   {' '}
-                  RAM : <span className="ram">{clientStats.ram}</span>{' '}
+                  RAM : <span className="ram">{clientStats?.ram}</span>{' '}
                 </li>
                 <li>
                   {' '}
-                  OS : <span className="os">{clientStats.os}</span>{' '}
+                  OS : <span className="os">{clientStats?.os}</span>{' '}
                 </li>
                 <li>
-                  IP : <span className="ip4">{clientStats.ip4}</span>
+                  IP : <span className="ip4">{clientStats?.ip4}</span>
                 </li>
               </ul>
             </footer>

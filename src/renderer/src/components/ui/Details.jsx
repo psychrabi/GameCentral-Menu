@@ -1,6 +1,5 @@
 import Offcanvas from 'react-bootstrap/Offcanvas'
 import Carousel from 'react-bootstrap/Carousel'
-import Button from 'react-bootstrap/Button'
 import { useCallback } from 'react'
 import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
 import { useStateContext } from '../contexts/ContextProvider.jsx'

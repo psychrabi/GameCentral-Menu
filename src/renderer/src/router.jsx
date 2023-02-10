@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createHashRouter } from 'react-router-dom'
 import { lazy } from 'react'
 import ProfileLayout from './components/ProfileLayout'
 
@@ -15,7 +15,7 @@ const Notification = lazy(() => import('./views/Profile/Notification'))
 const Security = lazy(() => import('./views/Profile/Security'))
 const Billing = lazy(() => import('./views/Profile/Billing'))
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <MemberLayout />,
