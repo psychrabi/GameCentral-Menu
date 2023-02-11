@@ -8,9 +8,12 @@ import Modal from 'react-bootstrap/Modal'
 import { useStateContext } from '../contexts/ContextProvider.jsx'
 
 const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }) => {
+  const API_URL = 'https://cors-anywhere.herokuapp.com/'
+
   const { setNotifications } = useStateContext()
   const [apiKey, setApiKey] = useState('')
   const [show, setShow] = useState(false)
+  const [disable, setDisable] = useState(true)
   const [game, setGame] = useState({
     name: '',
     summary: '',
@@ -42,18 +45,22 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
     setApiKey(data.access_token)
     return data.access_token
   }
-  useEffect(async () => {
-    const key = await getApiKey('sz4fdut3dwthuoryprilvj8ce5fvg8', 'l56dya21c4u40vkjnvrvol1rttxfj3')
-    console.log(key)
-    return () => {
-      setApiKey(key)
+  useEffect(() => {
+    console.log(import.meta.env)
+    async function getKey() {
+      const key = await getApiKey('sz4fdut3dwthuoryprilvj8ce5fvg8', 'l56dya21c4u40vkjnvrvol1rttxfj3')
+      console.log(key)
+      return () => {
+        setApiKey(key)
+      }
     }
+    getKey()
   }, [])
   const fetchData = async (gameName, apiKey) => {
     setGame({ ...game, name: gameName })
     console.log(apiKey)
     // Wait for response
-    const response = await fetch(`https://api.igdb.com/v4/games`, {
+    const response = await fetch(API_URL + `https://api.igdb.com/v4/games`, {
       method: 'POST',
       headers: {
         'Client-ID': 'sz4fdut3dwthuoryprilvj8ce5fvg8',
@@ -78,6 +85,13 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
       })
     }
   }
+  const handleCategoryOnChange = useCallback((category) => {
+    if (category !== 'offline' || category !== 'wargaming') {
+      setDisable(false)
+    }
+    console.log(disable)
+    setDisable(true)
+  })
 
   const handleSelectExecutable = useCallback(async () => {
     try {
@@ -159,7 +173,7 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
                     aria-label="Floating label select example"
                     required
                     value={game.game_type}
-                    onChange={(ev) => setGame({ ...game, game_type: ev.target.value })}
+                    onChange={(ev) => handleCategoryOnChange(ev.target.value)}
                   >
                     <option value="">Choose game type</option>
 
@@ -245,7 +259,7 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
                     height="315"
                     src={video}
                     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen={false}
+                    allowFullScreen={false}
                   />
                 ))
               ) : (
