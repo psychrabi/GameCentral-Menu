@@ -48,7 +48,10 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
   useEffect(() => {
     console.log(import.meta.env)
     async function getKey() {
-      const key = await getApiKey('sz4fdut3dwthuoryprilvj8ce5fvg8', 'l56dya21c4u40vkjnvrvol1rttxfj3')
+      const key = await getApiKey(
+        'sz4fdut3dwthuoryprilvj8ce5fvg8',
+        'l56dya21c4u40vkjnvrvol1rttxfj3'
+      )
       console.log(key)
       return () => {
         setApiKey(key)
