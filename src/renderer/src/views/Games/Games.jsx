@@ -9,7 +9,7 @@ import { saveToLocalStorage } from '../../utils/saveToLocalStorage'
 import { sortByName } from '../../utils/sortByName'
 function Games() {
   //TODO: Get Games from remote server instead of json
-  const { search, setSearch, setShow } = useStateContext()
+  const { search, setSearch, setShow, member } = useStateContext()
   const [loading, setLoading] = useState(false)
 
   // Store the filtered list of games in a separate variable
@@ -35,8 +35,6 @@ function Games() {
   }
 
   useEffect(() => {
-    const member = JSON.parse(localStorage.getItem('member'))
-
     if (!localStorage.getItem('data')) {
       setLoading(true)
       try {

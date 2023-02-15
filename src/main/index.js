@@ -17,17 +17,18 @@ const systemInfo = {
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 960,
-    height: 1000,
+    width: 1280,
+    height: 720,
     x: 0,
     y: 0,
     fullscreen: false,
     frame: false,
+    kiosk: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux'
       ? {
-          icon: path.join(__dirname, '../../build/icon.png')
-        }
+        icon: path.join(__dirname, '../../build/icon.png')
+      }
       : {}),
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
@@ -94,7 +95,7 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // Set app user model id for windows
-  electronApp.setAppUserModelId('com.electron')
+  electronApp.setAppUserModelId('com.gamecentral')
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
@@ -120,33 +121,60 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
-ipcMain.handle('request-system-info', () => {
-  return si.get(systemInfo)
+ipcMain.handle('request-system-info', async () => {
+  const info = await si.get(systemInfo)
+  return info
 })
 
-ipcMain.handle('launch:game', (gamePath, parameters) => {
-  console.log(gamePath + '-' + parameters)
-  fs.access(gamePath, (err) => {
-    if (err) {
-      return { code: 400, message: `${gamePath} not found.` }
-    } else {
-      const gameLaunch = spawn(gamePath, parameters)
-      if (gameLaunch) {
-        return { code: 200, message: 'Game Launched' }
+let processRunning = false
+let processRef
+ipcMain.handle('launch:executable', (event, gamePath) => {
+  const process = spawn(gamePath)
+  if (process) processRunning = true
+
+  processRef.on('exit', (code, signal) => {
+    console.log(`Process exited with code ${code} and signal ${signal}`)
+    processRunning = false
+    event.sender.send('process-exited', processRunning)
+  })
+
+  return processRunning
+})
+
+ipcMain.handle('check:executable', async (event, gamePath) => {
+  return new Promise((resolve, reject) => {
+    fs.access(gamePath, fs.constants.F_OK, (err) => {
+      if (!err) {
+        resolve({ status: 'file-exists', processRunning })
       } else {
-        return { code: 400, message: 'Game Launch failed' }
+        resolve({ status: 'file-does-not-exist', processRunning })
       }
-    }
+    })
   })
 })
 
+// ipcMain.handle('launch:game', async (event, gamePath) => {
+//   return new Promise((resolve, reject) => {
+//     fs.access(gamePath, fs.constants.F_OK, (err) => {
+//       if (err) {
+//         resolve('file-does-not-exist')
+//       } else {
+//         // Run the file here
+//         const gameLaunch = spawn(gamePath)
+//         if (gameLaunch) {
+//           resolve({ status: 'file-exists', processRunning });
+//         } else {
+//           resolve('file-exists', false)
+//         }
+//       }
+//     })
+//   })
+// })
+
 ipcMain.handle('dialog:openDirectory', async () => {
-  console.log('showOpenDialog called')
   const { filePaths } = await dialog.showOpenDialog({ properties: ['openFile'] })
-  console.log('showOpenDialog called')
   return filePaths ? filePaths[0] : null
 })

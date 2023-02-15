@@ -1,12 +1,13 @@
 import Offcanvas from 'react-bootstrap/Offcanvas'
 import Carousel from 'react-bootstrap/Carousel'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
 import { useStateContext } from '../contexts/ContextProvider.jsx'
 import axiosClient from '../../lib/axios-client.js'
 
 const Details = () => {
-  const { setShow, show } = useStateContext()
+  const { setShow, show, setNotifications } = useStateContext()
+  const [running, setRunning] = useState(false)
   const game = JSON.parse(localStorage.getItem('current-selected')) || []
 
   const handleClose = useCallback(() => {
@@ -47,9 +48,20 @@ const Details = () => {
       })
   }, [])
 
-  const handleGamePlay = useCallback((filePath, parameters) => {
-    window.api.launchGame(filePath, parameters).then((result) => console.log(result))
+  const handleGamePlay = useCallback((filePath) => {
+    window.api.checkExecutable(filePath).then((response) => {
+      if (response.status === 'file-exists') {
+        window.api.launchExecutable(filePath).then((response) => setRunning(response))
+      } else {
+        setRunning(false)
+        setNotifications('Game executable missing')
+      }
+    })
   }, [])
+
+  // useEffect(() => {
+  //   window.api.executableExited()
+  // }, [])
 
   return (
     <div className="position-relative">
@@ -87,15 +99,28 @@ const Details = () => {
                     id="play-button"
                     onClick={() => handleGamePlay(game.executable, game.parameters)}
                   >
-                    <i className="bi bi-play"></i> Play{' '}
+                    {running ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        Running
+                      </>
+                    ) : (
+                      <>
+                        <i className="bi bi-play"></i> Play
+                      </>
+                    )}
                   </button>
-                  <button
+                  {/* <button
                     className="d-flex btn btn-success me-auto align-items-center"
                     id="play-button"
                     onClick={() => handleGamePlay(game.executable, game.parameters)}
                   >
                     <i className="bi bi-play"></i> Play{' '}
-                  </button>
+                  </button> */}
                   <button className="btn btn-outline-danger">
                     <i
                       className={game.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'}

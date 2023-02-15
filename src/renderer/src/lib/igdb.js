@@ -34,7 +34,7 @@ const GameDetail = (props) => {
 
     const games = await response.json()
 
-    if (games && games.length) {s
+    if (games && games.length) {
       fetch(
         `https://api.igdb.com/v4/games/${games[0].id}?fields=name,cover.*,screenshots.*,videos.*,summary`,
         {

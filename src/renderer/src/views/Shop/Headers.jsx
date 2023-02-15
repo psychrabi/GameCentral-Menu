@@ -22,8 +22,7 @@ const Headers = ({ header, handleProductTypeChange, appCount }) => {
         <option value="">All Apps</option>
         {sortedTypes.map(({ category, description, id }) => (
           <option value={category} key={id}>
-            {' '}
-            {description}{' '}
+            {description}
           </option>
         ))}
       </select>

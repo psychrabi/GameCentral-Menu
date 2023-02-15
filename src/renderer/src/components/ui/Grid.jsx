@@ -6,7 +6,7 @@ const Grid = ({ games, handleShow }) => {
     <>
       {games?.map((game) => (
         <Card key={game.id} onClick={() => handleShow(game)} className="game shadow-sm">
-          <Card.Img src={game.poster} alt={game.name} />
+          <Card.Img src={game.poster} alt={game.name} width="180" height="240" />
         </Card>
       ))}
     </>

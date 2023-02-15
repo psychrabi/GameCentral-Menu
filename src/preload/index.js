@@ -3,12 +3,11 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 const api = {
-  launchGame: (gamepath, args) => {
-    console.log(gamepath)
-    ipcRenderer.invoke('launch:game', gamepath, args)
-  },
-  getSystemInfo: ipcRenderer.invoke('request-system-info'),
-  selectExecutable: () => ipcRenderer.invoke('dialog:openDirectory')
+  getSystemInfo: () => ipcRenderer.invoke('request-system-info'),
+  checkExecutable: async (gamePath) => ipcRenderer.invoke('check:executable', gamePath),
+  launchExecutable: (gamePath) => ipcRenderer.invoke('launch:executable', gamePath),
+  selectExecutable: () => ipcRenderer.invoke('dialog:openDirectory'),
+  executableExited: () => ipcRenderer.on('process-exited')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

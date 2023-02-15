@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useStateContext } from '../../components/contexts/ContextProvider'
 import Notifications from '../../components/Notifications'
@@ -80,17 +80,23 @@ export default function Login() {
       })
   }
 
-  useEffect(() => {
-    if (!clientStats) {
-      setLoading(true)
-      window.api.getSystemInfo.then((result) => {
-        localStorage.setItem('systemInfo', JSON.stringify(result))
-        setSystemInfo(result)
-        setLoading(false) // Stop loading
-      })
-    } else {
-      const SystemInfo = JSON.parse(localStorage.getItem('systemInfo'))
+  const getClientInfo = useCallback(async () => {
+    try {
+      let SystemInfo = await window.api.getSystemInfo()
       setSystemInfo(SystemInfo)
+      localStorage.setItem('systemInfo', JSON.stringify(SystemInfo))
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false) // Stop loading
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!localStorage.getItem('systemInfo')) {
+      getClientInfo()
+    } else {
+      setSystemInfo(JSON.parse(localStorage.getItem('systemInfo')))
     }
   }, [])
 

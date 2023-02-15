@@ -1,11 +1,11 @@
 import { createHashRouter } from 'react-router-dom'
 import { lazy } from 'react'
-import ProfileLayout from './components/ProfileLayout'
 
 // Client side components
 
 const Login = lazy(() => import('./views/Auth/Login'))
 const MemberLayout = lazy(() => import('./components/MemberLayout'))
+const ProfileLayout = lazy(() => import('./components/ProfileLayout'))
 const Home = lazy(() => import('./views/Home/Home'))
 const Games = lazy(() => import('./views/Games/Games'))
 const Applications = lazy(() => import('./views/Applications/Applications'))

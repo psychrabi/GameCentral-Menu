@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { useCallback, useEffect, useState } from 'react'
 import Search from '../form/Search.jsx'
 
-import { Col, FloatingLabel, Form, Row } from 'react-bootstrap'
+import { Col, FloatingLabel, Form, Ratio, Row } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import { useStateContext } from '../contexts/ContextProvider.jsx'
@@ -46,13 +46,11 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
     return data.access_token
   }
   useEffect(() => {
-    console.log(import.meta.env)
     async function getKey() {
       const key = await getApiKey(
         'sz4fdut3dwthuoryprilvj8ce5fvg8',
         'l56dya21c4u40vkjnvrvol1rttxfj3'
       )
-      console.log(key)
       return () => {
         setApiKey(key)
       }
@@ -156,8 +154,8 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
             <Modal.Title>Add Game</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Row className="g-2 mb-3">
-              <Col md>
+            <Row className="g-2 mb-2">
+              <Col md={6}>
                 <FloatingLabel controlId="floatingInputGrid" label="Name">
                   <Form.Control
                     type="text"
@@ -180,7 +178,7 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
                   >
                     <option value="">Choose game type</option>
 
-                    {categories.map(({ category, description, id }) => (
+                    {sortedCategories.map(({ category, description, id }) => (
                       <option value={category} key={id}>
                         {description}
                       </option>
@@ -188,9 +186,19 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
                   </Form.Select>
                 </FloatingLabel>
               </Col>
-            </Row>
-            <Row className="g-2">
               <Col md>
+                <FloatingLabel controlId="floatingSelectGrid" label="App ID">
+                  <Form.Control
+                    type="text"
+                    placeholder="App ID"
+                    value={game.app_id}
+                    onChange={(ev) => setGame({ ...game, app_id: ev.target.value })}
+                  />
+                </FloatingLabel>
+              </Col>
+            </Row>
+            <Row className="g-2 mb-2">
+              <Col md={6}>
                 <FloatingLabel controlId="floatingSelectGrid" label="Executable">
                   <Form.Control
                     type="text"
@@ -212,63 +220,80 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
                   />
                 </FloatingLabel>
               </Col>
-              <Col md>
-                <FloatingLabel controlId="floatingSelectGrid" label="App ID">
+            </Row>
+            <Row className="mb-2">
+              <Col>
+                <FloatingLabel controlId="floatingSelectGrid" label="Summary">
                   <Form.Control
-                    type="text"
-                    placeholder="App ID"
-                    value={game.app_id}
-                    onChange={(ev) => setGame({ ...game, app_id: ev.target.value })}
+                    as="textarea"
+                    style={{ height: '120px' }}
+                    value={game.summary}
+                    onChange={(ev) => setGame({ ...game, summary: ev.target.value })}
                   />
                 </FloatingLabel>
               </Col>
             </Row>
-            <Form.Group controlId="formFile" className="mb-3">
-              <Form.Label>Poster</Form.Label>
-              {game.poster ? (
-                <img src={game.poster} alt={game.name} />
-              ) : (
-                <Form.Control type="file" />
-              )}
-            </Form.Group>
-            <Form.Group controlId="formFile" className="mb-3">
-              <Form.Label>Screenshots</Form.Label>
+            <Row className="mb-2">
               {game.screenshots ? (
-                game.screenshots.map((screenshot, index) => (
-                  <img key={index} src={screenshot} alt={game.name} />
-                ))
+                <Col md={10}>
+                  <span className="d-block">Screenshots</span>
+                  <div className="media-scroller">
+                    {game.screenshots.map((screenshot, index) => (
+                      <img
+                        key={index}
+                        src={screenshot}
+                        alt={game.name}
+                        height="160"
+                        className="col"
+                      />
+                    ))}
+                  </div>
+                </Col>
               ) : (
-                <Form.Control type="file" multiple />
+                <Form.Group controlId="formFile" className="mb-3">
+                  <Form.Label>Screenshots</Form.Label>
+                  <Form.Control type="file" multiple />
+                </Form.Group>
               )}
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-              <Form.Label>Summary</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                value={game.summary}
-                onChange={(ev) => setGame({ ...game, summary: ev.target.value })}
-              />
-            </Form.Group>
-            <Form.Group controlId="formFsile" className="mb-3">
-              <Form.Label>Videos</Form.Label>
-
+              {game.poster ? (
+                <Col md={2}>
+                  <span className="d-block">Poster</span>
+                  <img src={game.poster} alt={game.name} height="160" />
+                </Col>
+              ) : (
+                <Form.Group controlId="formFile" className="mb-3">
+                  <Form.Label>Poster</Form.Label>
+                  <Form.Control type="file" />
+                </Form.Group>
+              )}
+            </Row>
+            <Row className="mb-2">
               {game.videos ? (
-                game.videos.map((video, index) => (
-                  <iframe
-                    key={index}
-                    title={`${game.name} video`}
-                    width="560"
-                    height="315"
-                    src={video}
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen={false}
-                  />
-                ))
+                <Col md>
+                  <span className="d-block">Videos</span>
+                  <div className="media-scroller">
+                    {game.videos.map((video, index) => (
+                      <Ratio key={index} aspectRatio="16x9">
+                        <iframe
+                          title={`${game.name} video`}
+                          width="560"
+                          height="315"
+                          src={video}
+                          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen={false}
+                        />
+                      </Ratio>
+                    ))}
+                  </div>
+                </Col>
               ) : (
-                <Form.Control type="file" />
+                <Form.Group controlId="formFsile" className="mb-3">
+                  <Form.Label>Videos</Form.Label>
+                  <Form.Control type="file" />
+                </Form.Group>
               )}
-            </Form.Group>
+            </Row>
+            F
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
