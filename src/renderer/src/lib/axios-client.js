@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const axiosClient = axios.create({
-  baseURL: `http://iserver2.test/api`
+  baseURL: `http://gamecentralmenu.test/api`
 })
 
 axiosClient.interceptors.request.use((config) => {
