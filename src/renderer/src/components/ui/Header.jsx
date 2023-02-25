@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import { useCallback, useEffect, useState } from 'react'
 import Search from '../form/Search.jsx'
+import { GameAPI } from '../../api/GameAPI.js'
 
 import { Col, FloatingLabel, Form, Ratio, Row } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
@@ -9,20 +10,24 @@ import { useStateContext } from '../contexts/ContextProvider.jsx'
 
 const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }) => {
   const API_URL = 'https://cors-anywhere.herokuapp.com/'
-
-  const { setNotifications } = useStateContext()
+  const { setNotifications, token } = useStateContext()
   const [apiKey, setApiKey] = useState('')
   const [show, setShow] = useState(false)
   const [disable, setDisable] = useState(true)
   const [game, setGame] = useState({
+    center_id: '',
     name: '',
     summary: '',
     poster: '',
     screenshots: '',
     videos: '',
     executable: '',
-    parameters: ''
+    parameters: '',
+    game_type: '',
+    type: ''
   })
+  const Api = new GameAPI(token)
+
 
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
@@ -31,7 +36,14 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
     event.preventDefault()
     event.stopPropagation()
 
-    console.log(game)
+    // console.log(game)
+    const response = await Api.addGame(game)
+    console.log(response)
+    if (response.status === 201) {
+      setShow(false);
+      setGame([])
+    }
+
   }
 
   const getApiKey = async (client_id, client_secret) => {
@@ -72,17 +84,21 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
     })
 
     const games = await response.json()
+    const center_id = JSON.parse(localStorage.getItem('session')).center_id
+    console.log(center_id)
     // console.log(games)
     if (games.length > 0) {
-      console.log(games[0])
+
       setGame({
+        center_id: center_id,
         name: games[0].name,
         summary: games[0].summary ?? '',
         poster: `https:${games[0].cover?.url.replace('t_thumb', 't_cover_big')}`,
-        screenshots: games[0].screenshots?.map(
+        screenshots: JSON.stringify(games[0].screenshots?.map(
           (screenshot) => `https:${screenshot.url.replace('t_thumb', 't_screenshot_big')}`
-        ),
-        videos: games[0].videos?.map((video) => `https://www.youtube.com/embed/${video.video_id}`)
+        )),
+        videos: JSON.stringify(games[0].videos?.map((video) => `https://www.youtube.com/embed/${video.video_id}`)),
+        type: 'games'
       })
     }
   }
@@ -98,7 +114,7 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
     try {
       const selectedFilePath = await window.api.selectExecutable()
       if (selectedFilePath) {
-        setGame((game) => ({ ...game, executable: selectedFilePath }))
+        setGame((game) => ({ ...game, executable: selectedFilePath.executable, parameters: selectedFilePath.parameters }))
       } else {
         setNotifications('File dialog was cancelled')
       }
@@ -174,7 +190,7 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
                     aria-label="Floating label select example"
                     required
                     value={game.game_type}
-                    onChange={(ev) => handleCategoryOnChange(ev.target.value)}
+                    onChange={(ev) => setGame({ ...game, game_type: ev.target.value })}
                   >
                     <option value="">Choose game type</option>
 
@@ -238,7 +254,7 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
                 <Col md={10}>
                   <span className="d-block">Screenshots</span>
                   <div className="media-scroller">
-                    {game.screenshots.map((screenshot, index) => (
+                    {JSON.parse(game.screenshots).map((screenshot, index) => (
                       <img
                         key={index}
                         src={screenshot}
@@ -272,7 +288,7 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
                 <Col md>
                   <span className="d-block">Videos</span>
                   <div className="media-scroller">
-                    {game.videos.map((video, index) => (
+                    {JSON.parse(game.videos).map((video, index) => (
                       <Ratio key={index} aspectRatio="16x9">
                         <iframe
                           title={`${game.name} video`}
@@ -293,7 +309,6 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
                 </Form.Group>
               )}
             </Row>
-            F
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>

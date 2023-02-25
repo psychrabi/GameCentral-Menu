@@ -6,18 +6,24 @@ import { sortByName } from '../../utils/sortByName'
 import { useStateContext } from '../../components/contexts/ContextProvider'
 import { Loading } from '../../components/ui/Loading'
 import axiosClient from '../../lib/axios-client'
+import useFavoriteGames from '../../utils/useFavoriteGames'
 
 const Home = () => {
   //TODO: Get Games from remote server instead of json
   const { search, setSearch, setShow } = useStateContext()
-  const [loading, setLoading] = useState(false)
+  // const [loading, setLoading] = useState(false)
+  const { favoriteGames, isLoading } = useFavoriteGames();
 
   // Store the filtered list of games in a separate variable
-  const [data, setData] = useState(JSON.parse(localStorage.getItem('favorite_games')))
+  // const [data, setData] = useState(JSON.parse(localStorage.getItem('favorite_games')))
+  // const HomeList = useMemo(
+  //   () => data?.filter((g) => g.type === 'apps' || g.type === 'games'),
+  //   [data]
+  // )
   const HomeList = useMemo(
-    () => data?.filter((g) => g.type === 'apps' || g.type === 'games'),
-    [data]
-  )
+    () => favoriteGames?.filter((g) => g.type === 'apps' || g.type === 'games'),
+    [favoriteGames]
+  );
 
   // Use useState to store the current game, the list of games, and the show state
   const [filteredGames, setFilteredGames] = useState(sortByName(HomeList))
@@ -37,26 +43,26 @@ const Home = () => {
     }
   }, [search, HomeList])
 
-  useEffect(() => {
-    const member = JSON.parse(localStorage.getItem('member'))
-    if (!localStorage.getItem('favorite_games')) {
-      setLoading(true)
+  // useEffect(() => {
+  //   const member = JSON.parse(localStorage.getItem('member'))
+  //   if (!localStorage.getItem('favorite_games')) {
+  //     setLoading(true)
 
-      try {
-        axiosClient.defaults.headers.common['Authorization'] = 'Bearer ' + member.token
-        axiosClient.get(`/favorite-games/${member.id}`).then(({ data }) => {
-          setData(data)
-          // console.log({ Favorite_Games: data });
-          if (localStorage.getItem('favorite_games') == null) {
-            localStorage.setItem('favorite_games', JSON.stringify(data))
-          }
-          setLoading(false)
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  }, [])
+  //     try {
+  //       axiosClient.defaults.headers.common['Authorization'] = 'Bearer ' + member.token
+  //       axiosClient.get(`/favorite-games/${member.id}`).then(({ data }) => {
+  //         setData(data)
+  //         // console.log({ Favorite_Games: data });
+  //         if (localStorage.getItem('favorite_games') == null) {
+  //           localStorage.setItem('favorite_games', JSON.stringify(data))
+  //         }
+  //         setLoading(false)
+  //       })
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+  // }, [])
 
   const handleCategoriesChange = (event) => {
     console.log(event.target.value)
@@ -70,7 +76,7 @@ const Home = () => {
 
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <Loading />
       ) : (
         <>

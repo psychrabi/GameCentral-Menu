@@ -6,7 +6,7 @@ import { Loading } from '../../components/ui/Loading'
 import categories from '../../data/AppTypes.json'
 import axiosClient from '../../lib/axios-client'
 import { saveToLocalStorage } from '../../utils/saveToLocalStorage'
-import { sortByName } from '../../utils/sortByName'
+import { sortByName, filterByCategory, filterBySearch } from '../../utils/sortByName'
 function Applications() {
   const { search, setSearch, setShow } = useStateContext()
   const [loading, setLoading] = useState(false)

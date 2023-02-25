@@ -6,7 +6,7 @@ import { Loading } from '../../components/ui/Loading'
 import categories from '../../data/GameTypes.json'
 import axiosClient from '../../lib/axios-client'
 import { saveToLocalStorage } from '../../utils/saveToLocalStorage'
-import { sortByName } from '../../utils/sortByName'
+import { sortByName, filterByCategory, filterBySearch, fetchData } from '../../utils/sortByName'
 function Games() {
   //TODO: Get Games from remote server instead of json
   const { search, setSearch, setShow, member } = useStateContext()
@@ -35,22 +35,11 @@ function Games() {
   }
 
   useEffect(() => {
-    if (!localStorage.getItem('data')) {
-      setLoading(true)
-      try {
-        axiosClient.defaults.headers.common['Authorization'] = 'Bearer ' + member.token
-        axiosClient.get(`/clientGames/${member.center_id}`).then(({ data }) => {
-          console.log({ Games: data })
-          setData(data)
-          if (localStorage.getItem('data') == null) {
-            localStorage.setItem('data', JSON.stringify(data))
-          }
-          setLoading(false)
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
+    (async function () {
+      const member = JSON.parse(localStorage.getItem('member'))
+      const data = await fetchData(`/clientGames/${member.center_id}`, member.token)
+      setData(data)
+    })();
   }, [])
 
   // Use the useCallback hook to handleShow and handleClose functions
