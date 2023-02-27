@@ -4,73 +4,58 @@ import Grid from '../../components/ui/Grid'
 import Header from '../../components/ui/Header'
 import { Loading } from '../../components/ui/Loading'
 import categories from '../../data/GameTypes.json'
-import axiosClient from '../../lib/axios-client'
 import { saveToLocalStorage } from '../../utils/saveToLocalStorage'
-import { sortByName, filterByCategory, filterBySearch, fetchData } from '../../utils/sortByName'
+import { fetchData } from '../../utils/sortByName'
+import useFilter from '../../utils/useFilter'
+import { addDataIntoCache } from '../../utils/addDataIntoCache'
 function Games() {
   //TODO: Get Games from remote server instead of json
-  const { search, setSearch, setShow, member } = useStateContext()
+  const { setShow } = useStateContext()
   const [loading, setLoading] = useState(false)
+  const [games, setGames] = useState(JSON.parse(localStorage.getItem('data')) ?? [])
 
-  // Store the filtered list of games in a separate variable
-
-  const [data, setData] = useState(JSON.parse(localStorage.getItem('data')))
-  const games = useMemo(() => data?.filter((g) => g.type === 'games'), [data])
-  const gamesList = useMemo(() => games, [games])
+  const { setSearch, setType, filteredList } = useFilter(games, categories, 'game_type')
 
   // Use useState to store the current game, the list of games, and the show state
-  const [filteredGames, setFilteredGames] = useState(sortByName(gamesList))
 
   // Use useState to store the game type and the title
-  const [type, setType] = useState('')
+  // const [type, setType] = useState('')
   const [title, setTitle] = useState(['All Games'])
 
   // Use useState to store the games count
-  const [count, setCount] = useState(gamesList?.length)
+
+  const count = useMemo(() => filteredList.length, [filteredList])
 
   const handleCategoriesChange = (event) => {
-    setType(event.target.value)
+    setSearch('')
     let index = event.target.selectedIndex
     setTitle(event.target[index].text)
+    setType(event.target.value)
+  }
+
+  const handleSearch = (search) => {
+    setType('')
+    setSearch(search)
   }
 
   useEffect(() => {
-    (async function () {
+    ;(async function () {
       const member = JSON.parse(localStorage.getItem('member'))
-      const data = await fetchData(`/clientGames/${member.center_id}`, member.token)
-      setData(data)
-    })();
+      const games = await fetchData(`/clientGames/${member.center_id}`, member.token)
+      addDataIntoCache(
+        'games',
+        `http://gamecentralmenu.test/api/clientGames/${member.center_id}`,
+        games
+      )
+      setGames(games)
+    })()
   }, [])
 
   // Use the useCallback hook to handleShow and handleClose functions
-
   const handleShow = useCallback((g) => {
     saveToLocalStorage('current-selected', g)
     setShow(true)
   }, [])
-
-  useEffect(() => {
-    // Update the filtered games list when the type or search changes
-    const newGames = type === '' ? gamesList : gamesList?.filter((g) => g.game_type === type)
-    setFilteredGames(sortByName(newGames))
-    setCount(newGames?.length)
-
-    // Save the type to local storage
-    saveToLocalStorage('current-selected-type', type)
-  }, [type, gamesList])
-
-  useEffect(() => {
-    // Update the filtered games list when the search changes
-    if (search !== '') {
-      const newGames = gamesList?.filter((g) => g.name.toLowerCase().includes(search.toLowerCase()))
-      setFilteredGames(sortByName(newGames))
-      setCount(search !== '' ? newGames?.length : gamesList?.length)
-    } else {
-      setFilteredGames(gamesList)
-      setCount(gamesList?.length)
-      setType('')
-    }
-  }, [search, gamesList])
 
   return (
     <>
@@ -83,10 +68,10 @@ function Games() {
             categories={categories}
             handleCategoriesChange={handleCategoriesChange}
             count={count}
-            setSearch={setSearch}
+            handleSearch={handleSearch}
           />
           <div className="games" id="favorite-games-container">
-            <Grid handleShow={handleShow} games={filteredGames} />
+            <Grid handleShow={handleShow} games={filteredList} />
           </div>
         </>
       )}

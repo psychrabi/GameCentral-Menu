@@ -1,12 +1,4 @@
-import { useEffect } from 'react'
-import { useStateContext } from '../../components/contexts/ContextProvider'
-
 export default function Security() {
-  const { setTitle } = useStateContext()
-
-  useEffect(() => {
-    setTitle('Profile - Change Password')
-  }, [])
   return (
     <>
       <div className="row">

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import { formatCurrency } from '../../utils/formatCurrency'
 
 const Product = ({ product, onAdd }) => {
   return (
@@ -6,7 +7,7 @@ const Product = ({ product, onAdd }) => {
       <img src={product.product_image} alt={product.name} className="card-img-top" />
       <div className="card-body">
         <h5 className="card-title">{product.name}</h5>
-        <p className="card-text price">${product.sales_price}</p>
+        <p className="card-text price">{formatCurrency(product.sales_price)}</p>
         {product.stock > 0 && (
           <button className="btn btn-primary add-to-cart" onClick={() => onAdd(product)}>
             Add to Cart

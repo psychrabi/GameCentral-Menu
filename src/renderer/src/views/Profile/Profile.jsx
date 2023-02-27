@@ -64,7 +64,7 @@ export default function Profile() {
                   id="inputUsername"
                   type="text"
                   placeholder="Enter your username"
-                  value={member.username}
+                  value={member?.username}
                   onChange={(ev) => setMember({ ...member, username: ev.target.value })}
                   disabled
                 />
@@ -79,7 +79,7 @@ export default function Profile() {
                     id="inputFirstName"
                     type="text"
                     placeholder="Enter your first name"
-                    value={member.first_name}
+                    value={member?.first_name}
                     onChange={(ev) => setMember({ ...member, first_name: ev.target.value })}
                   />
                 </div>
@@ -92,7 +92,7 @@ export default function Profile() {
                     id="inputLastName"
                     type="text"
                     placeholder="Enter your last name"
-                    value={member.last_name}
+                    value={member?.last_name}
                     onChange={(ev) => setMember({ ...member, last_name: ev.target.value })}
                   />
                 </div>
@@ -107,7 +107,7 @@ export default function Profile() {
                   id="inputEmailAddress"
                   type="email"
                   placeholder="Enter your email address"
-                  value={member.email}
+                  value={member?.email}
                   onChange={(ev) => setMember({ ...member, email: ev.target.value })}
                 />
               </div>
@@ -121,7 +121,7 @@ export default function Profile() {
                     id="inputPhone"
                     type="tel"
                     placeholder="Enter your phone number"
-                    value={member.phone}
+                    value={member?.phone ?? ''}
                     onChange={(ev) => setMember({ ...member, phone: ev.target.value })}
                   />
                 </div>
@@ -135,7 +135,7 @@ export default function Profile() {
                     type="date"
                     name="birthday"
                     placeholder="Enter your birthday"
-                    value={member.birthday}
+                    value={member?.birthday ?? "1990-11-11"}
                     onChange={(ev) => setMember({ ...member, birthday: ev.target.value })}
                   />
                 </div>

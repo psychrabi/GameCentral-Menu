@@ -1,12 +1,4 @@
-import { useEffect } from 'react'
-import { useStateContext } from '../../components/contexts/ContextProvider'
-
-export default function Notification() {
-  const { setTitle } = useStateContext()
-
-  useEffect(() => {
-    setTitle('Profile - Notification')
-  }, [])
+export default function Notification({member}) {
   return (
     <>
       <div className="row">

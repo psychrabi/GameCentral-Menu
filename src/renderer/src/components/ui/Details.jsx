@@ -27,7 +27,7 @@ const Details = () => {
     const favorite_games = JSON.parse(localStorage.getItem('favorite_games'))
 
     axiosClient
-      .post('/favorite-game', payload)
+      .post('/favoriteGame', payload)
       .then((response) => {
         console.log(response.status)
         if (response.status === 204) {

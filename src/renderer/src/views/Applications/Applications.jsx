@@ -5,15 +5,16 @@ import Header from '../../components/ui/Header'
 import { Loading } from '../../components/ui/Loading'
 import categories from '../../data/AppTypes.json'
 import axiosClient from '../../lib/axios-client'
+import { addDataIntoCache } from '../../utils/addDataIntoCache'
 import { saveToLocalStorage } from '../../utils/saveToLocalStorage'
-import { sortByName, filterByCategory, filterBySearch } from '../../utils/sortByName'
+import { sortByName } from '../../utils/sortByName'
 function Applications() {
   const { search, setSearch, setShow } = useStateContext()
   const [loading, setLoading] = useState(false)
 
   // Store the filtered list of games in a separate variable
-  const [data, setData] = useState(JSON.parse(localStorage.getItem('data')))
-  const games = useMemo(() => data?.filter((g) => g.type === 'apps'), [data])
+  const [data, setData] = useState(JSON.parse(localStorage.getItem('apps')))
+  const games = useMemo(() => data, [data])
   const gamesList = useMemo(() => games, [games])
 
   // Use useState to store the current game, the list of games, and the show state
@@ -35,16 +36,22 @@ function Applications() {
   useEffect(() => {
     const member = JSON.parse(localStorage.getItem('member'))
 
-    if (!localStorage.getItem('data')) {
+    if (!localStorage.getItem('apps')) {
       setLoading(true)
       //Get Games from remote server instead of json
       try {
         axiosClient.defaults.headers.common['Authorization'] = 'Bearer ' + member.token
-        axiosClient.get(`/clientGames/${member.center_id}`).then(({ data }) => {
-          console.log({ Games: data })
+        axiosClient.get(`/clientApps/${member.center_id}`).then(({ data }) => {
+          console.log({ Applications: data })
+          addDataIntoCache(
+            'apps',
+            `http://gamecentralmenu.test/api/clientApps/${member.center_id}`,
+            data
+          )
+
           setData(data)
-          if (localStorage.getItem('data') == null) {
-            localStorage.setItem('data', JSON.stringify(data))
+          if (localStorage.getItem('apps') == null) {
+            localStorage.setItem('apps', JSON.stringify(data))
           }
           setLoading(false)
         })

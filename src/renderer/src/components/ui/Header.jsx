@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import { useStateContext } from '../contexts/ContextProvider.jsx'
 
-const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }) => {
+const Headers = ({ title, categories, handleCategoriesChange, count, handleSearch }) => {
   const API_URL = 'https://cors-anywhere.herokuapp.com/'
   const { setNotifications, token } = useStateContext()
   const [apiKey, setApiKey] = useState('')
@@ -28,7 +28,6 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
   })
   const Api = new GameAPI(token)
 
-
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
   const sortedCategories = categories?.sort((a, b) => a.description.localeCompare(b.description))
@@ -40,10 +39,9 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
     const response = await Api.addGame(game)
     console.log(response)
     if (response.status === 201) {
-      setShow(false);
+      setShow(false)
       setGame([])
     }
-
   }
 
   const getApiKey = async (client_id, client_secret) => {
@@ -88,16 +86,19 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
     console.log(center_id)
     // console.log(games)
     if (games.length > 0) {
-
       setGame({
         center_id: center_id,
         name: games[0].name,
         summary: games[0].summary ?? '',
         poster: `https:${games[0].cover?.url.replace('t_thumb', 't_cover_big')}`,
-        screenshots: JSON.stringify(games[0].screenshots?.map(
-          (screenshot) => `https:${screenshot.url.replace('t_thumb', 't_screenshot_big')}`
-        )),
-        videos: JSON.stringify(games[0].videos?.map((video) => `https://www.youtube.com/embed/${video.video_id}`)),
+        screenshots: JSON.stringify(
+          games[0].screenshots?.map(
+            (screenshot) => `https:${screenshot.url.replace('t_thumb', 't_screenshot_big')}`
+          )
+        ),
+        videos: JSON.stringify(
+          games[0].videos?.map((video) => `https://www.youtube.com/embed/${video.video_id}`)
+        ),
         type: 'games'
       })
     }
@@ -114,7 +115,11 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
     try {
       const selectedFilePath = await window.api.selectExecutable()
       if (selectedFilePath) {
-        setGame((game) => ({ ...game, executable: selectedFilePath.executable, parameters: selectedFilePath.parameters }))
+        setGame((game) => ({
+          ...game,
+          executable: selectedFilePath.executable,
+          parameters: selectedFilePath.parameters
+        }))
       } else {
         setNotifications('File dialog was cancelled')
       }
@@ -129,7 +134,7 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
         <h2 className="h3 me-3 mb-2 mb-lg-0">
           {title} {count ? `(${count})` : ''}
         </h2>
-        {setSearch && <Search setSearch={setSearch} />}
+        <Search handleSearch={handleSearch} />
       </div>
       {categories && (
         <div>
@@ -143,7 +148,7 @@ const Headers = ({ title, categories, handleCategoriesChange, count, setSearch }
             defaultValue=""
             onChange={handleCategoriesChange}
           >
-            <option value="">Choose game type</option>
+            <option value="">All </option>
             {sortedCategories.map(({ category, description, id }) => (
               <option value={category} key={id}>
                 {description}

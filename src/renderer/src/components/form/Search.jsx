@@ -1,5 +1,5 @@
 const Search = (props) => {
-  const setSearch = props.setSearch
+  const handleSearch = props.handleSearch
   const handleSubmit = (ev) => {
     ev.preventDefault()
   }
@@ -19,7 +19,7 @@ const Search = (props) => {
         name="search"
         id="search"
         aria-label="Search"
-        onChange={(event) => setSearch(event.target.value)}
+        onChange={(event) => handleSearch(event.target.value)}
       />
     </form>
   )

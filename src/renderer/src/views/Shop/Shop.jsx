@@ -9,27 +9,30 @@ import { saveToLocalStorage } from '../../utils/saveToLocalStorage'
 import { sortByName } from '../../utils/sortByName'
 import Cart from './Cart'
 import Products from './Products'
+import { addDataIntoCache } from '../../utils/addDataIntoCache'
+import useFilter from '../../utils/useFilter'
 
 export default function Shop() {
-  const { search, setSearch } = useStateContext()
   const [loading, setLoading] = useState(false)
 
   // Store the filtered list of products in a separate variable
-  const [productsList, setProductsList] = useState(JSON.parse(localStorage.getItem('products')))
+  const [productsList, setProductsList] = useState(
+    sortByName(JSON.parse(localStorage.getItem('products')))
+  )
+  const { setSearch, setType, filteredList } = useFilter(productsList, categories, 'product_type')
+
   const [paymentMode, setPaymentMode] = useState('balance')
 
   // Use useState to store the current app, the list of apps, and the show state
-  const [filteredProducts, setFilteredProducts] = useState(sortByName(productsList))
 
   // Use useState to store the product type and the title
-  const [productType, setProductType] = useState('')
   const [title, setHeader] = useState(['All Products'])
 
   // Use useState to store the app count
-  const [count, setCount] = useState(productsList?.length)
+  const count = useMemo(() => filteredList.length, [filteredList])
 
   const handleCategoriesChange = useCallback((event) => {
-    setProductType(event.target.value)
+    setType(event.target.value)
     let index = event.target.selectedIndex
     setHeader(event.target[index].text)
   }, [])
@@ -41,10 +44,15 @@ export default function Shop() {
       try {
         axiosClient.defaults.headers.common['Authorization'] = 'Bearer ' + member.token
         axiosClient.get(`/clientProducts/${member.center_id}`).then(({ data }) => {
-          console.log({ Products: data })
+          addDataIntoCache(
+            'products',
+            `http://gamecentralmenu.test/api/clientProducts/${member.center_id}`,
+            data
+          )
+
           setProductsList(data)
-          if (localStorage.getItem('data') == null) {
-            localStorage.setItem('data', JSON.stringify(data))
+          if (localStorage.getItem('products') == null) {
+            localStorage.setItem('products', JSON.stringify(data))
           }
           setCount(data.length)
         })
@@ -56,21 +64,20 @@ export default function Shop() {
     }
   }, [])
 
-
   const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cartItems')) ?? [])
   // const [state, dispatch] = useReducer(reducer, { cart: storedCart || [] });
 
-  const updateFilteredProducts = (productsList, productType, search) => {
-    if (productType !== '') {
-      return sortByName(productsList.filter((g) => g.product_type === productType))
-    } else if (search !== '') {
-      return sortByName(
-        productsList.filter((g) => g.name.toLowerCase().includes(search.toLowerCase()))
-      )
-    } else {
-      return sortByName(productsList)
-    }
-  }
+  // const updateFilteredProducts = (productsList, productType, search) => {
+  //   if (productType !== '') {
+  //     return sortByName(productsList.filter((g) => g.product_type === productType))
+  //   } else if (search !== '') {
+  //     return sortByName(
+  //       productsList.filter((g) => g.name.toLowerCase().includes(search.toLowerCase()))
+  //     )
+  //   } else {
+  //     return sortByName(productsList)
+  //   }
+  // }
 
   const onAdd = (product) => {
     const exists = cartItems.find((item) => item.id === product.id)
@@ -128,23 +135,10 @@ export default function Shop() {
     removeFromLocalStorage('cart')
   }, [cartItems])
 
-  // useEffect(() => {
-  //   // Save the sorted list of apps to local storage when the component mounts
-  //   if (localStorage.getItem('products') == null) {
-  //     saveToLocalStorage('products', productsList)
-  //     console.log('Products saved to localstorage')
-  //   }
-  // }, [productsList])
-
-  useEffect(() => {
-    // Update the filtered apps list when the gameType or search changes
-    const newProducts = updateFilteredProducts(productsList, productType, search)
-    setFilteredProducts(sortByName(newProducts))
-    setCount(newProducts?.length)
-
-    // Save the appType to local storage
-    saveToLocalStorage('current-selected-type', productType)
-  }, [productType, productsList, search])
+  const handleSearch = (search) => {
+    setType('')
+    setSearch(search)
+  }
 
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems))
@@ -158,18 +152,22 @@ export default function Shop() {
           categories={categories}
           handleCategoriesChange={handleCategoriesChange}
           count={count}
-          setSearch={setSearch}
+          handleSearch={handleSearch}
         />
-        <Products products={filteredProducts} onAdd={onAdd} />
+        <Products products={filteredList} onAdd={onAdd} />
       </div>
-      <Cart
-        cartItems={cartItems}
-        onAdd={onAdd}
-        onRemove={onRemove}
-        onClear={onClear}
-        handleSubmitOrder={handleSubmitOrder}
-        handlePaymentModeChange={handlePaymentModeChange}
-      />
+      {cartItems.length > 0 ? (
+        <Cart
+          cartItems={cartItems}
+          onAdd={onAdd}
+          onRemove={onRemove}
+          onClear={onClear}
+          handleSubmitOrder={handleSubmitOrder}
+          handlePaymentModeChange={handlePaymentModeChange}
+        />
+      ) : (
+        ''
+      )}
     </div>
   )
 }

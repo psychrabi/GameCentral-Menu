@@ -1,19 +1,14 @@
-import { useEffect, useReducer, useState } from 'react'
-import { useStateContext } from '../../components/contexts/ContextProvider'
+import { useEffect, useState } from 'react'
 import axiosClient from '../../lib/axios-client'
 
-export default function Billing() {
-  const { setTitle } = useStateContext()
+export default function Billing({member}) {
   const [sessions, setSessions] = useState([])
 
   const sum = sessions.reduce((prev, curr) => prev + curr.session_cost, 0)
   useEffect(() => {
-    setTitle('Profile - Billing')
     axiosClient.get('/sessions').then((response) => {
-      console.log(response.data)
       setSessions(response.data)
     })
-    console.log(sum)
   }, [])
   return (
     <>
@@ -21,7 +16,7 @@ export default function Billing() {
         <div className="col-lg-4 mb-4">
           <div className="card h-100 border-start-lg border-start-primary">
             <div className="card-body">
-              <div className="small text-muted">Current monthly bill</div>
+              <div className="small text-muted">Balance</div>
               <div className="h3">$20.00</div>
               <a className="text-arrow-icon small" href="#!">
                 Switch to yearly billing
