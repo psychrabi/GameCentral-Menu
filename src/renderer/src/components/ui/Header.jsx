@@ -7,8 +7,20 @@ import { Col, FloatingLabel, Form, Ratio, Row } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import { useStateContext } from '../contexts/ContextProvider.jsx'
+import categories from '../../data/GameTypes.json'
+import { useGamesStore } from '../stores/GamesStore.js'
 
-const Headers = ({ title, categories, handleCategoriesChange, count, handleSearch }) => {
+const Header = () => {
+  const setType = useGamesStore((state) => state.setType)
+  const [title, setTitle] = useState(['All Games'])
+  const [count, setCount] = useState(0)
+
+  const handleCategoriesChange = useCallback((event) => {
+    let index = event.target.selectedIndex
+    setTitle(event.target[index].text)
+    setType(event.target.value)
+  }, [])
+
   const API_URL = 'https://cors-anywhere.herokuapp.com/'
   const { setNotifications, token } = useStateContext()
   const [apiKey, setApiKey] = useState('')
@@ -43,6 +55,12 @@ const Headers = ({ title, categories, handleCategoriesChange, count, handleSearc
       setGame([])
     }
   }
+  useEffect(() => {
+    window.showButton = () => {
+      const button = document.getElementById('GameModal')
+      button.style.display = 'block'
+    }
+  }, [])
 
   const getApiKey = async (client_id, client_secret) => {
     const response = await fetch(
@@ -134,7 +152,7 @@ const Headers = ({ title, categories, handleCategoriesChange, count, handleSearc
         <h2 className="h3 me-3 mb-2 mb-lg-0">
           {title} {count ? `(${count})` : ''}
         </h2>
-        <Search handleSearch={handleSearch} />
+        <Search />
       </div>
       {categories && (
         <div>
@@ -157,7 +175,7 @@ const Headers = ({ title, categories, handleCategoriesChange, count, handleSearc
           </select>
         </div>
       )}
-      <Button variant="primary" onClick={handleShow}>
+      <Button variant="primary" onClick={handleShow} id="GameModal" style={{ display: 'none' }}>
         Launch static backdrop modal
       </Button>
 
@@ -337,4 +355,4 @@ Headers.propTypes = {
   setSearch: PropTypes.any
 }
 
-export default Headers
+export default Header

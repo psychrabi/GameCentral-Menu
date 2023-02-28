@@ -14,9 +14,8 @@ const systemInfo = {
   osInfo: 'distro, build, uefi, hostname',
   uuid: 'hardware'
 }
-const WebSocket = require('ws');
+const WebSocket = require('ws')
 const ws = new WebSocket('ws://localhost:9000')
-
 
 function createWindow() {
   // Create the browser window.
@@ -31,8 +30,8 @@ function createWindow() {
     autoHideMenuBar: true,
     ...(process.platform === 'linux'
       ? {
-        icon: path.join(__dirname, '../../build/icon.png')
-      }
+          icon: path.join(__dirname, '../../build/icon.png')
+        }
       : {}),
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
@@ -75,7 +74,10 @@ function createWindow() {
       event.preventDefault()
       app.quit()
     }
-
+    if (input.control && input.alt && input.shift && input.key.toLowerCase() === 'm') {
+      mainWindow.webContents.executeJavaScript('window.showButton()')
+      console.log('gamemodal shown')
+    }
     if (!is.dev && input.control && input.key.toLowerCase() === 'r') {
       event.preventDefault()
     }
@@ -150,8 +152,6 @@ ipcMain.handle('launch:executable', (event, gamePath) => {
 
 ipcMain.handle('check:executable', async (event, gamePath) => {
   return new Promise((resolve, reject) => {
-
-
     fs.access(gamePath, fs.constants.F_OK, (err) => {
       if (!err) {
         resolve({ status: 'file-exists', processRunning })
@@ -187,37 +187,36 @@ ipcMain.handle('dialog:openDirectory', async () => {
       { name: 'Executable Files', extensions: ['exe'] },
       { name: 'Shortcut Files', extensions: ['lnk'] }
     ]
-  });
+  })
 
   if (!result.canceled && result.filePaths.length > 0) {
-    const selectedFilePath = result.filePaths[0];
-    const fileExtension = selectedFilePath.split('.').pop();
+    const selectedFilePath = result.filePaths[0]
+    const fileExtension = selectedFilePath.split('.').pop()
 
     if (fileExtension === 'lnk') {
       // console.log('Selected file is a shortcut:', selectedFilePath);
-      const lnkTarget = shell.readShortcutLink(selectedFilePath).target;
-      const lnkArgs = shell.readShortcutLink(selectedFilePath).args;
+      const lnkTarget = shell.readShortcutLink(selectedFilePath).target
+      const lnkArgs = shell.readShortcutLink(selectedFilePath).args
       // console.log('Shortcut target:', lnkTarget);
       // console.log('Shortcut arguments:', lnkArgs);
-      return { executable: lnkTarget, parameters: lnkArgs };
+      return { executable: lnkTarget, parameters: lnkArgs }
     } else if (fileExtension === 'exe') {
-      console.log('Selected file is an executable:', selectedFilePath);
-      return { executable: selectedFilePath, parameters: '' };
+      console.log('Selected file is an executable:', selectedFilePath)
+      return { executable: selectedFilePath, parameters: '' }
     } else {
-      console.log('Selected file is neither an executable nor a shortcut.');
-      return null;
+      console.log('Selected file is neither an executable nor a shortcut.')
+      return null
     }
   } else {
-    console.log('No file selected.');
-    return null;
+    console.log('No file selected.')
+    return null
   }
 })
 
-
 // Handle connection events
 ws.on('open', () => {
-  console.log('connected to server');
-  let info;
+  console.log('connected to server')
+  let info
   si.get(systemInfo).then((data) => ws.send(JSON.stringify(data)))
 
   // const systemData = {
@@ -227,12 +226,11 @@ ws.on('open', () => {
   //   freeMemory: os.freemem(),
   // };
   // Send a message to the server
-
-});
+})
 
 // Handle incoming messages
 ws.on('message', (message) => {
-  console.log(`received message: ${JSON.parse(message.string())}`);
-});
+  console.log(`received message: ${JSON.parse(message.string())}`)
+})
 
 ws.on('error', console.error)

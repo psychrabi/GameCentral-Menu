@@ -1,11 +1,20 @@
 import PropTypes from 'prop-types'
 import { Card } from 'react-bootstrap'
+import { useGamesStore } from '../stores/GamesStore'
 
-const Grid = ({ games, handleShow }) => {
+const Grid = ({ games }) => {
+  const setShow = useGamesStore((state) => state.setShow)
+  const getGame = useGamesStore((state) => state.getGame)
+
+  const handleSelect = (id) => {
+    getGame(id)
+    setShow(true)
+  }
+
   return (
     <>
       {games?.map((game) => (
-        <Card key={game.id} onClick={() => handleShow(game)} className="game shadow-sm">
+        <Card key={game.id} onClick={() => handleSelect(game.id)} className="game shadow-sm">
           <Card.Img src={game.poster} alt={game.name} style={{ objectFit: 'cover' }} />
         </Card>
       ))}

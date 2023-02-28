@@ -1,5 +1,8 @@
-const Search = (props) => {
-  const handleSearch = props.handleSearch
+import { useGamesStore } from '../stores/GamesStore'
+
+const Search = () => {
+  const filter = useGamesStore((state) => state.filter)
+  const setFilter = useGamesStore((state) => state.setFilter)
   const handleSubmit = (ev) => {
     ev.preventDefault()
   }
@@ -19,7 +22,8 @@ const Search = (props) => {
         name="search"
         id="search"
         aria-label="Search"
-        onChange={(event) => handleSearch(event.target.value)}
+        value={filter}
+        onChange={(event) => setFilter(event.target.value)}
       />
     </form>
   )

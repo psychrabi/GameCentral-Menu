@@ -39,6 +39,7 @@ function Games() {
   }
 
   useEffect(() => {
+    setLoading(true)
     ;(async function () {
       const member = JSON.parse(localStorage.getItem('member'))
       const games = await fetchData(`/clientGames/${member.center_id}`, member.token)
@@ -48,6 +49,7 @@ function Games() {
         games
       )
       setGames(games)
+      setLoading(false)
     })()
   }, [])
 

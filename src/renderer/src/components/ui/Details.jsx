@@ -4,11 +4,14 @@ import { useCallback, useEffect, useState } from 'react'
 import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
 import { useStateContext } from '../contexts/ContextProvider.jsx'
 import axiosClient from '../../lib/axios-client.js'
+import { useGamesStore } from '../stores/GamesStore.js'
 
 const Details = () => {
-  const { setShow, show, setNotifications } = useStateContext()
+  const { setNotifications } = useStateContext()
+  const show = useGamesStore((state) => state.show)
+  const game = useGamesStore((state) => state.game)
+  const setShow = useGamesStore((state) => state.setShow)
   const [running, setRunning] = useState(false)
-  const game = JSON.parse(localStorage.getItem('current-selected')) || []
 
   const handleClose = useCallback(() => {
     setShow(false)
@@ -27,24 +30,24 @@ const Details = () => {
     const favorite_games = JSON.parse(localStorage.getItem('favorite_games'))
 
     axiosClient
-      .post('/favoriteGame', payload)
+      .post('/favoriteGames', payload)
       .then((response) => {
         console.log(response.status)
         if (response.status === 204) {
-          console.log(game.name + ' : removed from favorites')
+          setNotifications(game.name + ' : removed from favorites')
           localStorage.setItem(
             'favorite_games',
             JSON.stringify(favorite_games.filter((g) => g.id !== game.id))
           )
         } else {
-          console.log(game.name + ' : added to favorites')
+          setNotifications(game.name + ' : added to favorites')
           localStorage.setItem('favorite_games', JSON.stringify([...favorite_games, game]))
         }
-
         setShow(false)
       })
       .catch((error) => {
-        console.error(error)
+        console.log(error.message)
+        setNotifications('Favorite game status couldnot be changed for ' + game.name)
       })
   }, [])
 
