@@ -1,23 +1,25 @@
 import PropTypes from 'prop-types'
 import { useCallback, useEffect, useState } from 'react'
-import Search from '../form/Search.jsx'
+import Filter from '../form/Search.jsx'
 import { GameAPI } from '../../api/GameAPI.js'
 
 import { Col, FloatingLabel, Form, Ratio, Row } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import { useStateContext } from '../contexts/ContextProvider.jsx'
-import categories from '../../data/GameTypes.json'
-import { useGamesStore } from '../stores/GamesStore.js'
+import { useDataStore } from '../stores/DataStore.js'
 
-const Header = () => {
-  const setType = useGamesStore((state) => state.setType)
+const Header = ({ categories }) => {
+  const setType = useDataStore((state) => state.setType)
+  const setFilter = useDataStore((state) => state.setFilter)
   const [title, setTitle] = useState(['All Games'])
-  const [count, setCount] = useState(0)
 
   const handleCategoriesChange = useCallback((event) => {
     let index = event.target.selectedIndex
     setTitle(event.target[index].text)
+    if (event.target.value) {
+      setFilter('')
+    }
     setType(event.target.value)
   }, [])
 
@@ -147,34 +149,11 @@ const Header = () => {
   }, [])
 
   return (
-    <div className="container-fluid d-flex flex-wrap justify-content-between border-bottom mb-2 py-2">
-      <div className={'d-flex'}>
-        <h2 className="h3 me-3 mb-2 mb-lg-0">
-          {title} {count ? `(${count})` : ''}
-        </h2>
-        <Search />
+    <div className="d-flex flex-wrap justify-content-between border-bottom mb-2 py-2">
+      <h2 className="h3 mb-2 mb-lg-0">{title}</h2>
+      <div className="d-flex">
+        <Filter categories={categories} handleCategoriesChange={handleCategoriesChange} />
       </div>
-      {categories && (
-        <div>
-          <label htmlFor="categories" className="visually-hidden">
-            Category
-          </label>
-          <select
-            id="categories"
-            className="form-select"
-            style={{ width: '12rem' }}
-            defaultValue=""
-            onChange={handleCategoriesChange}
-          >
-            <option value="">All </option>
-            {sortedCategories.map(({ category, description, id }) => (
-              <option value={category} key={id}>
-                {description}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
       <Button variant="primary" onClick={handleShow} id="GameModal" style={{ display: 'none' }}>
         Launch static backdrop modal
       </Button>
@@ -348,11 +327,7 @@ const Header = () => {
 }
 
 Headers.propTypes = {
-  title: PropTypes.any.isRequired,
-  categories: PropTypes.array,
-  count: PropTypes.any,
-  handleCategoriesChange: PropTypes.func,
-  setSearch: PropTypes.any
+  categories: PropTypes.array
 }
 
 export default Header

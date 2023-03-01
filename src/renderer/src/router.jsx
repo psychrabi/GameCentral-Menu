@@ -3,11 +3,11 @@ import { lazy } from 'react'
 
 // Client side components
 
-const Login = lazy(() => import('./views/Auth/Login'))
+const NewLogin = lazy(() => import('./views/Auth/NewLogin'))
 const MemberLayout = lazy(() => import('./components/MemberLayout'))
 const ProfileLayout = lazy(() => import('./components/ProfileLayout'))
 const Home = lazy(() => import('./views/Home/Home'))
-const Games = lazy(() => import('./views/Games/Games'))
+const GamesList = lazy(() => import('./views/Games/GamesList'))
 const Applications = lazy(() => import('./views/Applications/Applications'))
 const Shop = lazy(() => import('./views/Shop/Shop'))
 const Profile = lazy(() => import('./views/Profile/Profile'))
@@ -26,7 +26,7 @@ const router = createHashRouter([
       },
       {
         path: '/games',
-        element: <Games />
+        element: <GamesList />
       },
       {
         path: '/applications',
@@ -64,11 +64,11 @@ const router = createHashRouter([
   {
     exact: true,
     path: '/',
-    element: <Login />,
+    element: <NewLogin />,
     children: [
       {
         path: '/login',
-        element: <Login />
+        element: <NewLogin />
       }
     ]
     // errorElement: <NotFound />

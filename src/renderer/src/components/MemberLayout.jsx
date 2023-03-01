@@ -1,60 +1,41 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Navigate, NavLink, Outlet } from 'react-router-dom'
-import axiosClient from '../lib/axios-client'
-import { removeFromLocalStorage } from '../utils/removeFromLocalStorage.js'
 import { useStateContext } from './contexts/ContextProvider'
 import Notifications from './Notifications'
+import { useAuthStore } from './stores/AuthStore'
+import { useDataStore } from './stores/DataStore'
 import Details from './ui/Details'
 import { Loading } from './ui/Loading'
 import Navigation from './ui/Navigation'
 
 export default function MemberLayout() {
-  const { token, notifications, setToken, show, setNotifications } = useStateContext()
+  const token = useAuthStore((state) => state.token)
+  const member = useAuthStore((state) => state.member)
+  const logout = useAuthStore((state) => state.logout)
+  const sessionType = useAuthStore((state) => state.sessionType)
+  const loading = useAuthStore((state) => state.loading)
+  const start_time = useAuthStore((state) => state.start_time)
+  const show = useDataStore((state) => state.show)
+  const error = useDataStore((state) => state.error)
+  const { notifications, setNotifications } = useStateContext()
+  const COST_PER_HOUR = 60
 
+  const sessionDuration = useMemo(
+    () =>
+      (((member?.balance + member?.bonus_balance) / COST_PER_HOUR) * (60 * 60) * 1000).toFixed(0),
+    []
+  )
   if (!token) {
     return <Navigate to="/login" />
   }
-  const [loading, setLoading] = useState(false)
 
   const [durationString, setDurationString] = useState('')
 
   const [cost, setCost] = useState(0)
 
-  const [member, setMember] = useState(JSON.parse(localStorage.getItem('member')))
+  // const [session, setSetSession] = useState(JSON.parse(localStorage.getItem('session')))
 
-  const [session, setSetSession] = useState(JSON.parse(localStorage.getItem('session')))
-  const sessionType = useMemo(() => localStorage.getItem('sessionType'), [])
-
-  const COST_PER_HOUR = 60
-
-  const [startTime, setStartTime] = useState(parseInt(localStorage.getItem('start_time')))
-
-  const startTimeString = useMemo(
-    () => new Date(parseInt(localStorage.getItem('start_time'))).toLocaleTimeString(),
-    [startTime]
-  )
-
-  const onLogout = useCallback(() => {
-    setLoading(true)
-    const endTime = Date.now()
-    const usage_details = {
-      session_cost: calculateCost((endTime - startTime) / 1000),
-      total_time: Math.floor(calculateDurationInSeconds()),
-      sessionType: sessionType,
-      session_id: session.id
-    }
-    axiosClient.post('/members/logout', usage_details).then(() => {
-      setMember([])
-      setToken(null)
-      removeFromLocalStorage('member')
-      removeFromLocalStorage('session')
-      removeFromLocalStorage('sessionType')
-      removeFromLocalStorage('start_time')
-      setNotifications('You have been successfully logged out.')
-      return <Navigate to="/login" />
-    })
-    // console.log(JSON.parse(localStorage.getItem("data")));
-  }, [])
+  const startTimeString = new Date(parseInt(start_time)).toLocaleTimeString()
 
   function secondsToHms(d) {
     // Set the duration state to the number of hours, minutes, and seconds
@@ -68,26 +49,32 @@ export default function MemberLayout() {
   }
 
   useEffect(() => {
-    startTime ?? setStartTime(parseInt(localStorage.getItem('start_time')))
+    localStorage.setItem('ACCESS_TOKEN', token)
     setDurationString('00:00:00')
     setCost('0.00')
-    setSetSession(JSON.parse(localStorage.getItem('session')))
 
-    // const sessionDuration = (
-    //   ((member.balance + member.bonus_balance) / COST_PER_HOUR) *
-    //   (60 * 60)
-    // ).toFixed(0)
-    // console.log(sessionDuration)
+    const durationInSeconds = calculateDurationInSeconds()
+
+    const cost = calculateCost(durationInSeconds)
+    setCost(cost)
+
+    console.log(sessionDuration)
+
     const intervalId = setInterval(() => {
       // Calculate the duration of the session in seconds
       const durationInSeconds = calculateDurationInSeconds()
       const string = secondsToHms(durationInSeconds.toFixed(0))
       setDurationString(string)
+    }, 1000)
+
+    const intervalId2 = setInterval(() => {
+      const durationInSeconds = calculateDurationInSeconds()
+
       const cost = calculateCost(durationInSeconds)
       setCost(cost)
-    }, 15000)
-    const intervalId2 = setInterval(() => {
-      console.log('session duration ended')
+    }, 5000)
+
+    const intervalId3 = setInterval(() => {
       if (cost > member.balance + member.bonus_balance) {
         setNotifications(
           'Your session cost is higher than balance. Difference will be added to credit'
@@ -97,18 +84,21 @@ export default function MemberLayout() {
         setNotifications(
           'Your credit is more than 30. You will be logged out shortly and will not be able to login before clearing your credit.'
         )
-        onLogout()
+        logout()
       }
+      console.log('session duration ended')
     }, 60000)
+
     // Clear the interval when the component unmounts
     return () => {
       clearInterval(intervalId)
       clearInterval(intervalId2)
+      clearInterval(intervalId3)
     }
   }, [])
 
   const calculateDurationInSeconds = () => {
-    return (Date.now() - startTime) / 1000
+    return (Date.now() - start_time) / 1000
   }
 
   const calculateCost = (durationInSeconds) => {
@@ -116,9 +106,15 @@ export default function MemberLayout() {
     return (durationInHours * COST_PER_HOUR).toFixed(2)
   }
 
+  if (loading) {
+    return <Loading />
+  }
+  if (error) {
+    return <p>Cannot read data : {error}</p>
+  }
+
   return (
     <>
-      {loading && <Loading />}
       <header className="draggable">
         <div className="px-3 py-2 text-bg-dark">
           <div className="container-fluid px-0">
@@ -184,7 +180,7 @@ export default function MemberLayout() {
                     <hr className="dropdown-divider" />
                   </li>
                   <li>
-                    <span className="dropdown-item" onClick={() => onLogout()}>
+                    <span className="dropdown-item" onClick={() => logout(COST_PER_HOUR)}>
                       Sign out
                     </span>
                   </li>

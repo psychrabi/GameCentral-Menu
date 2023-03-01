@@ -4,7 +4,7 @@ export default function useFilter(list, categories, column) {
   const [search, setSearch] = useState('')
   const [type, setType] = useState('')
 
-  const filteredList = list.filter((item) => {
+  const filteredList = list?.filter((item) => {
     // filter based on search search
     if (search.trim() && !item.name.toLowerCase().includes(search.toLowerCase())) {
       return false

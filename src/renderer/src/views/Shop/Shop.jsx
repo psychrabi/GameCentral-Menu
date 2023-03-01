@@ -1,67 +1,23 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-// import products from "../../../data/Products.json";
-import { useStateContext } from '../../components/contexts/ContextProvider'
+import { useCallback, useEffect, useState } from 'react'
+import { useAuthStore } from '../../components/stores/AuthStore'
+import { useDataStore } from '../../components/stores/DataStore'
 import Header from '../../components/ui/Header'
 import categories from '../../data/ProductTypes.json'
-import axiosClient from '../../lib/axios-client'
 import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage'
-import { saveToLocalStorage } from '../../utils/saveToLocalStorage'
-import { sortByName } from '../../utils/sortByName'
 import Cart from './Cart'
 import Products from './Products'
-import { addDataIntoCache } from '../../utils/addDataIntoCache'
-import useFilter from '../../utils/useFilter'
 
 export default function Shop() {
-  const [loading, setLoading] = useState(false)
-
-  // Store the filtered list of products in a separate variable
-  const [productsList, setProductsList] = useState(
-    sortByName(JSON.parse(localStorage.getItem('products')))
-  )
-  const { setSearch, setType, filteredList } = useFilter(productsList, categories, 'product_type')
-
   const [paymentMode, setPaymentMode] = useState('balance')
 
-  // Use useState to store the current app, the list of apps, and the show state
+  const getProducts = useDataStore((state) => state.fetchProducts)
+  const productsList = useDataStore((state) => state.products)
 
-  // Use useState to store the product type and the title
-  const [title, setHeader] = useState(['All Products'])
-
-  // Use useState to store the app count
-  const count = useMemo(() => filteredList.length, [filteredList])
-
-  const handleCategoriesChange = useCallback((event) => {
-    setType(event.target.value)
-    let index = event.target.selectedIndex
-    setHeader(event.target[index].text)
-  }, [])
+  const filter = useDataStore((state) => state.filter)
+  const member = useAuthStore((state) => state.member)
 
   useEffect(() => {
-    const member = JSON.parse(localStorage.getItem('member'))
-    if (!localStorage.getItem('products')) {
-      setLoading(true)
-      try {
-        axiosClient.defaults.headers.common['Authorization'] = 'Bearer ' + member.token
-        axiosClient.get(`/clientProducts/${member.center_id}`).then(({ data }) => {
-          addDataIntoCache(
-            'products',
-            `http://gamecentralmenu.test/api/clientProducts/${member.center_id}`,
-            data
-          )
-
-          setProductsList(data)
-          if (localStorage.getItem('products') == null) {
-            localStorage.setItem('products', JSON.stringify(data))
-          }
-          setCount(data.length)
-        })
-      } catch (error) {
-        console.log(error)
-      } finally {
-        setLoading(false)
-      }
-    }
+    getProducts(member)
   }, [])
 
   const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cartItems')) ?? [])
@@ -135,39 +91,36 @@ export default function Shop() {
     removeFromLocalStorage('cart')
   }, [cartItems])
 
-  const handleSearch = (search) => {
-    setType('')
-    setSearch(search)
-  }
-
   useEffect(() => {
     localStorage.setItem('cartItems', JSON.stringify(cartItems))
   }, [cartItems])
 
   return (
-    <div className="d-flex">
-      <div className={cartItems.length > 0 ? 'w-75 pe-3' : 'w-100'}>
-        <Header
-          title={title}
-          categories={categories}
-          handleCategoriesChange={handleCategoriesChange}
-          count={count}
-          handleSearch={handleSearch}
-        />
-        <Products products={filteredList} onAdd={onAdd} />
+    <>
+      <div className="d-flex">
+        <div className={cartItems.length > 0 ? 'w-75 pe-3' : 'w-100'}>
+          <Header categories={categories} />
+
+          <Products
+            products={productsList?.filter((product) =>
+              product.name.toLowerCase().includes(filter.toLowerCase())
+            )}
+            onAdd={onAdd}
+          />
+        </div>
+        {cartItems.length > 0 ? (
+          <Cart
+            cartItems={cartItems}
+            onAdd={onAdd}
+            onRemove={onRemove}
+            onClear={onClear}
+            handleSubmitOrder={handleSubmitOrder}
+            handlePaymentModeChange={handlePaymentModeChange}
+          />
+        ) : (
+          ''
+        )}
       </div>
-      {cartItems.length > 0 ? (
-        <Cart
-          cartItems={cartItems}
-          onAdd={onAdd}
-          onRemove={onRemove}
-          onClear={onClear}
-          handleSubmitOrder={handleSubmitOrder}
-          handlePaymentModeChange={handlePaymentModeChange}
-        />
-      ) : (
-        ''
-      )}
-    </div>
+    </>
   )
 }

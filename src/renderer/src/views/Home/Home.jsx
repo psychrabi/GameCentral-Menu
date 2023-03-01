@@ -1,56 +1,31 @@
-import { useCallback, useMemo } from 'react'
+import { useEffect } from 'react'
 import Header from '../../components/ui/Header'
 import Grid from '../../components/ui/Grid'
 import categories from '../../data/GameTypes.json'
-import { useStateContext } from '../../components/contexts/ContextProvider'
-import { Loading } from '../../components/ui/Loading'
-import useFavoriteGames from '../../utils/useFavoriteGames'
-import useFilter from '../../utils/useFilter'
+import { useDataStore } from '../../components/stores/DataStore'
+import { useAuthStore } from '../../components/stores/AuthStore'
 
 const Home = () => {
-  //TODO: Get Games from remote server instead of json
-  const { setShow } = useStateContext()
-  // const [loading, setLoading] = useState(false)
-  const { favoriteGames, isLoading } = useFavoriteGames()
+  const getFavoriteGames = useDataStore((state) => state.fetchFavoriteGames)
+  const gamesList = useDataStore((state) => state.favoriteGames)
 
-  const { setSearch, setType, filteredList } = useFilter(favoriteGames, categories, 'game_type')
+  const filter = useDataStore((state) => state.filter)
+  const member = useAuthStore((state) => state.member)
 
-  // Use useState to store the game count
-  const count = useMemo(() => filteredList?.length, [filteredList])
-
-  const handleSearch = (search) => {
-    setType('')
-    setSearch(search)
-  }
-
-  const handleCategoriesChange = (event) => {
-    setType(event.target.value)
-  }
-
-  const handleShow = useCallback((g) => {
-    // console.log(g)
-    localStorage.setItem('current-selected', JSON.stringify(g))
-    setShow(true)
+  useEffect(() => {
+    getFavoriteGames(member)
   }, [])
 
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <>
-          <Header
-            title={'Favourites'}
-            categories={categories}
-            handleCategoriesChange={handleCategoriesChange}
-            count={count}
-            handleSearch={handleSearch}
-          />
-          <div className="games" id="favorite-games-container">
-            <Grid handleShow={handleShow} games={filteredList} />
-          </div>
-        </>
-      )}
+      <Header categories={categories} />
+      <div className="games" id="favorite-games-container">
+        <Grid
+          games={gamesList?.filter((game) =>
+            game.name.toLowerCase().includes(filter.toLowerCase())
+          )}
+        />
+      </div>
     </>
   )
 }

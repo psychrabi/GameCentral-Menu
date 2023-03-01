@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
+import { useAuthStore } from '../components/stores/AuthStore'
 import axiosClient from '../lib/axios-client'
 import { addDataIntoCache } from './addDataIntoCache'
 
 const useFavoriteGames = () => {
   const [favoriteGames, setFavoriteGames] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const member = JSON.parse(localStorage.getItem('member'))
+  const member = useAuthStore((state) => state.member)
   // Function to add our give data into cache
 
   useEffect(() => {

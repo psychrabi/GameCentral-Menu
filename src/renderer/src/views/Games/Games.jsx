@@ -8,6 +8,7 @@ import { saveToLocalStorage } from '../../utils/saveToLocalStorage'
 import { fetchData } from '../../utils/sortByName'
 import useFilter from '../../utils/useFilter'
 import { addDataIntoCache } from '../../utils/addDataIntoCache'
+import { useAuthStore } from '../../components/stores/AuthStore'
 function Games() {
   //TODO: Get Games from remote server instead of json
   const { setShow } = useStateContext()
@@ -21,6 +22,7 @@ function Games() {
   // Use useState to store the game type and the title
   // const [type, setType] = useState('')
   const [title, setTitle] = useState(['All Games'])
+  const member = useAuthStore((state) => state.member)
 
   // Use useState to store the games count
 
@@ -41,7 +43,6 @@ function Games() {
   useEffect(() => {
     setLoading(true)
     ;(async function () {
-      const member = JSON.parse(localStorage.getItem('member'))
       const games = await fetchData(`/clientGames/${member.center_id}`, member.token)
       addDataIntoCache(
         'games',

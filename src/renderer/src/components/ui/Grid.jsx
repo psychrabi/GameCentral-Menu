@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
 import { Card } from 'react-bootstrap'
-import { useGamesStore } from '../stores/GamesStore'
+import { useDataStore } from '../stores/DataStore'
 
 const Grid = ({ games }) => {
-  const setShow = useGamesStore((state) => state.setShow)
-  const getGame = useGamesStore((state) => state.getGame)
+  const setShow = useDataStore((state) => state.setShow)
+  const getGame = useDataStore((state) => state.getGame)
 
   const handleSelect = (id) => {
     getGame(id)

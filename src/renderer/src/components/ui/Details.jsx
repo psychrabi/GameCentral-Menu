@@ -4,21 +4,22 @@ import { useCallback, useEffect, useState } from 'react'
 import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
 import { useStateContext } from '../contexts/ContextProvider.jsx'
 import axiosClient from '../../lib/axios-client.js'
-import { useGamesStore } from '../stores/GamesStore.js'
+import { useDataStore } from '../stores/DataStore.js'
+import { useAuthStore } from '../stores/AuthStore.js'
 
 const Details = () => {
   const { setNotifications } = useStateContext()
-  const show = useGamesStore((state) => state.show)
-  const game = useGamesStore((state) => state.game)
-  const setShow = useGamesStore((state) => state.setShow)
+  const show = useDataStore((state) => state.show)
+  const game = useDataStore((state) => state.game)
+  const setShow = useDataStore((state) => state.setShow)
   const [running, setRunning] = useState(false)
+  const member = useAuthStore((state) => state.member)
 
   const handleClose = useCallback(() => {
     setShow(false)
   }, [])
 
   const handleFavoriteClick = useCallback((game_id) => {
-    const member = JSON.parse(localStorage.getItem('member'))
     const payload = {
       center_id: member.center_id,
       member_id: member.id,
@@ -30,7 +31,7 @@ const Details = () => {
     const favorite_games = JSON.parse(localStorage.getItem('favorite_games'))
 
     axiosClient
-      .post('/favoriteGames', payload)
+      .post('/favoriteGame', payload)
       .then((response) => {
         console.log(response.status)
         if (response.status === 204) {
@@ -75,7 +76,7 @@ const Details = () => {
         onExited={() => removeFromLocalStorage('current-selected')}
       >
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>{game.name}</Offcanvas.Title>
+          <Offcanvas.Title>{game?.name}</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body className="no-scrollbar">
           <div className="top">
@@ -126,7 +127,7 @@ const Details = () => {
                   </button> */}
                   <button className="btn btn-outline-danger">
                     <i
-                      className={game.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'}
+                      className={game?.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'}
                       onClick={() => handleFavoriteClick(game.id)}
                     ></i>
                   </button>
@@ -136,13 +137,13 @@ const Details = () => {
           </div>
           <div className="item bg-gray-600 pt-2 mb-0">
             <h4 className="h4">Summary</h4>
-            <p>{game.summary}</p>
+            <p>{game?.summary}</p>
           </div>
           <div className="item bg-gray-600 p-2 mb-3">
             <h4 className="h4">Screenshots</h4>
             <div className="screenshots">
               <Carousel indicators={false}>
-                {game.screenshots.map((screenshot, i) => (
+                {game?.screenshots?.map((screenshot, i) => (
                   <Carousel.Item key={i}>
                     <img className="d-block w-100" src={screenshot} alt={game.name} />
                   </Carousel.Item>
