@@ -4,7 +4,7 @@ import { formatCurrency } from '../../utils/formatCurrency'
 const Product = ({ product, onAdd }) => {
   return (
     <div className="product card" key={product.id}>
-      <img src={product.product_image} alt={product.name} className="card-img-top" />
+      <img src={product.product_image} alt={product.name} className="card-img-top" loading="lazy" />
       <div className="card-body">
         <h5 className="card-title">{product.name}</h5>
         <p className="card-text price">{formatCurrency(product.sales_price)}</p>

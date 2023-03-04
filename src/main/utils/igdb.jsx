@@ -17,7 +17,7 @@ class IGDB {
   async getGameInfo(game) {
     if (game === undefined) throw new Error('No game specified')
     if (this.client_id === undefined) throw new Error('No client ID registered')
-    if (this.access_token === undefined) throw new Error('No access token registered')
+    if (this.token === undefined) throw new Error('No access token registered')
 
     const gameDetails = await this.fetchFromIGDB(
       `fields * search '${game}' where version_parent = null`
@@ -63,7 +63,7 @@ class IGDB {
   async getGameCovers(game) {
     if (game === undefined) throw new Error('No game specified')
     if (this.client_id === undefined) throw new Error('No client ID registered')
-    if (this.access_token === undefined) throw new Error('No access token registered')
+    if (this.token === undefined) throw new Error('No access token registered')
 
     const gameDetails = await this.fetchFromIGDB(
       `fields * search '${game}' where version_parent = null`
@@ -115,7 +115,7 @@ class IGDB {
     )
     const res = await response.json()
     if (res.status === 400) throw new Error(`Error while fetching IGDB API token: ${res.message}`)
-    this.access_token = res.access_token
+    this.token = res.token
 
     // Refresh token upon expiring
     setTimeout(() => {
@@ -133,7 +133,7 @@ class IGDB {
       method: 'POST',
       headers: {
         'Client-ID': this.client_id,
-        Authorization: `Bearer ${this.access_token}`
+        Authorization: `Bearer ${this.token}`
       },
       body: query
     })

@@ -6,14 +6,12 @@ import Header from '../../components/ui/Header'
 import categories from '../../data/AppTypes.json'
 
 function Applications() {
-  const getApplications = useDataStore((state) => state.fetchApplications)
-  const gamesList = useDataStore((state) => state.applications)
-
-  const filter = useDataStore((state) => state.filter)
-  const member = useAuthStore((state) => state.member)
+  const { token, member } = useAuthStore()
+  const { fetchApplications, applications, filter, type, getApplication } = useDataStore()
 
   useEffect(() => {
-    getApplications(member)
+    fetchApplications(member.center_id, token)
+    // console.log(applications)
   }, [])
 
   return (
@@ -21,9 +19,16 @@ function Applications() {
       <Header categories={categories} />
       <div className="games" id="favorite-games-container">
         <Grid
-          games={gamesList?.filter((game) =>
-            game.name.toLowerCase().includes(filter.toLowerCase())
-          )}
+          games={applications?.filter((apps) => {
+            if (filter) {
+              return apps.name.toLowerCase().includes(filter.toLowerCase())
+            } else if (type) {
+              return apps.product_type === type
+            } else {
+              return true
+            }
+          })}
+          getData={getApplication}
         />
       </div>
     </>

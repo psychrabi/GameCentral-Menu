@@ -130,6 +130,7 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
+//Getting client system info
 ipcMain.handle('request-system-info', async () => {
   const info = await si.get(systemInfo)
   return info
@@ -161,24 +162,6 @@ ipcMain.handle('check:executable', async (event, gamePath) => {
     })
   })
 })
-
-// ipcMain.handle('launch:game', async (event, gamePath) => {
-//   return new Promise((resolve, reject) => {
-//     fs.access(gamePath, fs.constants.F_OK, (err) => {
-//       if (err) {
-//         resolve('file-does-not-exist')
-//       } else {
-//         // Run the file here
-//         const gameLaunch = spawn(gamePath)
-//         if (gameLaunch) {
-//           resolve({ status: 'file-exists', processRunning });
-//         } else {
-//           resolve('file-exists', false)
-//         }
-//       }
-//     })
-//   })
-// })
 
 ipcMain.handle('dialog:openDirectory', async () => {
   const result = await dialog.showOpenDialog({
@@ -216,16 +199,7 @@ ipcMain.handle('dialog:openDirectory', async () => {
 // Handle connection events
 ws.on('open', () => {
   console.log('connected to server')
-  let info
   si.get(systemInfo).then((data) => ws.send(JSON.stringify(data)))
-
-  // const systemData = {
-  //   platform: os.platform(),
-  //   hostname: os.hostname(),
-  //   totalMemory: os.totalmem(),
-  //   freeMemory: os.freemem(),
-  // };
-  // Send a message to the server
 })
 
 // Handle incoming messages

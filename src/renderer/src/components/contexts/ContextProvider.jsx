@@ -25,7 +25,7 @@ export const ContextProvider = ({ children }) => {
   const [member, setMember] = useState('')
 
   const [notifications, _setNotifications] = useState('')
-  const [token, _setToken] = useState(localStorage.getItem('ACCESS_TOKEN'))
+  const [token, _setToken] = useState(localStorage.getItem('token'))
 
   const setNotifications = (message) => {
     _setNotifications(message)
@@ -37,9 +37,9 @@ export const ContextProvider = ({ children }) => {
   const setToken = (token) => {
     _setToken(token)
     if (token) {
-      localStorage.setItem('ACCESS_TOKEN', token)
+      localStorage.setItem('token', token)
     } else {
-      localStorage.removeItem('ACCESS_TOKEN')
+      localStorage.removeItem('token')
     }
   }
   return (

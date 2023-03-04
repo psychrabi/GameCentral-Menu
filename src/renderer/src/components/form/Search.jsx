@@ -11,7 +11,7 @@ const Filter = ({ categories, handleCategoriesChange }) => {
 
   const handleFilterUpdate = (value) => {
     if (value) {
-      setType(null)
+      setType('')
     }
     setFilter(value)
   }

@@ -9,7 +9,7 @@ const getApiKey = async (clientId, clientSecret) => {
     body: `client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`
   })
   const data = await response.json()
-  return data.access_token
+  return data.token
 }
 
 const GameDetail = (props) => {

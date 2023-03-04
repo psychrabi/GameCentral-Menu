@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { fetchData } from '../../utils/sortByName'
+import { fetchData } from '../../utils/fetchData'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
 export const useDataStore = create(
@@ -15,38 +15,37 @@ export const useDataStore = create(
       show: false,
       loading: false,
       error: '',
-      fetchGames: async (member) => {
+      fetchGames: async (center_id, token) => {
         set({ loading: true })
         try {
-          const data = await fetchData(`/clientGames/${member.center_id}`, member.token)
+          const data = await fetchData(`/clientGames/${center_id}`, token)
           set({ error: null, games: data, loading: false })
         } catch (err) {
           set({ error: err.message, loading: false })
         }
       },
-      fetchFavoriteGames: async (member) => {
+      fetchFavoriteGames: async (id, token) => {
         set({ loading: true })
         try {
-          const data = await fetchData(`/favoriteGames/${member.id}`, member.token)
+          const data = await fetchData(`/favoriteGames/${id}`, token)
           set({ error: null, favoriteGames: data, loading: false })
-          console.log(data)
         } catch (err) {
           set({ error: err.message, loading: false })
         }
       },
-      fetchApplications: async (member) => {
+      fetchApplications: async (center_id, token) => {
         set({ loading: true })
         try {
-          const data = await fetchData(`/clientApps/${member.center_id}`, member.token)
+          const data = await fetchData(`/clientApps/${center_id}`, token)
           set({ error: null, applications: data, loading: false })
         } catch (err) {
           set({ error: err.message, loading: false })
         }
       },
-      fetchProducts: async (member) => {
+      fetchProducts: async (center_id, token) => {
         set({ loading: true })
         try {
-          const data = await fetchData(`/clientProducts/${member.center_id}`, member.token)
+          const data = await fetchData(`/clientProducts/${center_id}`, token)
           set({ error: null, products: data, loading: false })
         } catch (err) {
           set({ error: err.message, loading: false })
@@ -56,7 +55,25 @@ export const useDataStore = create(
         set({ loading: true })
         try {
           const data = await get().games.filter((game) => game.id === id)
-          set({ error: '', loading: false, game: data[0] })
+          set({ error: null, loading: false, game: data[0] })
+        } catch (err) {
+          set({ error: err.message, loading: false })
+        }
+      },
+      getFavoriteGame: async (id) => {
+        set({ loading: true })
+        try {
+          const data = await get().favoriteGames.filter((game) => game.id === id)
+          set({ error: null, loading: false, game: data[0] })
+        } catch (err) {
+          set({ error: err.message, loading: false })
+        }
+      },
+      getApplication: async (id) => {
+        set({ loading: true })
+        try {
+          const data = await get().applications.filter((app) => app.id === id)
+          set({ error: null, loading: false, game: data[0] })
         } catch (err) {
           set({ error: err.message, loading: false })
         }

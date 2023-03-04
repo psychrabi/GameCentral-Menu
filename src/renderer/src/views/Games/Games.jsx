@@ -1,83 +1,35 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useStateContext } from '../../components/contexts/ContextProvider'
+import { useEffect } from 'react'
+import { useAuthStore } from '../../components/stores/AuthStore'
+import { useDataStore } from '../../components/stores/DataStore'
 import Grid from '../../components/ui/Grid'
 import Header from '../../components/ui/Header'
-import { Loading } from '../../components/ui/Loading'
-import categories from '../../data/GameTypes.json'
-import { saveToLocalStorage } from '../../utils/saveToLocalStorage'
-import { fetchData } from '../../utils/sortByName'
-import useFilter from '../../utils/useFilter'
-import { addDataIntoCache } from '../../utils/addDataIntoCache'
-import { useAuthStore } from '../../components/stores/AuthStore'
+import categories from '../../data/AppTypes.json'
+
 function Games() {
-  //TODO: Get Games from remote server instead of json
-  const { setShow } = useStateContext()
-  const [loading, setLoading] = useState(false)
-  const [games, setGames] = useState(JSON.parse(localStorage.getItem('data')) ?? [])
-
-  const { setSearch, setType, filteredList } = useFilter(games, categories, 'game_type')
-
-  // Use useState to store the current game, the list of games, and the show state
-
-  // Use useState to store the game type and the title
-  // const [type, setType] = useState('')
-  const [title, setTitle] = useState(['All Games'])
-  const member = useAuthStore((state) => state.member)
-
-  // Use useState to store the games count
-
-  const count = useMemo(() => filteredList.length, [filteredList])
-
-  const handleCategoriesChange = (event) => {
-    setSearch('')
-    let index = event.target.selectedIndex
-    setTitle(event.target[index].text)
-    setType(event.target.value)
-  }
-
-  const handleSearch = (search) => {
-    setType('')
-    setSearch(search)
-  }
-
+  const { token, member } = useAuthStore()
+  const { fetchGames, games, filter, type, getGame } = useDataStore()
   useEffect(() => {
-    setLoading(true)
-    ;(async function () {
-      const games = await fetchData(`/clientGames/${member.center_id}`, member.token)
-      addDataIntoCache(
-        'games',
-        `http://gamecentralmenu.test/api/clientGames/${member.center_id}`,
-        games
-      )
-      setGames(games)
-      setLoading(false)
-    })()
-  }, [])
-
-  // Use the useCallback hook to handleShow and handleClose functions
-  const handleShow = useCallback((g) => {
-    saveToLocalStorage('current-selected', g)
-    setShow(true)
+    fetchGames(member.center_id, token)
+    // console.log(games)
   }, [])
 
   return (
     <>
-      {loading ? (
-        <Loading />
-      ) : (
-        <>
-          <Header
-            title={title}
-            categories={categories}
-            handleCategoriesChange={handleCategoriesChange}
-            count={count}
-            handleSearch={handleSearch}
-          />
-          <div className="games" id="favorite-games-container">
-            <Grid handleShow={handleShow} games={filteredList} />
-          </div>
-        </>
-      )}
+      <Header categories={categories} />
+      <div className="games" id="favorite-games-container">
+        <Grid
+          games={games?.filter((apps) => {
+            if (filter) {
+              return apps.name.toLowerCase().includes(filter.toLowerCase())
+            } else if (type) {
+              return apps.product_type === type
+            } else {
+              return true
+            }
+          })}
+          getData={getGame}
+        />
+      </div>
     </>
   )
 }

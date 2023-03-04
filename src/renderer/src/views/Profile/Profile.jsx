@@ -1,35 +1,29 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useStateContext } from '../../components/contexts/ContextProvider'
-import axiosClient from '../../lib/axios-client'
+import { useAuthStore } from '../../components/stores/AuthStore'
+import { Loading } from '../../components/ui/Loading'
 
 export default function Profile() {
-  const { setNotifications, setTitle, member, setMember } = useStateContext()
+  const { member, error, loading, updateMember, token } = useAuthStore()
+  const { setTitle } = useStateContext()
+  const [updatedMember, setUpdatedMember] = useState(member)
 
   useEffect(() => {
     setTitle('Profile - Update Profile')
-    axiosClient
-      .get('/member')
-      .then(({ data }) => {
-        setMember(data)
-      })
-      .catch((errors) => {
-        console.log(errors)
-      })
-  }, [])
+    console.log(updatedMember)
+  }, [updatedMember])
 
   function onSubmit(ev) {
     ev.preventDefault()
-    axiosClient
-      .put(`/members/${member.id}`, member)
-      .then(() => {
-        setNotifications('Your profile was updated successfully.')
-      })
-      .catch((err) => {
-        const response = err.response
-        if (response && response.status === 422) {
-          setNotifications(response.data.errors)
-        }
-      })
+    updateMember(member.id, token, updatedMember)
+  }
+
+  if (loading) {
+    return <Loading />
+  }
+
+  if (error) {
+    console.log(error)
   }
 
   return (
@@ -64,9 +58,8 @@ export default function Profile() {
                   id="inputUsername"
                   type="text"
                   placeholder="Enter your username"
-                  value={member?.username}
-                  onChange={(ev) => setMember({ ...member, username: ev.target.value })}
-                  disabled
+                  value={updatedMember.username}
+                  readOnly
                 />
               </div>
               <div className="row gx-3 mb-3">
@@ -79,8 +72,10 @@ export default function Profile() {
                     id="inputFirstName"
                     type="text"
                     placeholder="Enter your first name"
-                    value={member?.first_name}
-                    onChange={(ev) => setMember({ ...member, first_name: ev.target.value })}
+                    value={updatedMember?.first_name}
+                    onChange={(ev) =>
+                      setUpdatedMember({ ...updatedMember, first_name: ev.target.value })
+                    }
                   />
                 </div>
                 <div className="col-md-6">
@@ -92,8 +87,10 @@ export default function Profile() {
                     id="inputLastName"
                     type="text"
                     placeholder="Enter your last name"
-                    value={member?.last_name}
-                    onChange={(ev) => setMember({ ...member, last_name: ev.target.value })}
+                    value={updatedMember?.last_name}
+                    onChange={(ev) =>
+                      setUpdatedMember({ ...updatedMember, last_name: ev.target.value })
+                    }
                   />
                 </div>
               </div>
@@ -107,8 +104,8 @@ export default function Profile() {
                   id="inputEmailAddress"
                   type="email"
                   placeholder="Enter your email address"
-                  value={member?.email}
-                  onChange={(ev) => setMember({ ...member, email: ev.target.value })}
+                  value={updatedMember?.email}
+                  onChange={(ev) => setUpdatedMember({ ...updatedMember, email: ev.target.value })}
                 />
               </div>
               <div className="row gx-3 mb-3">
@@ -121,8 +118,10 @@ export default function Profile() {
                     id="inputPhone"
                     type="tel"
                     placeholder="Enter your phone number"
-                    value={member?.phone ?? ''}
-                    onChange={(ev) => setMember({ ...member, phone: ev.target.value })}
+                    value={updatedMember?.phone}
+                    onChange={(ev) =>
+                      setUpdatedMember({ ...updatedMember, phone: ev.target.value })
+                    }
                   />
                 </div>
                 <div className="col-md-6">
@@ -135,8 +134,10 @@ export default function Profile() {
                     type="date"
                     name="birthday"
                     placeholder="Enter your birthday"
-                    value={member?.birthday ?? "1990-11-11"}
-                    onChange={(ev) => setMember({ ...member, birthday: ev.target.value })}
+                    value={updatedMember.birthday}
+                    onChange={(ev) =>
+                      setUpdatedMember({ ...updatedMember, birthday: ev.target.value })
+                    }
                   />
                 </div>
               </div>

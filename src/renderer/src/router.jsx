@@ -7,7 +7,7 @@ const NewLogin = lazy(() => import('./views/Auth/NewLogin'))
 const MemberLayout = lazy(() => import('./components/MemberLayout'))
 const ProfileLayout = lazy(() => import('./components/ProfileLayout'))
 const Home = lazy(() => import('./views/Home/Home'))
-const GamesList = lazy(() => import('./views/Games/GamesList'))
+const Games = lazy(() => import('./views/Games/Games'))
 const Applications = lazy(() => import('./views/Applications/Applications'))
 const Shop = lazy(() => import('./views/Shop/Shop'))
 const Profile = lazy(() => import('./views/Profile/Profile'))
@@ -26,7 +26,7 @@ const router = createHashRouter([
       },
       {
         path: '/games',
-        element: <GamesList />
+        element: <Games />
       },
       {
         path: '/applications',

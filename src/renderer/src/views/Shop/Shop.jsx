@@ -10,28 +10,26 @@ import Products from './Products'
 export default function Shop() {
   const [paymentMode, setPaymentMode] = useState('balance')
 
-  const getProducts = useDataStore((state) => state.fetchProducts)
-  const productsList = useDataStore((state) => state.products)
-
-  const filter = useDataStore((state) => state.filter)
-  const member = useAuthStore((state) => state.member)
+  const { token, member } = useAuthStore()
+  const { fetchProducts, products, filter, type } = useDataStore()
 
   useEffect(() => {
-    getProducts(member)
+    fetchProducts(member.center_id, token)
+    // console.log(products)
   }, [])
 
   const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cartItems')) ?? [])
   // const [state, dispatch] = useReducer(reducer, { cart: storedCart || [] });
 
-  // const updateFilteredProducts = (productsList, productType, search) => {
+  // const updateFilteredProducts = (products, productType, search) => {
   //   if (productType !== '') {
-  //     return sortByName(productsList.filter((g) => g.product_type === productType))
+  //     return sortByName(products.filter((g) => g.product_type === productType))
   //   } else if (search !== '') {
   //     return sortByName(
-  //       productsList.filter((g) => g.name.toLowerCase().includes(search.toLowerCase()))
+  //       products.filter((g) => g.name.toLowerCase().includes(search.toLowerCase()))
   //     )
   //   } else {
-  //     return sortByName(productsList)
+  //     return sortByName(products)
   //   }
   // }
 
@@ -100,11 +98,16 @@ export default function Shop() {
       <div className="d-flex">
         <div className={cartItems.length > 0 ? 'w-75 pe-3' : 'w-100'}>
           <Header categories={categories} />
-
           <Products
-            products={productsList?.filter((product) =>
-              product.name.toLowerCase().includes(filter.toLowerCase())
-            )}
+            products={products?.filter((product) => {
+              if (filter) {
+                return product.name.toLowerCase().includes(filter.toLowerCase())
+              } else if (type) {
+                return product.product_type === type
+              } else {
+                return true
+              }
+            })}
             onAdd={onAdd}
           />
         </div>
