@@ -3,7 +3,6 @@ import * as path from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 const si = require('systeminformation')
 const fs = require('fs')
-const os = require('os')
 const spawn = require('child_process').spawn
 const systemInfo = {
   baseboard: 'manufacturer, model',
@@ -152,7 +151,7 @@ ipcMain.handle('launch:executable', (event, gamePath) => {
 })
 
 ipcMain.handle('check:executable', async (event, gamePath) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     fs.access(gamePath, fs.constants.F_OK, (err) => {
       if (!err) {
         resolve({ status: 'file-exists', processRunning })

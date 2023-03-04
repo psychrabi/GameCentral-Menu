@@ -20,8 +20,8 @@ const Grid = ({ games, getData }) => {
             alt={game.name}
             style={{ objectFit: 'cover', aspectRatio: '3 / 4' }}
             loading="lazy"
-          // height={'240'}
-          // width={'160'}
+            // height={'240'}
+            // width={'160'}
           />
         </Card>
       ))}
