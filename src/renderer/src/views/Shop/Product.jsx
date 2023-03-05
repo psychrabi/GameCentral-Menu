@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types'
+import { useProductStore } from '../../components/stores/ProductStore'
 import { formatCurrency } from '../../utils/formatCurrency'
 
-const Product = ({ product, onAdd }) => {
+const Product = ({ product }) => {
+  const { addToCart } = useProductStore()
+
   return (
     <div className="product card" key={product.id}>
       <img src={product.product_image} alt={product.name} className="card-img-top" loading="lazy" />
@@ -9,7 +12,7 @@ const Product = ({ product, onAdd }) => {
         <h5 className="card-title">{product.name}</h5>
         <p className="card-text price">{formatCurrency(product.sales_price)}</p>
         {product.stock > 0 && (
-          <button className="btn btn-primary add-to-cart" onClick={() => onAdd(product)}>
+          <button className="btn btn-primary add-to-cart" onClick={() => addToCart(product.id)}>
             Add to Cart
           </button>
         )}
@@ -23,7 +26,6 @@ const Product = ({ product, onAdd }) => {
 }
 
 Product.propTypes = {
-  onAdd: PropTypes.func,
   product: PropTypes.shape({
     id: PropTypes.string,
     name: PropTypes.string,

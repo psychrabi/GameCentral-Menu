@@ -2,11 +2,11 @@ import PropTypes from 'prop-types'
 import Product from './Product'
 
 export default function Products(props) {
-  const { products, onAdd } = props
+  const { products } = props
   return (
     <div className="games" id="installed-games-container">
       {products?.map((product) => (
-        <Product key={product.id} product={product} onAdd={onAdd} />
+        <Product key={product.id} product={product} />
       ))}
     </div>
   )

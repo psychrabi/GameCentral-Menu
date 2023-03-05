@@ -11,6 +11,7 @@ export const useAuthStore = create(
       member: null,
       session: null,
       start_time: null,
+      type: '',
       token: null,
       settings: null,
       sessionType: null,
@@ -32,6 +33,25 @@ export const useAuthStore = create(
             token: response.data.token,
             settings: response.data.settings
           })
+
+          const balance = get().member.balance
+          const bonus_balance = get().member.bonus_balance
+          const sessionType = balance > 0 || bonus_balance > 0 ? 'balance' : 'credit'
+          set({ sessionType: sessionType })
+
+          if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
+            set({ error: 'Not enough balance. Please top up your account.' })
+            return
+          }
+          const credit = get().member.credit
+          if (credit > 30) {
+            set({
+              error: `You have ${credit} credit to be paid. Please pay it first.`,
+              loading: false
+            })
+            return
+          }
+
           localStorage.setItem('token', JSON.stringify({ token: get().token }))
           localStorage.setItem('member', JSON.stringify(get().member))
           localStorage.setItem('session', JSON.stringify(get().session))
@@ -68,20 +88,16 @@ export const useAuthStore = create(
         if (localStorage.getItem('session'))
           set({ session: JSON.parse(localStorage.getItem('session')) })
       },
-      setSessionType: (type) => {
-        set({ sessionType: type })
-      },
       logout: async (cost_per_hour) => {
         const total_time = (Date.now() - get().start_time) / 1000 //in seconds
         const usage_details = {
-          session_cost: ((total_time / 1000 / (60 * 60)) * cost_per_hour).toFixed(0),
+          session_cost: ((total_time / (60 * 60)) * cost_per_hour).toFixed(2),
           total_time: total_time,
           sessionType: get().sessionType,
           session_id: get().session.id
         }
         axiosClient.defaults.headers.common['Authorization'] = `Bearer ${get().token}`
-        axiosClient.post('/members/logout', usage_details).then((response) => {
-          console.log(response)
+        axiosClient.post('/members/logout', usage_details).then(() => {
           localStorage.removeItem('token')
           localStorage.removeItem('member')
           localStorage.removeItem('session')

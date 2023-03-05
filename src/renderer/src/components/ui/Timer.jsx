@@ -1,25 +1,18 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuthStore } from '../stores/AuthStore'
 
 import { useStateContext } from '../contexts/ContextProvider'
 
 // eslint-disable-next-line react/prop-types
 export const Timer = () => {
-  const start_time = useAuthStore((state) => state.start_time)
-  const member = useAuthStore((state) => state.member)
-  const parsedStartTime = useMemo(() => Date.parse(start_time), [start_time])
+  const { start_time, member, sessionType, logout } = useAuthStore()
   const { setNotifications } = useStateContext()
   const [durationString, setDurationString] = useState('00:00:00')
-
+  const [sessionDuration, setSessionDuration] = useState(0)
   const [cost, setCost] = useState('0.00')
 
   const COST_PER_HOUR = 60
 
-  const sessionDuration = useMemo(
-    () =>
-      (((member?.balance + member?.bonus_balance) / COST_PER_HOUR) * (60 * 60) * 1000).toFixed(0),
-    []
-  )
   const startTimeString = new Date(parseInt(start_time)).toLocaleTimeString()
 
   function secondsToHms(d) {
@@ -39,7 +32,7 @@ export const Timer = () => {
     const cost = calculateCost(durationInSeconds)
     setCost(cost)
 
-    console.log(sessionDuration)
+    // console.log(sessionDuration)
 
     const intervalId = setInterval(() => {
       // Calculate the duration of the session in seconds
@@ -65,9 +58,15 @@ export const Timer = () => {
         setNotifications(
           'Your credit is more than 30. You will be logged out shortly and will not be able to login before clearing your credit.'
         )
+        logout(COST_PER_HOUR)
       }
-      console.log('session duration ended')
     }, 60000)
+
+    if (sessionType == 'balance') {
+      setSessionDuration(
+        (((member?.balance + member?.bonus_balance) / COST_PER_HOUR) * (60 * 60) * 1000).toFixed(0)
+      ) //in miliseconds
+    }
 
     // Clear the interval when the component unmounts
     return () => {

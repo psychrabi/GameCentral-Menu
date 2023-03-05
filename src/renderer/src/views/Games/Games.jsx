@@ -3,7 +3,8 @@ import { useAuthStore } from '../../components/stores/AuthStore'
 import { useDataStore } from '../../components/stores/DataStore'
 import Grid from '../../components/ui/Grid'
 import Header from '../../components/ui/Header'
-import categories from '../../data/AppTypes.json'
+import categories from '../../data/GameTypes.json'
+import { motion, AnimatePresence } from 'framer-motion '
 
 function Games() {
   const { token, member } = useAuthStore()
@@ -16,20 +17,22 @@ function Games() {
   return (
     <>
       <Header categories={categories} />
-      <div className="games" id="favorite-games-container">
-        <Grid
-          games={games?.filter((apps) => {
-            if (filter) {
-              return apps.name.toLowerCase().includes(filter.toLowerCase())
-            } else if (type) {
-              return apps.product_type === type
-            } else {
-              return true
-            }
-          })}
-          getData={getGame}
-        />
-      </div>
+      <motion.div layout className="games" id="favorite-games-container">
+        <AnimatePresence>
+          <Grid
+            games={games?.filter((apps) => {
+              if (filter) {
+                return apps.name.toLowerCase().includes(filter.toLowerCase())
+              } else if (type) {
+                return apps.game_type === type
+              } else {
+                return true
+              }
+            })}
+            getData={getGame}
+          />
+        </AnimatePresence>
+      </motion.div>
     </>
   )
 }

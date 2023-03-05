@@ -67,18 +67,21 @@ const Navigation = () => {
               className={`rounded-circle ms-3 me-2 border border-3 ${
                 sessionType === 'balance' ? 'border-success' : 'border-danger'
               }`}
+              loading="lazy"
             />
             <span>
               {member.first_name} {member.last_name}
               <br />
               <small>
-                <b>Balance:</b> ${member.balance} (+{member.bonus_balance})
+                {sessionType === 'credit'
+                  ? 'On credit'
+                  : `${member.balance} (+${member.bonus_balance})`}
               </small>
             </span>
           </div>
         </NavLink>
 
-        <ul className="dropdown-menu">
+        <ul className="dropdown-menu" style={{ zIndex: 2000 }}>
           <li>
             <NavLink className="dropdown-item" to="/profile/profile">
               Profile
@@ -88,9 +91,9 @@ const Navigation = () => {
             <hr className="dropdown-divider" />
           </li>
           <li>
-            <span className="dropdown-item" onClick={() => logout(COST_PER_HOUR)}>
+            <NavLink className="dropdown-item" to=" " onClick={() => logout(COST_PER_HOUR)}>
               Sign out
-            </span>
+            </NavLink>
           </li>
         </ul>
       </div>

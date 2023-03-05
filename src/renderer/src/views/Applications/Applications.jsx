@@ -23,7 +23,7 @@ function Applications() {
             if (filter) {
               return apps.name.toLowerCase().includes(filter.toLowerCase())
             } else if (type) {
-              return apps.product_type === type
+              return apps.game_type === type
             } else {
               return true
             }

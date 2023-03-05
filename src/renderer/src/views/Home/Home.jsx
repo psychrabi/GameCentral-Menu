@@ -11,7 +11,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchFavoriteGames(member.id, token)
-    console.log(favoriteGames)
+    // console.log(favoriteGames)
   }, [])
 
   return (

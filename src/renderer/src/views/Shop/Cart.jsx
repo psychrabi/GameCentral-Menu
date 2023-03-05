@@ -1,20 +1,17 @@
 import PropTypes from 'prop-types'
+import { useAuthStore } from '../../components/stores/AuthStore'
+import { useProductStore } from '../../components/stores/ProductStore'
 import { PaymentModes } from '../../components/ui/PaymentModes'
 import { formatCurrency } from '../../utils/formatCurrency'
 
-const Cart = ({
-  cartItems,
-  onAdd,
-  onRemove,
-  onClear,
-  handlePaymentModeChange,
-  handleSubmitOrder
-}) => {
-  const itemsPrice = parseFloat(
-    cartItems.reduce((acc, item) => acc + item.sales_price * item.quantity, 0)
+const Cart = () => {
+  const { member } = useAuthStore()
+  const { cart, addToCart, removeFromCart, clearCart, checkOut, taxRate } = useProductStore()
+  const subTotal = parseFloat(
+    cart.reduce((acc, item) => acc + item.sales_price * item.quantity, 0)
   ).toFixed(2)
-  const taxPrice = parseFloat(itemsPrice * 0.13).toFixed(2)
-  const totalPrice = parseFloat(itemsPrice + taxPrice).toFixed(2)
+  const tax = parseFloat(subTotal * 0.13).toFixed(2)
+  const total = parseFloat(subTotal + tax).toFixed(2)
 
   return (
     <div className="w-25 sticky-top overflow-y z-0">
@@ -24,7 +21,7 @@ const Cart = ({
           className={'btn btn-danger text-light'}
           title={'Clear cart'}
           type={'button'}
-          onClick={() => onClear()}
+          onClick={() => clearCart()}
         >
           <i className={'bi bi-trash'}></i>
         </button>
@@ -44,18 +41,18 @@ const Cart = ({
             </tr>
           </thead>
           <tbody className="table-group-divider">
-            {cartItems.map((item) => (
+            {cart.map((item) => (
               <tr key={item.id}>
                 <td className="align-middle">
                   <p className="mb-0 fw-semibold">{item.name}</p>
                 </td>
                 <td className="align-middle ">
                   <div className="d-flex flex-row justify-content-center">
-                    <button className="btn btn-link px-0" onClick={() => onRemove(item)}>
+                    <button className="btn btn-link px-0" onClick={() => removeFromCart(item.id)}>
                       <i className="bi bi-dash"></i>
                     </button>
                     <span className="border rounded px-2 pt-1">{item.quantity}</span>
-                    <button className="btn btn-link px-0" onClick={() => onAdd(item)}>
+                    <button className="btn btn-link px-0" onClick={() => addToCart(item.id)}>
                       <i className="bi bi-plus"></i>
                     </button>
                   </div>
@@ -70,30 +67,30 @@ const Cart = ({
         <div className="card-body p-0">
           <div>
             <div className="pb-0">
-              <PaymentModes handleChange={handlePaymentModeChange} />
+              <PaymentModes />
             </div>
             <hr className="my-2" />
 
             <div className="pb-3">
               <div className="d-flex justify-content-between">
                 <p className="mb-2  fw-semibold">Subtotal</p>
-                <p className="mb-2">{formatCurrency(itemsPrice)}</p>
+                <p className="mb-2">{formatCurrency(subTotal)}</p>
               </div>
 
               <div className="d-flex justify-content-between">
-                <p className="mb-0  fw-semibold">Tax ({0.13 * 100}%)</p>
-                <p className="mb-0">{formatCurrency(taxPrice)}</p>
+                <p className="mb-0  fw-semibold">Tax ({taxRate * 100}%)</p>
+                <p className="mb-0">{formatCurrency(tax)}</p>
               </div>
               <hr className="my-2" />
               <div className="d-flex justify-content-between mb-4">
                 <p className="mb-2  fw-semibold">Total</p>
-                <p className="mb-2">{formatCurrency(totalPrice)}</p>
+                <p className="mb-2">{formatCurrency(total)}</p>
               </div>
               <div className="d-grid">
                 <button
                   type="button"
                   className="btn btn-primary btn-lg text-center"
-                  onClick={handleSubmitOrder}
+                  onClick={() => checkOut(member.id, subTotal, tax, total)}
                 >
                   <span>Submit order</span>
                 </button>
@@ -106,12 +103,4 @@ const Cart = ({
   )
 }
 
-Cart.propTypes = {
-  cartItems: PropTypes.array,
-  handlePaymentModeChange: PropTypes.any,
-  handleSubmitOrder: PropTypes.any,
-  onAdd: PropTypes.func,
-  onClear: PropTypes.func,
-  onRemove: PropTypes.func
-}
 export default Cart
