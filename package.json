@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@electron/notarize": "^1.2.3",
+    "@fluentui/react-components": "^9.15.6",
     "@vitejs/plugin-react": "^2.2.0",
     "axios": "^1.2.2",
     "bootstrap": "^5.2.3",
