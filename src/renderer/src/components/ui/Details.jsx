@@ -65,80 +65,90 @@ const Details = () => {
   // }, [])
 
   return (
-    <div className="position-relative">
-      <Offcanvas
-        show={show}
-        onHide={handleClose}
-        placement="end"
-        onExited={() => removeFromLocalStorage('current-selected')}
+    <Offcanvas
+      show={show}
+      onHide={handleClose}
+      placement="end"
+      onExited={() => removeFromLocalStorage('current-selected')}
+    >
+      <div
+        style={{
+          background: `url(${game?.screenshots[2]})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover'
+        }}
+        className="h-100"
       >
+        {/* <video autoPlay muted loop id="myVideo">
+          <source src="../../public/videos/video-1.mp4" type="video/mp4" />
+        </video> */}
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>{game?.name}</Offcanvas.Title>
+          <Offcanvas.Title></Offcanvas.Title>
         </Offcanvas.Header>
-        <Offcanvas.Body className="no-scrollbar">
-          <div className="top">
-            <div
-              className="cover position-relative"
-              style={{ backgroundImage: `url(${game?.poster})` }}
-            ></div>
-            <div className="ms-2 pt-1" style={{ height: '100%' }}>
+        <Offcanvas.Body className="no-scrollbar text-light">
+          <div className="top mx-5">
+            <div className="d-grid gap-3">
               <div
-                className="d-flex flex-column justify-content-between"
-                style={{ height: '100%' }}
+                className="cover position-relative"
+                style={{ backgroundImage: `url(${game?.poster})` }}
               >
-                <div>
-                  <div className="d-flex justify-content-between">
-                    <span className="fw-bold">Game type</span>
-                    <span className="" id="playtime">
-                      {game?.game_type}
-                    </span>
-                  </div>
+                <button className="btn text-danger position-absolute top-0 end-0 m-3">
+                  <i
+                    className={game?.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'}
+                    style={{ fontSize: '2rem' }}
+                    onClick={() => handleFavoriteClick(game.id)}
+                  ></i>
+                </button>
+              </div>
+              <button
+                className="btn btn-primary p-0 fs-2 d-flex justify-content-center align-items-center"
+                id="play-button"
+                onClick={() => handleGamePlay(game.executable, game.parameters)}
+              >
+                {running ? (
+                  <>
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Running
+                  </>
+                ) : (
+                  <>
+                    <i className="bi bi-play-fill" style={{ fontSize: '2.5rem' }}></i> Play
+                  </>
+                )}
+              </button>
+              <button
+                className="btn btn-secondary p-0 fs-4 d-flex justify-content-center align-items-center"
+                id="play-button"
+                onClick={() => handleGamePlay(game.executable, game.parameters)}
+              >
+                <i className="bi bi-play-fill" style={{ fontSize: '2.5rem' }}></i> With Center
+                account
+              </button>
+            </div>
+            <div className="ms-5">
+              <div className="d-flex flex-column justify-content-between">
+                <div className="fs-1 d-flex align-items-center">
+                  {game?.name}
+                  <span className="badge bg-info fs-4 ms-3" id="playtime">
+                    {game?.game_type}
+                  </span>
                 </div>
-                <div className="d-flex justify-content-end mt-2">
-                  <button
-                    className="d-flex btn btn-success me-auto align-items-center"
-                    id="play-button"
-                    onClick={() => handleGamePlay(game.executable, game.parameters)}
-                  >
-                    {running ? (
-                      <>
-                        <span
-                          className="spinner-border spinner-border-sm me-2"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                        Running
-                      </>
-                    ) : (
-                      <>
-                        <i className="bi bi-play"></i> Play
-                      </>
-                    )}
-                  </button>
-                  {/* <button
-                    className="d-flex btn btn-success me-auto align-items-center"
-                    id="play-button"
-                    onClick={() => handleGamePlay(game.executable, game.parameters)}
-                  >
-                    <i className="bi bi-play"></i> Play{' '}
-                  </button> */}
-                  <button className="btn btn-outline-danger">
-                    <i
-                      className={game?.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'}
-                      onClick={() => handleFavoriteClick(game.id)}
-                    ></i>
-                  </button>
+
+                <div className="item pt-2 mb-0 bg-secondary">
+                  <h4 className="h4">Summary</h4>
+                  <p>{game?.summary}</p>
                 </div>
               </div>
             </div>
           </div>
-          <div className="item bg-gray-600 pt-2 mb-0">
-            <h4 className="h4">Summary</h4>
-            <p>{game?.summary}</p>
-          </div>
-          <div className="item bg-gray-600 p-2 mb-3">
+
+          <div className="bg-gray-600 mx-5 my-5">
             <h4 className="h4">Screenshots</h4>
-            <div className="screenshots">
+            <div className="screenshots w-25">
               <Carousel indicators={false}>
                 {game?.screenshots.map((screenshot, i) => (
                   <Carousel.Item key={i}>
@@ -149,8 +159,8 @@ const Details = () => {
             </div>
           </div>
         </Offcanvas.Body>
-      </Offcanvas>
-    </div>
+      </div>
+    </Offcanvas>
   )
 }
 

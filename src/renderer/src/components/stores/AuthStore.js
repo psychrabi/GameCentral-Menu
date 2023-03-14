@@ -13,7 +13,10 @@ export const useAuthStore = create(
       start_time: null,
       type: '',
       token: null,
+      admin_token: null,
       settings: null,
+      center_id: null,
+      center_name: null,
       sessionType: null,
       authenticate: async (username, password) => {
         set({ loading: true })
@@ -57,6 +60,31 @@ export const useAuthStore = create(
           localStorage.setItem('session', JSON.stringify(get().session))
           localStorage.setItem('start_time', JSON.stringify(get().start_time))
           localStorage.setItem('settings', JSON.stringify(get().settings))
+          localStorage.setItem('sessionType', JSON.stringify(get().sessionType))
+        } catch (err) {
+          set({ error: err.response.data.message, loading: false })
+        }
+      },
+      authenticateAdmin: async (license, username, password) => {
+        set({ loading: true })
+        try {
+          const payload = {
+            license: license,
+            username: username,
+            password: password
+          }
+          const response = await axiosClient.post('/login', payload)
+          console.log(response)
+          set({
+            loading: false,
+            error: 'Center account set.',
+            center_id: response.data.user.id,
+            center_name: response.data.user.name,
+            admin_token: response.data.token
+          })
+          localStorage.setItem('admin_token', JSON.stringify({ token: response.data.token }))
+          localStorage.setItem('center_id', JSON.stringify(response.data.user.id))
+          localStorage.setItem('center_name', JSON.stringify(response.data.user.name))
         } catch (err) {
           set({ error: err.response.data.message, loading: false })
         }
@@ -76,6 +104,12 @@ export const useAuthStore = create(
           set({ error: err.response.data.message, loading: false })
         }
       },
+      checkCenterID: () => {
+        if (localStorage.getItem('center_id')) {
+          console.log(JSON.parse(localStorage.getItem('center_id')))
+          set({ center_id: JSON.parse(localStorage.getItem('center_id')) })
+        }
+      },
       checkSession: () => {
         if (localStorage.getItem('token')) {
           console.log(JSON.parse(localStorage.getItem('token')).token)
@@ -87,6 +121,8 @@ export const useAuthStore = create(
           set({ start_time: JSON.parse(localStorage.getItem('start_time')) })
         if (localStorage.getItem('session'))
           set({ session: JSON.parse(localStorage.getItem('session')) })
+        if (localStorage.getItem('sessionType'))
+          set({ sessionType: JSON.parse(localStorage.getItem('sessionType')) })
       },
       logout: async (cost_per_hour) => {
         const total_time = (Date.now() - get().start_time) / 1000 //in seconds

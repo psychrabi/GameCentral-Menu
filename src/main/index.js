@@ -23,9 +23,9 @@ function createWindow() {
     height: 720,
     x: 0,
     y: 0,
-    fullscreen: false,
+    fullscreen: true,
     frame: false,
-    kiosk: false,
+    kiosk: !app.isPackaged ? false : true,
     autoHideMenuBar: true,
     ...(process.platform === 'linux'
       ? {
@@ -42,6 +42,7 @@ function createWindow() {
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
+  mainWindow.webContents.openDevTools()
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)

@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
+import { Spinner } from './Spinner'
+import { SystemInfo } from './SystemInfo'
 
 const ClientStats = () => {
   const [clientStats, setClientStats] = useState(localStorage.getItem('systemInfo'))
@@ -34,40 +36,8 @@ const ClientStats = () => {
     }
   }, [])
   return (
-    <footer className="position-absolute bottom-0 mb-5 me-5 end-0 text-light">
-      {loading ? (
-        <div className="d-flex justify-content-center align-items-center">
-          <div
-            className="spinner-border text-primary spinner-border-sm"
-            role="status"
-            style={{ width: '3rem', height: '3rem' }}
-          >
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      ) : (
-        <ul className="list-unstyled text-start text-small">
-          <li>
-            {' '}
-            CPU : <span className="cpu">{clientStats?.cpu}</span>
-          </li>
-          <li>
-            {' '}
-            Graphics : <span className="graphics">{clientStats?.graphics}</span>{' '}
-          </li>
-          <li>
-            {' '}
-            RAM : <span className="ram">{clientStats?.ram}</span>{' '}
-          </li>
-          <li>
-            {' '}
-            OS : <span className="os">{clientStats?.os}</span>{' '}
-          </li>
-          <li>
-            IP : <span className="ip4">{clientStats?.ip4}</span>
-          </li>
-        </ul>
-      )}
+    <footer className="position-absolute bottom-0 mb-4 me-4 end-0 text-light">
+      {loading ? <Spinner /> : <SystemInfo stats={clientStats} />}
     </footer>
   )
 }

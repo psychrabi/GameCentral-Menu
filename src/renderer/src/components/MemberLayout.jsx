@@ -8,12 +8,13 @@ import Navigation from './ui/Navigation'
 import { Timer } from './ui/Timer'
 
 export default function MemberLayout() {
-  const token = useAuthStore((state) => state.token)
-  const loading = useAuthStore((state) => state.loading)
+  const { token, loading, center_id } = useAuthStore()
   const show = useDataStore((state) => state.show)
   const error = useDataStore((state) => state.error)
 
-  if (!token) {
+  if (!token && !center_id) {
+    return <Navigate to="/adminLogin" />
+  } else if (!token) {
     return <Navigate to="/login" />
   }
 
@@ -37,9 +38,7 @@ export default function MemberLayout() {
                 <i className="bi bi-bootstrap me-3" style={{ fontSize: '2rem' }}></i>
                 GameCentral Menu
               </NavLink>
-
               <Timer />
-
               <Navigation />
             </div>
           </div>

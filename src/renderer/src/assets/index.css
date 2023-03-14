@@ -42,26 +42,43 @@ code {
   grid-gap: var(--grid-layout-gap);
 }
 
+.products {
+  --grid-layout-gap: 0.5rem;
+  --grid-column-count: 9;
+  --grid-item--min-width: 8rem;
+  --gap-count: calc(var(--grid-column-count) - 1);
+  --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
+  --grid-item--max-width: calc(
+    (100% - var(--total-gap-width)) / var(--grid-column-count)
+  );
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr)
+  );
+  grid-gap: var(--grid-layout-gap);
+}
+
 @media screen and (min-width: 800px) {
-  .games {
+  .games,.products {
     --grid-item--min-width: 7rem;
   }
 }
 
 @media (min-width: 2560px) {
-  .games {
+  .games,.products {
     --grid-column-count: 15;
   }
 }
 
 @media screen and (min-width: 3840px) {
-  .games {
+  .games,.products {
     --grid-column-count: 20;
   }
 }
 
 @media screen and (min-width: 5120px) {
-  .games {
+  .games,.products {
     --grid-column-count: 30;
   }
 }
@@ -106,12 +123,12 @@ code {
 }
 
 .game {
-  transition: transform 0.1s;
+  transition: transform 0.4s;
 }
 
 .game:hover {
   cursor: pointer;
-  transform: scale(1.05);
+  transform: scale(1.10);
 }
 
 .game:hover .overlay {
@@ -133,8 +150,8 @@ code {
 .top {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 160px 3fr;
-  grid-template-columns: 160px 3fr;
+  -ms-grid-columns: 320px 3fr;
+  grid-template-columns: 320px 3fr;
   align-items: center;
 }
 
@@ -306,4 +323,11 @@ video {
 .modal-90w {
   width: 90%;
   max-width: none!important;
+}
+
+.offcanvas {
+  transition: transform 0.5s ease-in-out
+}
+.offcanvas.offcanvas-end {
+  width: 100vw
 }

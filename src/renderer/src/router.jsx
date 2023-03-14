@@ -1,9 +1,11 @@
 import { createHashRouter } from 'react-router-dom'
 import { lazy } from 'react'
+import Login from './views/Auth/MemberLogin'
 
 // Client side components
 
-const NewLogin = lazy(() => import('./views/Auth/NewLogin'))
+const MemberLogin = lazy(() => import('./views/Auth/MemberLogin'))
+const AdminLogin = lazy(() => import('./views/Auth/AdminLogin'))
 const MemberLayout = lazy(() => import('./components/MemberLayout'))
 const ProfileLayout = lazy(() => import('./components/ProfileLayout'))
 const Home = lazy(() => import('./views/Home/Home'))
@@ -64,11 +66,23 @@ const router = createHashRouter([
   {
     exact: true,
     path: '/',
-    element: <NewLogin />,
+    element: <Login />,
     children: [
       {
         path: '/login',
-        element: <NewLogin />
+        element: <Login />
+      }
+    ]
+    // errorElement: <NotFound />
+  },
+  {
+    exact: true,
+    path: '/',
+    element: <AdminLogin />,
+    children: [
+      {
+        path: '/adminLogin',
+        element: <AdminLogin />
       }
     ]
     // errorElement: <NotFound />

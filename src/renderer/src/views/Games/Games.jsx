@@ -7,10 +7,12 @@ import categories from '../../data/GameTypes.json'
 
 function Games() {
   const { token, member } = useAuthStore()
-  const { fetchGames, games, filter, type, getGame } = useDataStore()
+  const { fetchGames, games, filter, setFilter, type, setType, getGame } = useDataStore()
   useEffect(() => {
     fetchGames(member.center_id, token)
     // console.log(games)
+    setFilter('')
+    setType('')
   }, [])
 
   return (
