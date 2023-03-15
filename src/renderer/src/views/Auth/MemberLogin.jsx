@@ -1,15 +1,19 @@
 import { useEffect, useRef } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import Notifications from '../../components/Notifications'
 import logo from '../../public/logo512.png'
+import background from '../../public/login.png'
 import { useAuthStore } from '../../components/stores/AuthStore'
 import ClientStats from '../../components/ui/ClientStats'
 import { VideoBackground } from '../../components/ui/VideoBackground'
+import 'bootstrap-icons/font/bootstrap-icons.css'
+
 // import { ImageBackground } from '../../components/ui/ImageBackground'
 export default function MemberLogin() {
   const { token, authenticate, checkSession, loading, error, center_id } = useAuthStore()
   const loginRef = useRef()
   const passwordRef = useRef()
+  const center_name = 'Hak3rz Juction'
 
   // const { setNotifications, notifications } = useStateContext()
 
@@ -31,20 +35,18 @@ export default function MemberLogin() {
   } else if (!token) {
     return (
       <>
-        <VideoBackground />
-        <div className="login-signup-form animated fadeInDown">
-          <div className="form">
-            <div className="login">
-              <h2 className="display-1 fw-normal text-light position-absolute top-0 start-0 mt-5 ms-5 hostname">
-                GameCenter Menu Client
-              </h2>
-              <main className="form-signin">
-                <form onSubmit={onSubmit} autoComplete="off" className={'mb-3'}>
-                  <img src={logo} alt="" style={{ width: '8rem', height: '8rem' }} />
-                  <h3 className="my-3 text-light" id="cafe-name">
-                    Hak3rz Juction Cafe
-                  </h3>
-                  <h4 className="h4 mb-3 fw-normal text-light">Please sign in</h4>
+        {/* <VideoBackground /> */}
+        <div style={{ background: `url(${background})`, backgroundSize: 'cover' }}>
+          <div className="login">
+            <main className="px-4">
+              <div className="form-signin position-relative">
+                <form onSubmit={onSubmit} autoComplete="off" className={'mb-3 px-5 mx-4 text-secondary'}>
+                  <div>
+                    <img src={logo} alt="" style={{ width: '4rem', height: '4rem' }} />
+                  </div>
+                  <p className="mt-4 text-light" id="cafe-name">
+                    {`Login with your ${center_name} account`}{' '}
+                  </p>
 
                   <div className="form-floating">
                     <input
@@ -79,11 +81,35 @@ export default function MemberLogin() {
                       'Sign in'
                     )}
                   </button>
+                  <Link className="btn btn-link mt-3" to="/forgot">
+                    Forgot password?
+                  </Link>
+                  <div className="my-3 text-uppercase">Continue with</div>
+                  <div className="d-flex justify-content-between mb-3">
+                    <button className="btn btn-secondary">
+                      <i className="bi bi-facebook me-2"></i>
+                      Facebook
+                    </button>
+                    <button className="btn btn-secondary">
+                      <i className="bi bi-google me-2"></i>
+                      Google
+                    </button>
+                    <button className="btn btn-secondary">
+                      <i className="bi bi-apple me-2"></i>
+                      Apple
+                    </button>
+                  </div>
+                  <p>
+                    Don't have an account yet? <Link to="/register">Create account</Link>
+                  </p>
                 </form>
-              </main>
-              {error ? <Notifications notifications={error} /> : ''}
-              <ClientStats />
-            </div>
+                <div className="py-2 bg-dark text-light position-absolute bottom-0 start-0 end-0">
+                  <span className="fs-3 ">PC01</span>
+                </div>
+              </div>
+            </main>
+            {/* {error ? <Notifications notifications={error} /> : ''} */}
+            {/* <ClientStats /> */}
           </div>
         </div>
       </>

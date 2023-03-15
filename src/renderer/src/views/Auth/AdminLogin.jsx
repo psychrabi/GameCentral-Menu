@@ -7,7 +7,7 @@ import ClientStats from '../../components/ui/ClientStats'
 import { VideoBackground } from '../../components/ui/VideoBackground'
 // import { ImageBackground } from '../../components/ui/ImageBackground'
 export default function AdminLogin() {
-  const { token, authenticateAdmin, checkSession, loading, error, center_id } = useAuthStore()
+  const { token, authenticateAdmin, checkSession, loading, error, center_id, checkCenterID } = useAuthStore()
 
   const licenseRef = useRef()
   const usernameRef = useRef()
@@ -27,6 +27,7 @@ export default function AdminLogin() {
 
   useEffect(() => {
     checkSession()
+    checkCenterID()
   }, [])
   if (center_id) {
     return <Navigate to="/login" />

@@ -31,14 +31,10 @@ code {
   --grid-item--min-width: 8rem;
   --gap-count: calc(var(--grid-column-count) - 1);
   --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
-  --grid-item--max-width: calc(
-    (100% - var(--total-gap-width)) / var(--grid-column-count)
-  );
+  --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
   display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr)
-  );
+  grid-template-columns: repeat(auto-fill,
+      minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr));
   grid-gap: var(--grid-layout-gap);
 }
 
@@ -48,37 +44,41 @@ code {
   --grid-item--min-width: 8rem;
   --gap-count: calc(var(--grid-column-count) - 1);
   --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
-  --grid-item--max-width: calc(
-    (100% - var(--total-gap-width)) / var(--grid-column-count)
-  );
+  --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
   display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr)
-  );
+  grid-template-columns: repeat(auto-fill,
+      minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr));
   grid-gap: var(--grid-layout-gap);
 }
 
 @media screen and (min-width: 800px) {
-  .games,.products {
+
+  .games,
+  .products {
     --grid-item--min-width: 7rem;
   }
 }
 
 @media (min-width: 2560px) {
-  .games,.products {
+
+  .games,
+  .products {
     --grid-column-count: 15;
   }
 }
 
 @media screen and (min-width: 3840px) {
-  .games,.products {
+
+  .games,
+  .products {
     --grid-column-count: 20;
   }
 }
 
 @media screen and (min-width: 5120px) {
-  .games,.products {
+
+  .games,
+  .products {
     --grid-column-count: 30;
   }
 }
@@ -193,9 +193,8 @@ html {
 .login,
 .register {
   display: flex;
+  justify-content: center;
   align-items: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
   background-color: rgba(0, 0, 0, 0.5);
   height: 100vh;
   text-align: center;
@@ -203,10 +202,12 @@ html {
 
 .form-signin,
 .form-register {
-  width: 100%;
-  max-width: 330px;
-  padding: 15px;
-  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  width: 480px;
+  background: rgba(33, 33, 33, 0.85)
 }
 
 .form-signin .form-floating:focus-within {
@@ -217,34 +218,57 @@ html {
   margin-bottom: -1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
+  background: rgba(44, 44, 44, 0.85);
+  border: 0px;
+  color: #c9c9c9;
 }
 
 .form-signin input[type="email"] {
   margin-bottom: -1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
+  background: rgba(44, 44, 44, 0.85);
+  border: 0px;
+  color: #c9c9c9;
+
 }
+
 .form-signin input[id="email"] {
   margin-bottom: -1px;
   border-radius: 0;
   margin-bottom: -1px;
+  background: rgba(44, 44, 44, 0.85);
+  border: 0px;
+  color: #c9c9c9;
+
 }
 
 .form-signin input[type="password"] {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+  background: rgba(44, 44, 44, 0.85);
+  border: 0px;
+  color: #c9c9c9;
+
 }
 
 .form-signin input[id="password"] {
   border-radius: 0;
   margin-bottom: -1px;
+  background: rgba(44, 44, 44, 0.85);
+  border: 0px;
+  color: #c9c9c9;
+
 }
 
 .form-register input[id="confirm_password"] {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+  background: rgba(44, 44, 44, 0.85);
+  border: 0px;
+  color: #c9c9c9;
 }
 
 video {
@@ -256,12 +280,13 @@ video {
   left: 0;
   z-index: -99;
 }
+
 .product.card {
   position: relative;
   overflow: hidden;
 }
 
-.product > .card-body {
+.product>.card-body {
   position: absolute;
   top: 0;
   left: 0;
@@ -276,12 +301,13 @@ video {
   justify-content: center;
   align-items: center;
 }
-.product > .card-body > button {
+
+.product>.card-body>button {
   transition: all 0.5s ease;
   opacity: 0;
 }
 
-.card:hover .card-body  button{
+.card:hover .card-body button {
   opacity: 1;
 }
 
@@ -312,22 +338,25 @@ video {
   height: calc(100vh - 81px);
   overflow-x: hidden;
 }
+
 .draggable {
   /* -webkit-user-select: none; */
   -webkit-app-region: drag;
 }
+
 .non-draggable {
   -webkit-app-region: no-drag;
 }
 
 .modal-90w {
   width: 90%;
-  max-width: none!important;
+  max-width: none !important;
 }
 
 .offcanvas {
   transition: transform 0.5s ease-in-out
 }
+
 .offcanvas.offcanvas-end {
   width: 100vw
 }
