@@ -39,8 +39,8 @@ code {
 }
 
 .products {
-  --grid-layout-gap: 0.5rem;
-  --grid-column-count: 9;
+  --grid-layout-gap: 0.5vw;
+  --grid-column-count: 12;
   --grid-item--min-width: 8rem;
   --gap-count: calc(var(--grid-column-count) - 1);
   --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
@@ -86,6 +86,7 @@ code {
 .game-app main {
   width: 100vw;
   height: calc(100vh - 105px);
+  /* background-color: #2b2b2b; */
 }
 
 @media screen and (max-width: 1148px) {
@@ -215,7 +216,7 @@ html {
 }
 
 .form-signin input[type="text"] {
-  margin-bottom: -1px;
+  margin-bottom: 1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   background: rgba(44, 44, 44, 0.85);
@@ -224,7 +225,7 @@ html {
 }
 
 .form-signin input[type="email"] {
-  margin-bottom: -1px;
+  margin-bottom: 1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   background: rgba(44, 44, 44, 0.85);
@@ -234,9 +235,8 @@ html {
 }
 
 .form-signin input[id="email"] {
-  margin-bottom: -1px;
   border-radius: 0;
-  margin-bottom: -1px;
+  margin-bottom: 1px;
   background: rgba(44, 44, 44, 0.85);
   border: 0px;
   color: #c9c9c9;
@@ -244,7 +244,7 @@ html {
 }
 
 .form-signin input[type="password"] {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   background: rgba(44, 44, 44, 0.85);
@@ -254,8 +254,8 @@ html {
 }
 
 .form-signin input[id="password"] {
-  border-radius: 0;
-  margin-bottom: -1px;
+  /* border-radius: 0;
+  margin-bottom: -1px; */
   background: rgba(44, 44, 44, 0.85);
   border: 0px;
   color: #c9c9c9;
@@ -359,4 +359,7 @@ video {
 
 .offcanvas.offcanvas-end {
   width: 100vw
+}
+.client-stats {
+  width: 400px
 }

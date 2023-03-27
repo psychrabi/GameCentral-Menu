@@ -1,14 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useAuthStore } from '../stores/AuthStore'
-
-import { useStateContext } from '../contexts/ContextProvider'
-
 // eslint-disable-next-line react/prop-types
 export const Timer = () => {
-  const { start_time, member, sessionType, logout } = useAuthStore()
-  const { setNotifications } = useStateContext()
+  const { start_time, member, logout, setNotifications } = useAuthStore()
   const [durationString, setDurationString] = useState('00:00:00')
-  const [sessionDuration, setSessionDuration] = useState(0)
+  // const [sessionDuration, setSessionDuration] = useState(0)
   const [cost, setCost] = useState('0.00')
 
   const COST_PER_HOUR = 60
@@ -62,11 +58,11 @@ export const Timer = () => {
       }
     }, 60000)
 
-    if (sessionType == 'balance') {
-      setSessionDuration(
-        (((member?.balance + member?.bonus_balance) / COST_PER_HOUR) * (60 * 60) * 1000).toFixed(0)
-      ) //in miliseconds
-    }
+    // if (sessionType == 'balance') {
+    //   setSessionDuration(
+    //     (((member?.balance + member?.bonus_balance) / COST_PER_HOUR) * (60 * 60) * 1000).toFixed(0)
+    //   ) //in miliseconds
+    // }
 
     // Clear the interval when the component unmounts
     return () => {

@@ -1,12 +1,12 @@
-import { createHashRouter } from 'react-router-dom'
 import { lazy } from 'react'
-import Login from './views/Auth/MemberLogin'
-
-// Client side components
+import { createBrowserRouter } from 'react-router-dom'
 
 const MemberLogin = lazy(() => import('./views/Auth/MemberLogin'))
+const Register = lazy(() => import('./views/Auth/Register'))
 const AdminLogin = lazy(() => import('./views/Auth/AdminLogin'))
+const ResetPassword = lazy(() => import('./views/Auth/ResetPassword'))
 const MemberLayout = lazy(() => import('./components/MemberLayout'))
+const AuthLayout = lazy(() => import('./components/AuthLayout'))
 const ProfileLayout = lazy(() => import('./components/ProfileLayout'))
 const Home = lazy(() => import('./views/Home/Home'))
 const Games = lazy(() => import('./views/Games/Games'))
@@ -17,7 +17,7 @@ const Notification = lazy(() => import('./views/Profile/Notification'))
 const Security = lazy(() => import('./views/Profile/Security'))
 const Billing = lazy(() => import('./views/Profile/Billing'))
 
-const router = createHashRouter([
+const router = createBrowserRouter([
   {
     path: '/',
     element: <MemberLayout />,
@@ -43,19 +43,19 @@ const router = createHashRouter([
         element: <ProfileLayout />,
         children: [
           {
-            path: '/profile/profile',
+            path: 'details',
             element: <Profile />
           },
           {
-            path: '/profile/security',
+            path: 'security',
             element: <Security />
           },
           {
-            path: '/profile/billing',
+            path: 'billing',
             element: <Billing />
           },
           {
-            path: '/profile/notification',
+            path: 'notification',
             element: <Notification />
           }
         ]
@@ -64,28 +64,26 @@ const router = createHashRouter([
     // errorElement: <NotFound />
   },
   {
-    exact: true,
     path: '/',
-    element: <Login />,
+    element: <AuthLayout />,
     children: [
+      {
+        path: '/',
+        element: <AdminLogin />
+      },
       {
         path: '/login',
-        element: <Login />
-      }
-    ]
-    // errorElement: <NotFound />
-  },
-  {
-    exact: true,
-    path: '/',
-    element: <AdminLogin />,
-    children: [
+        element: <MemberLogin />
+      },
       {
-        path: '/adminLogin',
-        element: <AdminLogin />
+        path: '/register',
+        element: <Register />
+      },
+      {
+        path: '/forgot-password',
+        element: <ResetPassword />
       }
     ]
-    // errorElement: <NotFound />
   }
 ])
 

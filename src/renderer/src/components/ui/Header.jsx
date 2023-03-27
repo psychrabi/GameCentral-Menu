@@ -1,14 +1,7 @@
 import PropTypes from 'prop-types'
 import { useCallback, useState } from 'react'
 import Filter from '../form/Search.jsx'
-// import { GameAPI } from '../../api/GameAPI.js'
-
-// import { Col, FloatingLabel, Form, Ratio, Row } from 'react-bootstrap'
-// import Button from 'react-bootstrap/Button'
-// import Modal from 'react-bootstrap/Modal'
-// import { useStateContext } from '../contexts/ContextProvider.jsx'
 import { useDataStore } from '../stores/DataStore.js'
-// import { useAuthStore } from '../stores/AuthStore.js'
 
 const Header = ({ categories }) => {
   const setType = useDataStore((state) => state.setType)
@@ -26,7 +19,6 @@ const Header = ({ categories }) => {
   }, [])
 
   // const API_URL = 'https://cors-anywhere.herokuapp.com/'
-  // const { setNotifications } = useStateContext()
   // const [apiKey, setApiKey] = useState('')
   // const [show, setShow] = useState(false)
   // const [disable, setDisable] = useState(true)

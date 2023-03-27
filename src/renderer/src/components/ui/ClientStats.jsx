@@ -36,7 +36,7 @@ const ClientStats = () => {
     }
   }, [])
   return (
-    <footer className="position-absolute bottom-0 mb-4 me-4 end-0 text-light">
+    <footer className="position-absolute bottom-0 mb-4 me-4 end-0 text-light client-stats">
       {loading ? <Spinner /> : <SystemInfo stats={clientStats} />}
     </footer>
   )

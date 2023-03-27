@@ -1,22 +1,18 @@
 import { useEffect, useRef } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuthStore } from '../../components/stores/AuthStore'
-// import { ImageBackground } from '../../components/ui/ImageBackground'
+
 export default function AdminLogin() {
-  const { token, authenticateAdmin, checkSession, loading, error, center_id, checkCenterID } =
-    useAuthStore()
+  const { token, authenticateAdmin, checkSession, loading, error, checkCenterID } = useAuthStore()
 
   const licenseRef = useRef()
   const usernameRef = useRef()
   const passwordRef = useRef()
+  const center_name = 'Hak3rz Juction'
 
   function onSubmit(ev) {
     ev.preventDefault()
-    authenticateAdmin(
-      licenseRef.current.value,
-      usernameRef.current.value,
-      passwordRef.current.value
-    )
+    authenticateAdmin(usernameRef.current.value, passwordRef.current.value)
   }
   if (error) {
     console.log(error)
@@ -26,13 +22,14 @@ export default function AdminLogin() {
     checkSession()
     checkCenterID()
   }, [])
-  if (center_id) {
-    return <Navigate to="/login" />
-  } else if (!token) {
+
+  if (!token) {
     return (
       <>
         <form onSubmit={onSubmit} autoComplete="off" className={'mb-3'}>
-          <h4 className="h4 mb-3 fw-normal text-light">Please sign in</h4>
+          <p className="mt-4 text-light" id="cafe-name">
+            {`Register your ${center_name} account`}
+          </p>{' '}
           <div className="form-floating">
             <input
               type="text"
@@ -62,7 +59,6 @@ export default function AdminLogin() {
             />
             <label htmlFor="password">Password</label>
           </div>
-
           <button className="w-100 btn btn-lg btn-primary" type="submit" disabled={loading}>
             {loading ? (
               <>

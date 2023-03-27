@@ -1,22 +1,18 @@
 import { useEffect, useRef } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { useAuthStore } from '../../components/stores/AuthStore'
-// import { ImageBackground } from '../../components/ui/ImageBackground'
-export default function AdminLogin() {
-  const { token, authenticateAdmin, checkSession, loading, error, center_id, checkCenterID } =
+
+export default function ForgotPassword() {
+  const { token, forgotPassword, checkSession, loading, error, center_id, checkCenterID } =
     useAuthStore()
 
-  const licenseRef = useRef()
   const usernameRef = useRef()
-  const passwordRef = useRef()
+  const emailRef = useRef()
+  const center_name = 'Hak3rz Juction'
 
   function onSubmit(ev) {
     ev.preventDefault()
-    authenticateAdmin(
-      licenseRef.current.value,
-      usernameRef.current.value,
-      passwordRef.current.value
-    )
+    forgotPassword(usernameRef.current.value, emailRef.current.value)
   }
   if (error) {
     console.log(error)
@@ -32,37 +28,29 @@ export default function AdminLogin() {
     return (
       <>
         <form onSubmit={onSubmit} autoComplete="off" className={'mb-3'}>
-          <h4 className="h4 mb-3 fw-normal text-light">Please sign in</h4>
-          <div className="form-floating">
-            <input
-              type="text"
-              className="form-control"
-              ref={licenseRef}
-              id="login-user"
-              placeholder="License"
-            />
-            <label htmlFor="login-user">License</label>
-          </div>
+          <p className="mt-4 text-light" id="cafe-name">
+            {`Reset your ${center_name} account password`}
+          </p>
           <div className="form-floating">
             <input
               type="text"
               className="form-control"
               ref={usernameRef}
-              id="email"
-              placeholder="Username or Email address"
+              id="login-user"
+              placeholder="License"
             />
-            <label htmlFor="login-user">Username or Email</label>
+            <label htmlFor="login-user">Username</label>
           </div>
-          <div className="form-floating">
+          <div className="form-floating mb-3">
             <input
-              type="password"
+              type="email"
               className="form-control"
-              ref={passwordRef}
-              placeholder="Password"
+              ref={emailRef}
+              id="email"
+              placeholder="Email address"
             />
-            <label htmlFor="password">Password</label>
+            <label htmlFor="login-user">Email Address</label>
           </div>
-
           <button className="w-100 btn btn-lg btn-primary" type="submit" disabled={loading}>
             {loading ? (
               <>
@@ -71,12 +59,17 @@ export default function AdminLogin() {
                   role="status"
                   aria-hidden="true"
                 ></span>
-                Signing in...
+                Sending recover email...
               </>
             ) : (
-              'Sign in'
+              'Reset Password'
             )}
           </button>
+          <p className="mt-3">
+            <Link to="/login" className="text-decoration-none">
+              Go back to login
+            </Link>
+          </p>
         </form>
       </>
     )

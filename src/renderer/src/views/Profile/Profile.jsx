@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useStateContext } from '../../components/contexts/ContextProvider'
 import { useAuthStore } from '../../components/stores/AuthStore'
 import { Loading } from '../../components/ui/Loading'
 
 export default function Profile() {
   const { member, error, loading, updateMember, token } = useAuthStore()
-  const { setTitle } = useStateContext()
   const [updatedMember, setUpdatedMember] = useState(member)
 
   useEffect(() => {
-    setTitle('Profile - Update Profile')
     console.log(updatedMember)
   }, [updatedMember])
 

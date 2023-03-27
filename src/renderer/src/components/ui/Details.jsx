@@ -1,15 +1,13 @@
 import Offcanvas from 'react-bootstrap/Offcanvas'
 import Carousel from 'react-bootstrap/Carousel'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
-import { useStateContext } from '../contexts/ContextProvider.jsx'
 import axiosClient from '../../lib/axios-client.js'
 import { useDataStore } from '../stores/DataStore.js'
 import { useAuthStore } from '../stores/AuthStore.js'
 
 const Details = () => {
-  const { setNotifications } = useStateContext()
-  const { show, game, setShow } = useDataStore()
+  const { show, game, setShow, setNotifications } = useDataStore()
   const [running, setRunning] = useState(false)
   const { member, token } = useAuthStore()
 
@@ -57,6 +55,7 @@ const Details = () => {
         setRunning(false)
         setNotifications('Game executable missing')
       }
+      // console.log('game lauched')
     })
   }, [])
 
@@ -82,7 +81,7 @@ const Details = () => {
         {/* <video autoPlay muted loop id="myVideo">
           <source src="../../public/videos/video-1.mp4" type="video/mp4" />
         </video> */}
-        <Offcanvas.Header closeButton>
+        <Offcanvas.Header closeButton closeVariant={'white'}>
           <Offcanvas.Title></Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body className="no-scrollbar text-light">
@@ -90,9 +89,9 @@ const Details = () => {
             <div className="d-grid gap-3">
               <div
                 className="cover position-relative"
-                style={{ backgroundImage: `url(${game?.poster})` }}
+                style={{ backgroundImage: `url(${game?.poster})`, backgroundColor: '#ccc' }}
               >
-                <button className="btn text-danger position-absolute top-0 end-0 m-3">
+                <button className="btn btn-outline-danger position-absolute top-0 end-0 m-3">
                   <i
                     className={game?.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'}
                     style={{ fontSize: '2rem' }}
@@ -138,7 +137,7 @@ const Details = () => {
                   </span>
                 </div>
 
-                <div className="item pt-2 mb-0 bg-secondary">
+                <div className="item pt-2 mb-0">
                   <h4 className="h4">Summary</h4>
                   <p>{game?.summary}</p>
                 </div>

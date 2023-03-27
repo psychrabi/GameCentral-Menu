@@ -83,7 +83,7 @@ const Navigation = () => {
 
         <ul className="dropdown-menu" style={{ zIndex: 2000 }}>
           <li>
-            <NavLink className="dropdown-item" to="/profile/profile">
+            <NavLink className="dropdown-item" to="/profile/details">
               Profile
             </NavLink>
           </li>

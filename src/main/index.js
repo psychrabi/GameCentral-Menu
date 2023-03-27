@@ -1,20 +1,11 @@
 import { app, shell, BrowserWindow, dialog, ipcMain } from 'electron'
 import * as path from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-const si = require('systeminformation')
-const fs = require('fs')
-const spawn = require('child_process').spawn
-const systemInfo = {
-  baseboard: 'manufacturer, model',
-  cpu: 'manufacturer, brand',
-  graphics: 'controllers, displays',
-  mem: 'total',
-  networkInterfaces: 'ip4, mac, speed, default',
-  osInfo: 'distro, build, uefi, hostname',
-  uuid: 'hardware'
-}
-const WebSocket = require('ws')
-const ws = new WebSocket('ws://localhost:9000')
+import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
+import './utils/ipc-handler'
+
+// const WebSocket = require('ws')
+// const ws = new WebSocket('ws://localhost:9000')
 
 function createWindow() {
   // Create the browser window.
@@ -23,7 +14,7 @@ function createWindow() {
     height: 720,
     x: 0,
     y: 0,
-    fullscreen: true,
+    fullscreen: false,
     frame: false,
     kiosk: !app.isPackaged ? false : true,
     autoHideMenuBar: true,
@@ -35,14 +26,14 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       sandbox: false,
-      devTools: !app.isPackaged
+      devTools: true,
+      openDevTools: true
     }
   })
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
-  mainWindow.webContents.openDevTools()
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
@@ -94,6 +85,8 @@ function createWindow() {
     //   event.preventDefault()
     // }
   })
+
+  mainWindow.webContents.openDevTools({ mode: 'detach' })
 }
 
 // This method will be called when Electron has finished
@@ -102,6 +95,10 @@ function createWindow() {
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.gamecentral')
+
+  installExtension(REACT_DEVELOPER_TOOLS)
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log('An error occurred: ', err))
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
@@ -130,81 +127,15 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
-//Getting client system info
-ipcMain.handle('request-system-info', async () => {
-  const info = await si.get(systemInfo)
-  return info
-})
+// // Handle connection events
+// ws.on('open', () => {
+//   console.log('connected to server')
+//   si.get(systemInfo).then((data) => ws.send(JSON.stringify(data)))
+// })
 
-let processRunning = false
-let processRef
-ipcMain.handle('launch:executable', (event, gamePath) => {
-  const process = spawn(gamePath)
-  if (process) processRunning = true
+// // Handle incoming messages
+// ws.on('message', (message) => {
+//   console.log(`received message: ${JSON.parse(message.string())}`)
+// })
 
-  processRef.on('exit', (code, signal) => {
-    console.log(`Process exited with code ${code} and signal ${signal}`)
-    processRunning = false
-    event.sender.send('process-exited', processRunning)
-  })
-
-  return processRunning
-})
-
-ipcMain.handle('check:executable', async (event, gamePath) => {
-  return new Promise((resolve) => {
-    fs.access(gamePath, fs.constants.F_OK, (err) => {
-      if (!err) {
-        resolve({ status: 'file-exists', processRunning })
-      } else {
-        resolve({ status: 'file-does-not-exist', processRunning })
-      }
-    })
-  })
-})
-
-ipcMain.handle('dialog:openDirectory', async () => {
-  const result = await dialog.showOpenDialog({
-    properties: ['openFile'],
-    filters: [
-      { name: 'Executable Files', extensions: ['exe'] },
-      { name: 'Shortcut Files', extensions: ['lnk'] }
-    ]
-  })
-
-  if (!result.canceled && result.filePaths.length > 0) {
-    const selectedFilePath = result.filePaths[0]
-    const fileExtension = selectedFilePath.split('.').pop()
-
-    if (fileExtension === 'lnk') {
-      // console.log('Selected file is a shortcut:', selectedFilePath);
-      const lnkTarget = shell.readShortcutLink(selectedFilePath).target
-      const lnkArgs = shell.readShortcutLink(selectedFilePath).args
-      // console.log('Shortcut target:', lnkTarget);
-      // console.log('Shortcut arguments:', lnkArgs);
-      return { executable: lnkTarget, parameters: lnkArgs }
-    } else if (fileExtension === 'exe') {
-      console.log('Selected file is an executable:', selectedFilePath)
-      return { executable: selectedFilePath, parameters: '' }
-    } else {
-      console.log('Selected file is neither an executable nor a shortcut.')
-      return null
-    }
-  } else {
-    console.log('No file selected.')
-    return null
-  }
-})
-
-// Handle connection events
-ws.on('open', () => {
-  console.log('connected to server')
-  si.get(systemInfo).then((data) => ws.send(JSON.stringify(data)))
-})
-
-// Handle incoming messages
-ws.on('message', (message) => {
-  console.log(`received message: ${JSON.parse(message.string())}`)
-})
-
-ws.on('error', console.error)
+// ws.on('error', console.error)

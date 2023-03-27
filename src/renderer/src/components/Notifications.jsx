@@ -16,7 +16,7 @@ export const Notifications = ({ notifications }) => {
   }, [])
   if (notifications) {
     return (
-      <div className="toast-container top-0 end-0 p-3">
+      <div className="toast-container top-0 end-0 p-3" style={{ zIndex: 2000 }}>
         <div
           className={`toast fade ${show ? 'show' : ''} bg-danger`}
           role="alert"

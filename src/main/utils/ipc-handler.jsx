@@ -1,11 +1,8 @@
-// const IGDB = require('./igdb.jsx')
-const store = require('./store.jsx')
-const SpawnedProcess = require('./process-handler.jsx')
-// const os = require("os")
-const si = require('systeminformation')
+import { shell, dialog, ipcMain } from 'electron'
 
-// let igdb = new IGDB('sz4fdut3dwthuoryprilvj8ce5fvg8', 'l56dya21c4u40vkjnvrvol1rttxfj3')
+const si = require('systeminformation')
 const fs = require('fs')
+const spawn = require('child_process').spawn
 const systemInfo = {
   baseboard: 'manufacturer, model',
   cpu: 'manufacturer, brand',
@@ -16,83 +13,69 @@ const systemInfo = {
   uuid: 'hardware'
 }
 
-module.exports = (ipcMain) => {
-  ipcMain.handle('request-system-info', () => {
-    return si.get(systemInfo)
+//Getting client system info
+ipcMain.handle('request-system-info', async () => {
+  const info = await si.get(systemInfo)
+  return info
+})
+
+let processRunning = false
+let processRef
+ipcMain.handle('launch:executable', (event, gamePath) => {
+  const process = spawn(gamePath)
+  if (process) processRunning = true
+
+  processRef.on('exit', (code, signal) => {
+    console.log(`Process exited with code ${code} and signal ${signal}`)
+    processRunning = false
+    event.sender.send('process-exited', processRunning)
   })
 
-  ipcMain.handle('request-init-data', () => {
-    var returnValue = {
-      username: store.getUser().username,
-      games: store.getGames(),
-      favoriteGames: store.getFavoriteGames()
-    }
-    return returnValue
-  })
+  return processRunning
+})
 
-  // ipcMain.on("request-game-data", (event, id) => {
-  //   event.reply("game-data", store.getGame(id))
-  // })
-
-  // ======== add game ======== //
-
-  // ipcMain.on("request-game-covers", async (event, query) => {
-  //   let data = await igdb.getGameCovers(query)
-  //   event.reply("game-covers", data)
-  // })
-
-  // ipcMain.on("request-game-info", async (event, game) => {
-  //   let data = await igdb.getGameInfo(game)
-  //   event.reply("add-game-info", data)
-  // })
-
-  // ipcMain.on("request-file-path", async (event) => {
-  //   let res = await dialog.showOpenDialog({ properties: ["openFile"] })
-  //   if (res.canceled === true)
-  //     return event.reply("file-path", {
-  //       code: 400,
-  //       message: "File picker was canceled",
-  //     })
-  //   event.reply("file-path", { code: 200, filePath: res.filePaths[0] })
-  // })
-
-  // ipcMain.on("add-game", async (event, game) => {
-  //   if (store.contains(game.name))
-  //     event.reply("error", `${game.name} already exists`)
-  //   let id = store.addGame(game)
-
-  //   // Add game to installed list
-  //   event.reply("add-installed-game", { id, game })
-
-  //   // Sync localStorage
-  // })
-
-  // ======== remove game  ======== //
-
-  // ipcMain.on("remove-game", async (event, id) => {
-  //   if (store.isGameRunning(id)) return console.log("Game is running")
-  //   store.removeGame(id)
-  //   event.reply("game-removed", id)
-  //   // Sync localStorage
-  // })
-
-  // ======== control game ======== //
-
-  ipcMain.on('start-game', async (event, filepath) => {
-    // let filepath = store.getFilepath(id)
-
-    fs.access(filepath, (err) => {
-      var id = 12
-      if (err) {
-        event.reply('game-exe-error', `${filepath} not found.`)
+ipcMain.handle('check:executable', async (event, gamePath) => {
+  console.log(gamePath)
+  return new Promise((resolve) => {
+    fs.access(gamePath, fs.constants.F_OK, (err) => {
+      if (!err) {
+        resolve({ status: 'file-exists', processRunning })
       } else {
-        const gameLaunch = new SpawnedProcess(filepath, id, event)
-        if (gameLaunch) {
-          event.reply('game-started', `${filepath} started.`)
-        } else {
-          event.reply('game-started', `${filepath} couldnot be started.`)
-        }
+        resolve({ status: 'file-does-not-exist', processRunning })
       }
     })
   })
-}
+})
+
+ipcMain.handle('dialog:openDirectory', async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [
+      { name: 'Executable Files', extensions: ['exe'] },
+      { name: 'Shortcut Files', extensions: ['lnk'] }
+    ]
+  })
+
+  if (!result.canceled && result.filePaths.length > 0) {
+    const selectedFilePath = result.filePaths[0]
+    const fileExtension = selectedFilePath.split('.').pop()
+
+    if (fileExtension === 'lnk') {
+      // console.log('Selected file is a shortcut:', selectedFilePath);
+      const lnkTarget = shell.readShortcutLink(selectedFilePath).target
+      const lnkArgs = shell.readShortcutLink(selectedFilePath).args
+      // console.log('Shortcut target:', lnkTarget);
+      // console.log('Shortcut arguments:', lnkArgs);
+      return { executable: lnkTarget, parameters: lnkArgs }
+    } else if (fileExtension === 'exe') {
+      console.log('Selected file is an executable:', selectedFilePath)
+      return { executable: selectedFilePath, parameters: '' }
+    } else {
+      console.log('Selected file is neither an executable nor a shortcut.')
+      return null
+    }
+  } else {
+    console.log('No file selected.')
+    return null
+  }
+})

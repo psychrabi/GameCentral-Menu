@@ -8,13 +8,11 @@ import Navigation from './ui/Navigation'
 import { Timer } from './ui/Timer'
 
 export default function MemberLayout() {
-  const { token, loading, center_id } = useAuthStore()
-  const show = useDataStore((state) => state.show)
-  const error = useDataStore((state) => state.error)
+  const { token, loading } = useAuthStore()
 
-  if (!token && !center_id) {
-    return <Navigate to="/adminLogin" />
-  } else if (!token) {
+  const { show, error, notifications } = useDataStore()
+
+  if (!token) {
     return <Navigate to="/login" />
   }
 
@@ -23,6 +21,9 @@ export default function MemberLayout() {
   }
   if (error) {
     return <Notifications notifications={error} />
+  }
+  if (notifications) {
+    return <Notifications notifications={notifications} />
   }
 
   return (
