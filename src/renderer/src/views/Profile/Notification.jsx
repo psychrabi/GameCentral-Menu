@@ -1,4 +1,4 @@
-export default function Notification({member}) {
+export default function Notification({ member }) {
   return (
     <>
       <div className="row">

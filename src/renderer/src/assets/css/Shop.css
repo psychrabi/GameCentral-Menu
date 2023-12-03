@@ -1,52 +1,51 @@
 .product.card {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
 }
 
-.product>.card-body {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    transition: all 0.5s ease;
-    opacity: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.product > .card-body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  transition: all 0.5s ease;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .card:hover .card-body {
-    opacity: 1;
+  opacity: 1;
 }
 
 .card-title {
-    font-size: 0.75rem;
-    margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .price {
-    font-size: 1.25rem;
-    font-weight: bold;
+  font-size: 1.25rem;
+  font-weight: bold;
 }
 
 .add-to-cart {
-    font-size: 0.75rem;
-    padding: 0.5rem 1rem;
-    margin-top: 0.25rem;
+  font-size: 0.75rem;
+  padding: 0.5rem 1rem;
+  margin-top: 0.25rem;
 }
 
 .h-custom {
-    height: 100vh !important;
+  height: 100vh !important;
 }
 
-.cart{
-        width: 100%;
-        margin: 0;
-        height: calc(100vh - 81px);
-        overflow-x: hidden;
-   
+.cart {
+  width: 100%;
+  margin: 0;
+  height: calc(100vh - 81px);
+  overflow-x: hidden;
 }

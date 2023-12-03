@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import axiosClient from '../../lib/axios-client'
 
-export default function Billing({member}) {
+export default function Billing({ member }) {
   const [sessions, setSessions] = useState([])
 
   const sum = sessions.reduce((prev, curr) => prev + curr.session_cost, 0)
