@@ -1,16 +1,14 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
-import Notifications from '../components/Notifications'
 import logo from '../public/logo512.png'
-// import background from '../public/login.png'
 import { useAuthStore } from './stores/AuthStore'
 import ClientStats from '../components/ui/ClientStats'
 import { VideoBackground } from '../components/ui/VideoBackground'
 import 'bootstrap-icons/font/bootstrap-icons.css'
+import Notifications from './ui/Notifications'
 
-// import { ImageBackground } from '../../components/ui/ImageBackground'
 export default function AuthLayout() {
-  const { token, checkSession, error } = useAuthStore()
+  const { token, checkSession, messages, alert } = useAuthStore()
 
   useEffect(() => {
     checkSession()
@@ -24,13 +22,12 @@ export default function AuthLayout() {
     return (
       <>
         <VideoBackground />
-        {/* <div style={{ background: `url(${background})`, backgroundSize: 'cover' }}> */}
         <div className="login">
           <main className="px-4">
             <div className="form-signin position-relative">
               <div autoComplete="off" className={'mb-3 px-5 mx-4 text-secondary'}>
                 <div>
-                  <img src={logo} alt="" style={{ width: '4rem', height: '4rem' }} />
+                  <img src={logo} alt="" style={{ width: '8rem', height: '8rem' }} />
                 </div>
                 <Outlet />
               </div>
@@ -39,8 +36,8 @@ export default function AuthLayout() {
               </div>
             </div>
           </main>
-          {error ? <Notifications notifications={error} /> : ''}
           <ClientStats />
+          {messages && <Notifications messages={messages} alert={alert} />}
         </div>
       </>
     )

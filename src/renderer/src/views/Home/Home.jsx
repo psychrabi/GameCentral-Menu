@@ -16,7 +16,7 @@ const Home = () => {
 
   return (
     <>
-      <Header categories={categories} />
+      <Header categories={categories} page_title={'Favourites'} />
       <div className="games" id="favorite-games-container">
         <Grid
           games={favoriteGames?.filter((game) => {

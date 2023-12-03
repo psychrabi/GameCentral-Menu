@@ -16,7 +16,7 @@ function Applications() {
 
   return (
     <>
-      <Header categories={categories} />
+      <Header categories={categories} page_title={'All Applications'} />
       <div className="games" id="favorite-games-container">
         <Grid
           games={applications?.filter((apps) => {

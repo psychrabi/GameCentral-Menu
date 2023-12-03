@@ -1,28 +1,61 @@
-import { app, shell, BrowserWindow, dialog, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, dialog } from 'electron'
 import * as path from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
+// import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import './utils/ipc-handler'
 
-// const WebSocket = require('ws')
-// const ws = new WebSocket('ws://localhost:9000')
+// import fs from 'fs'
+
+// // const WebSocket = require('ws')
+// // const ws = new WebSocket('ws://localhost:9000')
+// const configPath = path.join(app.getPath('userData'), 'config.json')
+
+// function saveData(data) {
+//   const text = JSON.stringify(data)
+//   fs.writeFile(configPath, text, (err) => {
+//     if (err) {
+//       console.error(err)
+//     }
+//   })
+// }
+
+// function readData() {
+//   if (fs.existsSync(configPath)) {
+//     fs.readFile(configPath, 'utf8', (err, data) => {
+//       if (err) {
+//         console.error(err)
+//         return
+//       }
+//       // handle the json data here
+//       return JSON.parse(data)
+//     })
+//   } else {
+//     fs.writeFileSync(configPath, JSON.stringify(''), (err) => {
+//       if (err) {
+//         console.error(err)
+//       }
+//     })
+//   }
+// }
 
 function createWindow() {
   // Create the browser window.
+
   const mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 720,
+    width: 2400,
+    height: 1080,
     x: 0,
-    y: 0,
-    fullscreen: false,
+    y: 2400,
+    fullscreen: true,
     frame: false,
     kiosk: !app.isPackaged ? false : true,
+    alwaysOnTop: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux'
-      ? {
-          icon: path.join(__dirname, '../../build/icon.png')
-        }
-      : {}),
+    // ...(process.platform === 'linux'
+    //   ? {
+    //     icon: path.join(__dirname, '../../build/icon.png')
+    //   }
+    //   : {}),
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -33,6 +66,19 @@ function createWindow() {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+  })
+
+  mainWindow.on('close', (event) => {
+    const response = dialog.showMessageBoxSync(mainWindow, {
+      type: 'warning',
+      buttons: ['Yes', 'No'],
+      message: 'Do you really want to quit?'
+    })
+    if (response === 0) {
+      mainWindow.destroy()
+    } else if (response === 1) {
+      event.preventDefault()
+    }
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -48,16 +94,19 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
   }
 
-  mainWindow.webContents.on('will-prevent-unload', (event) => {
-    const options = {
-      type: 'question',
-      buttons: ['Cancel', 'Exit'],
-      message: 'Exit the program?',
-      detail: 'Changes that you made may not be saved.'
-    }
-    const response = dialog.showMessageBoxSync(null, options)
-    if (response === 1) event.preventDefault()
+  mainWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
+    callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } })
   })
+
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        'Access-Control-Allow-Origin': ['*'],
+        ...details.responseHeaders
+      }
+    })
+  })
+
   mainWindow.setMenu(null)
 
   mainWindow.webContents.on('before-input-event', (event, input) => {
@@ -96,9 +145,10 @@ app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.gamecentral')
 
-  installExtension(REACT_DEVELOPER_TOOLS)
-    .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log('An error occurred: ', err))
+  // TO DO: Get read dev tools working
+  // installExtension(REACT_DEVELOPER_TOOLS)
+  //   .then((name) => console.log(`Added Extension:  ${name}`))
+  //   .catch((err) => console.log('An error occurred: ', err))
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

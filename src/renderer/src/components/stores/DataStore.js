@@ -14,7 +14,8 @@ export const useDataStore = create(
       type: '',
       show: false,
       loading: false,
-      error: '',
+      error: null,
+      notification: null,
       fetchGames: async (center_id, token) => {
         set({ loading: true })
         try {
@@ -93,6 +94,12 @@ export const useDataStore = create(
         } catch (err) {
           set({ error: err.message, loading: false })
         }
+      },
+      setNotification: (message) => {
+        set({ notification: message })
+      },
+      setError: (message) => {
+        set({ error: message })
       }
     }),
     {

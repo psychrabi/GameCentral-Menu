@@ -1,13 +1,15 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import axiosClient from '../../lib/axios-client'
-import { updateData, submitData } from '../../utils/fetchData'
+import { updateData } from '../../utils/fetchData'
 
 export const useAuthStore = create(
   persist(
     (set, get) => ({
       loading: false,
-      error: null,
+      show: false,
+      messages: null,
+      alert: null,
       member: null,
       session: null,
       start_time: null,
@@ -26,16 +28,20 @@ export const useAuthStore = create(
             password: password
           }
           const response = await axiosClient.post('/members/login', payload)
-          console.log(response.data)
-          set({
-            loading: false,
-            error: null,
-            member: response.data.member,
-            session: response.data.session,
-            start_time: Date.now(),
-            token: response.data.token,
-            settings: response.data.settings
-          })
+          if (response && response.status === 200) {
+            set({
+              loading: false,
+              member: response.data.member,
+              session: response.data.session,
+              start_time: Date.now(),
+              token: response.data.token,
+              settings: response.data.settings
+            })
+            set({ messages: 'You have successfully logged in.', alert: 'success' })
+          } else {
+            console.log(response.data.message)
+            set({ messages: response.data.message, alert: 'danger' })
+          }
 
           const balance = get().member.balance
           const bonus_balance = get().member.bonus_balance
@@ -43,13 +49,14 @@ export const useAuthStore = create(
           set({ sessionType: sessionType })
 
           if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
-            set({ error: 'Not enough balance. Please top up your account.' })
+            set({ messages: 'Not enough balance. Please top up your account.', alert: 'danger' })
             return
           }
           const credit = get().member.credit
           if (credit > 30) {
             set({
-              error: `You have ${credit} credit to be paid. Please pay it first.`,
+              messages: `You have ${credit} credit to be paid. Please pay it first.`,
+              alert: 'info',
               loading: false
             })
             return
@@ -62,7 +69,7 @@ export const useAuthStore = create(
           localStorage.setItem('settings', JSON.stringify(get().settings))
           localStorage.setItem('sessionType', JSON.stringify(get().sessionType))
         } catch (err) {
-          set({ error: err.response.data.message, loading: false })
+          set({ messages: err.response.data.message, loading: false, alert: 'danger' })
         }
       },
       authenticateAdmin: async (license, username, password) => {
@@ -77,7 +84,8 @@ export const useAuthStore = create(
           console.log(response)
           set({
             loading: false,
-            error: 'Center account set.',
+            messages: 'Center account set.',
+            alert: 'success',
             center_id: response.data.user.id,
             center_name: response.data.user.name,
             admin_token: response.data.token
@@ -86,7 +94,7 @@ export const useAuthStore = create(
           localStorage.setItem('center_id', JSON.stringify(response.data.user.id))
           localStorage.setItem('center_name', JSON.stringify(response.data.user.name))
         } catch (err) {
-          set({ error: err.response.data.message, loading: false })
+          set({ messages: err.response.data.message, loading: false, alert: 'danger' })
         }
       },
       updateMember: async (id, updatedMember) => {
@@ -96,14 +104,29 @@ export const useAuthStore = create(
           console.log(data)
           set({
             loading: false,
-            error: null,
+            messages: 'FYour profile is successfully updated.',
             member: updatedMember
           })
           localStorage.setItem('member', JSON.stringify(get().member))
         } catch (err) {
-          set({ error: err.response.data.message, loading: false })
+          set({ messages: err.response.data.message, loading: false, alert: 'danger' })
         }
       },
+      // updatePassword: async (id, newPassword) => {
+      //   set({ loading: true })
+      //   try {
+      //     const data = await updateData(`/members/${id}`, newPassword)
+      //     console.log(data)
+      //     set({
+      //       loading: false,
+      //       error: null,
+      //       member: updatedMember
+      //     })
+      //     localStorage.setItem('member', JSON.stringify(get().member))
+      //   } catch (err) {
+      //     set({ error: err.response.data.message, loading: false })
+      //   }
+      // },
       checkCenterID: () => {
         if (localStorage.getItem('center_id')) {
           console.log(JSON.parse(localStorage.getItem('center_id')))
@@ -142,6 +165,7 @@ export const useAuthStore = create(
           localStorage.removeItem('settings')
           set({ member: null, session: null, sessionType: null, start_time: null, token: null })
         })
+        set({ messages: 'You have successfully logged out', alert: 'success' })
       }
     }),
     {

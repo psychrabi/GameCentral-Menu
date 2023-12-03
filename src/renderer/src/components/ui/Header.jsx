@@ -3,11 +3,11 @@ import { useCallback, useState } from 'react'
 import Filter from '../form/Search.jsx'
 import { useDataStore } from '../stores/DataStore.js'
 
-const Header = ({ categories }) => {
+const Header = ({ categories, page_title }) => {
   const setType = useDataStore((state) => state.setType)
   // const token = useAuthStore((state) => state.token)
   const setFilter = useDataStore((state) => state.setFilter)
-  const [title, setTitle] = useState(['All Games'])
+  const [title, setTitle] = useState(page_title)
 
   const handleCategoriesChange = useCallback((event) => {
     let index = event.target.selectedIndex
@@ -321,7 +321,8 @@ const Header = ({ categories }) => {
 }
 
 Header.propTypes = {
-  categories: PropTypes.array
+  categories: PropTypes.array,
+  page_title: PropTypes.string
 }
 
 export default Header

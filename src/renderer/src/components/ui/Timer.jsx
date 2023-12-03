@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAuthStore } from '../stores/AuthStore'
 // eslint-disable-next-line react/prop-types
 export const Timer = () => {
-  const { start_time, member, logout, setNotifications } = useAuthStore()
+  const { start_time, member, logout, setNotification } = useAuthStore()
   const [durationString, setDurationString] = useState('00:00:00')
   // const [sessionDuration, setSessionDuration] = useState(0)
   const [cost, setCost] = useState('0.00')
@@ -37,23 +37,23 @@ export const Timer = () => {
       const durationInSeconds = calculateDurationInSeconds()
       const string = secondsToHms(durationInSeconds.toFixed(0))
       setDurationString(string)
-    }, 1000)
+    }, 5000)
 
     const intervalId2 = setInterval(() => {
       const durationInSeconds = calculateDurationInSeconds()
 
       const cost = calculateCost(durationInSeconds)
       setCost(cost)
-    }, 5000)
+    }, 15000)
 
     const intervalId3 = setInterval(() => {
       if (cost > member.balance + member.bonus_balance) {
-        setNotifications(
+        setNotification(
           'Your session cost is higher than balance. Difference will be added to credit'
         )
       }
       if (cost > member.balance + member.bonus_balance + 30) {
-        setNotifications(
+        setNotification(
           'Your credit is more than 30. You will be logged out shortly and will not be able to login before clearing your credit.'
         )
         logout(COST_PER_HOUR)

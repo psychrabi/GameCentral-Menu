@@ -30,55 +30,53 @@ export default function AdminLogin() {
     return <Navigate to="/login" />
   } else if (!token) {
     return (
-      <>
-        <form onSubmit={onSubmit} autoComplete="off" className={'mb-3'}>
-          <h4 className="h4 mb-3 fw-normal text-light">Please sign in</h4>
-          <div className="form-floating">
-            <input
-              type="text"
-              className="form-control"
-              ref={licenseRef}
-              id="login-user"
-              placeholder="License"
-            />
-            <label htmlFor="login-user">License</label>
-          </div>
-          <div className="form-floating">
-            <input
-              type="text"
-              className="form-control"
-              ref={usernameRef}
-              id="email"
-              placeholder="Username or Email address"
-            />
-            <label htmlFor="login-user">Username or Email</label>
-          </div>
-          <div className="form-floating">
-            <input
-              type="password"
-              className="form-control"
-              ref={passwordRef}
-              placeholder="Password"
-            />
-            <label htmlFor="password">Password</label>
-          </div>
+      <form onSubmit={onSubmit} autoComplete="off" className={'mb-3'}>
+        <h4 className="h4 mb-3 fw-normal text-light">Please sign in</h4>
+        <div className="form-floating">
+          <input
+            type="text"
+            className="form-control"
+            ref={licenseRef}
+            id="login-user"
+            placeholder="License"
+          />
+          <label htmlFor="login-user">License</label>
+        </div>
+        <div className="form-floating">
+          <input
+            type="text"
+            className="form-control"
+            ref={usernameRef}
+            id="email"
+            placeholder="Username or Email address"
+          />
+          <label htmlFor="login-user">Username or Email</label>
+        </div>
+        <div className="form-floating">
+          <input
+            type="password"
+            className="form-control"
+            ref={passwordRef}
+            placeholder="Password"
+          />
+          <label htmlFor="password">Password</label>
+        </div>
 
-          <button className="w-100 btn btn-lg btn-primary" type="submit" disabled={loading}>
-            {loading ? (
-              <>
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-                Signing in...
-              </>
-            ) : (
-              'Sign in'
-            )}
-          </button>
-        </form>
-      </>
+        <button className="w-100 btn btn-lg btn-primary" type="submit" disabled={loading}>
+          {loading ? (
+            <>
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Signing in...
+            </>
+          ) : (
+            'Sign in'
+          )}
+        </button>
+      </form>
     )
   } else {
     return <Navigate to="/" />

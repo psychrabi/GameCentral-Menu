@@ -12,6 +12,7 @@ export default function Profile() {
 
   function onSubmit(ev) {
     ev.preventDefault()
+    console.log(member)
     updateMember(member.id, token, updatedMember)
   }
 

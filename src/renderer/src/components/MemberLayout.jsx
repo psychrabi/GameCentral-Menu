@@ -1,16 +1,13 @@
 import { Navigate, NavLink, Outlet } from 'react-router-dom'
-import Notifications from './Notifications'
 import { useAuthStore } from './stores/AuthStore'
-import { useDataStore } from './stores/DataStore'
 import Details from './ui/Details'
 import { Loading } from './ui/Loading'
 import Navigation from './ui/Navigation'
 import { Timer } from './ui/Timer'
+import Notifications from './ui/Notifications'
 
 export default function MemberLayout() {
-  const { token, loading } = useAuthStore()
-
-  const { show, error, notifications } = useDataStore()
+  const { token, loading, show, messages, alert } = useAuthStore()
 
   if (!token) {
     return <Navigate to="/login" />
@@ -19,13 +16,6 @@ export default function MemberLayout() {
   if (loading) {
     return <Loading />
   }
-  if (error) {
-    return <Notifications notifications={error} />
-  }
-  if (notifications) {
-    return <Notifications notifications={notifications} />
-  }
-
   return (
     <>
       <header className="draggable">
@@ -52,6 +42,7 @@ export default function MemberLayout() {
           </div>
         </main>
         {show && <Details />}
+        {messages && <Notifications messages={messages} alert={alert} />}
       </div>
     </>
   )

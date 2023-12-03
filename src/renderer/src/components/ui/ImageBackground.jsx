@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
 export const ImageBackground = ({ images }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -28,4 +29,7 @@ export const ImageBackground = ({ images }) => {
   }
 
   return <img style={style} />
+}
+ImageBackground.propTypes = {
+  images: PropTypes.any
 }

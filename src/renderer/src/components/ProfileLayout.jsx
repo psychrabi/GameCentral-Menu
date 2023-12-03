@@ -8,7 +8,7 @@ export default function ProfileLayout() {
       <div className="card mt-2">
         <div className="container-fluid px-4 mt-4">
           <nav className="nav nav-borders">
-            <NavLink className="nav-link ms-0" to="/profile/profile">
+            <NavLink className="nav-link ms-0" to="/profile/details">
               Profile
             </NavLink>
             <NavLink className="nav-link" to="/profile/billing">

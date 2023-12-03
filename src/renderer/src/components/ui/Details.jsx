@@ -7,7 +7,7 @@ import { useDataStore } from '../stores/DataStore.js'
 import { useAuthStore } from '../stores/AuthStore.js'
 
 const Details = () => {
-  const { show, game, setShow, setNotifications } = useDataStore()
+  const { show, game, setShow, setNotification, setError } = useDataStore()
   const [running, setRunning] = useState(false)
   const { member, token } = useAuthStore()
 
@@ -28,22 +28,22 @@ const Details = () => {
     axiosClient
       .post('/favoriteGame', payload)
       .then((response) => {
-        console.log(response.status)
+        // console.log(response.status)
         if (response.status === 204) {
-          setNotifications(game.name + ' : removed from favorites')
+          setNotification(game.name + ' : removed from favorites')
           localStorage.setItem(
             'favorite_games',
             JSON.stringify(favorite_games.filter((g) => g.id !== game.id))
           )
         } else {
-          setNotifications(game.name + ' : added to favorites')
+          setNotification(game.name + ' : added to favorites')
           localStorage.setItem('favorite_games', JSON.stringify([...favorite_games, game]))
         }
         setShow(false)
       })
       .catch((error) => {
         console.log(error.message)
-        setNotifications('Favorite game status couldnot be changed for ' + game.name)
+        setError('Favorite game status couldnot be changed for ' + game.name)
       })
   }, [])
 
@@ -53,7 +53,7 @@ const Details = () => {
         window.api.launchExecutable(filePath).then((response) => setRunning(response))
       } else {
         setRunning(false)
-        setNotifications('Game executable missing')
+        setError('Game executable missing')
       }
       // console.log('game lauched')
     })

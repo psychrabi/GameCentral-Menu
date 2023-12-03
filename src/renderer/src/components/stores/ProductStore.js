@@ -11,9 +11,10 @@ export const useProductStore = create(
       singleProduct: {},
       type: '',
       paymentMode: '',
-      taxRate: 0.13, // 13% by default
+      taxRate: 0.15, // 13% by default
       show: false,
       loading: false,
+      notification: null,
       error: null,
       fetchProducts: async (center_id, token) => {
         try {
@@ -24,18 +25,26 @@ export const useProductStore = create(
           set({ error: err.message, loading: false })
         }
       },
+      subTotal: () =>
+        get().cart.reduce((total, item) => total + item.sales_price * item.quantity, 0),
+      tax: () => get().subTotal() * get().taxRate,
+      total: () => get().subTotal() + get().tax(),
       addToCart: (id) => {
         const item = get().products.find((product) => product.id === id)
         const inCart = get().cart.find((item) => (item.id === id ? true : false))
-        // console.log('here', item)
-        set((state) => ({
-          cart: inCart
-            ? state.cart.map((item) =>
-                item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-              )
-            : [...state.cart, { ...item, quantity: 1 }]
-        }))
-        // console.log('cart', get().cart)
+        if (inCart && item.stock == inCart.quantity) {
+          set({ error: 'Product quatity exceed' })
+        } else {
+          set((state) => ({
+            cart: inCart
+              ? state.cart.map((item) =>
+                  item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+                )
+              : [...state.cart, { ...item, quantity: 1 }]
+          }))
+        }
+
+        console.log(get().cart)
       },
       removeFromCart: (id) => {
         const item = get().cart.find((item) => item.id === id)

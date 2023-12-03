@@ -1,4 +1,28 @@
+import { useEffect, useState } from 'react'
+import { useAuthStore } from '../../components/stores/AuthStore'
+import { Loading } from '../../components/ui/Loading'
+
 export default function Security() {
+  const { member, error, loading, updateMember, token } = useAuthStore()
+  const [updatedMember, setUpdatedMember] = useState(member)
+
+  useEffect(() => {
+    console.log(updatedMember)
+  }, [updatedMember])
+
+  function onSubmit(ev) {
+    ev.preventDefault()
+    updateMember(member.id, token, updatedMember)
+  }
+
+  if (loading) {
+    return <Loading />
+  }
+
+  if (error) {
+    console.log(error)
+  }
+
   return (
     <>
       <div className="row">
@@ -6,7 +30,7 @@ export default function Security() {
           <div className="card mb-4">
             <div className="card-header">Change Password</div>
             <div className="card-body">
-              <form>
+              <form onSubmit={onSubmit}>
                 <div className="mb-3">
                   <label className="small mb-1" htmlFor="currentPassword">
                     Current Password
@@ -16,7 +40,9 @@ export default function Security() {
                     id="currentPassword"
                     type="password"
                     placeholder="Enter current password"
-                    onChange={(ev) => setMember({ ...member, current_password: ev.target.value })}
+                    onChange={(ev) =>
+                      setUpdatedMember({ ...updatedMember, current_password: ev.target.value })
+                    }
                   />
                 </div>
                 <div className="mb-3">
@@ -28,7 +54,9 @@ export default function Security() {
                     id="newPassword"
                     type="password"
                     placeholder="Enter new password"
-                    onChange={(ev) => setMember({ ...member, password: ev.target.value })}
+                    onChange={(ev) =>
+                      setUpdatedMember({ ...updatedMember, password: ev.target.value })
+                    }
                   />
                 </div>
                 <div className="mb-3">
@@ -41,7 +69,7 @@ export default function Security() {
                     type="password"
                     placeholder="Confirm new password"
                     onChange={(ev) =>
-                      setMember({ ...member, password_confirmation: ev.target.value })
+                      setUpdatedMember({ ...updatedMember, password_confirmation: ev.target.value })
                     }
                   />
                 </div>

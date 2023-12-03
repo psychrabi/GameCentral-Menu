@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types'
 import { useAuthStore } from '../../components/stores/AuthStore'
 import { useProductStore } from '../../components/stores/ProductStore'
 import { PaymentModes } from '../../components/ui/PaymentModes'
@@ -6,12 +5,13 @@ import { formatCurrency } from '../../utils/formatCurrency'
 
 const Cart = () => {
   const { member } = useAuthStore()
-  const { cart, addToCart, removeFromCart, clearCart, checkOut, taxRate } = useProductStore()
-  const subTotal = parseFloat(
-    cart.reduce((acc, item) => acc + item.sales_price * item.quantity, 0)
-  ).toFixed(2)
-  const tax = parseFloat(subTotal * 0.13).toFixed(2)
-  const total = parseFloat(subTotal + tax).toFixed(2)
+  const { cart, addToCart, removeFromCart, clearCart, checkOut, taxRate, subTotal, tax, total } =
+    useProductStore()
+  // const subTotal = parseFloat(
+  //   cart.reduce((acc, item) => acc + item.sales_price * item.quantity, 0)
+  // ).toFixed(2)
+  // const tax = parseFloat(subTotal * 0.13).toFixed(2)
+  // const total = parseFloat(subTotal + tax).toFixed(2)
 
   return (
     <div className="w-25 sticky-top overflow-y z-0">
@@ -74,17 +74,17 @@ const Cart = () => {
             <div className="pb-3">
               <div className="d-flex justify-content-between">
                 <p className="mb-2  fw-semibold">Subtotal</p>
-                <p className="mb-2">{formatCurrency(subTotal)}</p>
+                <p className="mb-2">{formatCurrency(subTotal())}</p>
               </div>
 
               <div className="d-flex justify-content-between">
                 <p className="mb-0  fw-semibold">Tax ({taxRate * 100}%)</p>
-                <p className="mb-0">{formatCurrency(tax)}</p>
+                <p className="mb-0">{formatCurrency(tax())}</p>
               </div>
               <hr className="my-2" />
               <div className="d-flex justify-content-between mb-4">
                 <p className="mb-2  fw-semibold">Total</p>
-                <p className="mb-2">{formatCurrency(total)}</p>
+                <p className="mb-2">{formatCurrency(total())}</p>
               </div>
               <div className="d-grid">
                 <button

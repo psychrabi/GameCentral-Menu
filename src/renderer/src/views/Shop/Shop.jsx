@@ -1,17 +1,16 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useAuthStore } from '../../components/stores/AuthStore'
 import { useDataStore } from '../../components/stores/DataStore'
 import { useProductStore } from '../../components/stores/ProductStore'
 import Header from '../../components/ui/Header'
 import categories from '../../data/ProductTypes.json'
-import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage'
 import Cart from './Cart'
 import Products from './Products'
 
 export default function Shop() {
   const { token, member } = useAuthStore()
   const { filter, type } = useDataStore()
-  const { fetchProducts, products, cart } = useProductStore()
+  const { fetchProducts, products, cart, error } = useProductStore()
 
   useEffect(() => {
     fetchProducts(member.center_id, token)
@@ -22,7 +21,7 @@ export default function Shop() {
     <>
       <div className="d-flex">
         <div className={cart.length > 0 ? 'w-75 pe-3' : 'w-100'}>
-          <Header categories={categories} />
+          <Header categories={categories} page_title={'All Products'} />
           <Products
             products={products?.filter((product) => {
               if (filter) {
