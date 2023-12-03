@@ -14,6 +14,7 @@ export const useAuthStore = create(
       session: null,
       start_time: null,
       type: '',
+      client_details: null,
       token: null,
       admin_token: null,
       settings: null,
@@ -166,6 +167,19 @@ export const useAuthStore = create(
           set({ member: null, session: null, sessionType: null, start_time: null, token: null })
         })
         set({ messages: 'You have successfully logged out', alert: 'success' })
+      },
+      checkClientInfo: async () => {
+        let info = await window.api.getSystemInfo()
+        set({
+          client_details: {
+            cpu: info.cpu.manufacturer + ' ' + info.cpu.brand,
+            graphics: info.graphics.controllers.filter((controller) => controller.vram > 0)[0]
+              .model,
+            ram: (info.mem.total / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
+            os: info.osInfo.distro + ' build ' + info.osInfo.build,
+            ip4: info.networkInterfaces[0].ip4
+          }
+        })
       }
     }),
     {

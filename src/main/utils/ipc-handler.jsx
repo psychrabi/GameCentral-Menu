@@ -4,13 +4,11 @@ const si = require('systeminformation')
 const fs = require('fs')
 const spawn = require('child_process').spawn
 const systemInfo = {
-  baseboard: 'manufacturer, model',
   cpu: 'manufacturer, brand',
-  graphics: 'controllers, displays',
+  graphics: 'controllers',
   mem: 'total',
-  networkInterfaces: 'ip4, mac, speed, default',
-  osInfo: 'distro, build, uefi, hostname',
-  uuid: 'hardware'
+  networkInterfaces: 'ip4, default',
+  osInfo: 'distro, build'
 }
 
 //Getting client system info
