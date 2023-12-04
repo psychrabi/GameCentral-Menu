@@ -5,9 +5,11 @@ import { Loading } from './ui/Loading'
 import Navigation from './ui/Navigation'
 import { Timer } from './ui/Timer'
 import Notifications from './ui/Notifications'
+import { useDataStore } from './stores/DataStore'
 
 export default function MemberLayout() {
-  const { token, loading, show, messages, alert } = useAuthStore()
+  const { token, loading, messages, alert } = useAuthStore()
+  const { show, error, notifications } = useDataStore()
 
   if (!token) {
     return <Navigate to="/login" />
