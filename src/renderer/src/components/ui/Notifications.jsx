@@ -7,7 +7,7 @@ export const Notifications = ({ messages, alert }) => {
   useEffect(() => {
     const closeNotification = setTimeout(() => {
       setShow(false)
-    }, 5000)
+    }, 2000)
 
     return () => {
       clearInterval(closeNotification)
@@ -24,7 +24,7 @@ export const Notifications = ({ messages, alert }) => {
           aria-live="assertive"
           aria-atomic="true"
           data-bs-autohide={'true'}
-          data-bs-delay="2000"
+          data-bs-delay="1000"
         >
           <div className="toast-body text-light">
             {Object.keys(messages).map((key) => (
