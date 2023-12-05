@@ -60,7 +60,7 @@ const Details = () => {
   }, [])
 
   // useEffect(() => {
-  //   window.api.executableExited()
+    //   window.api.executableExited()
   // }, [])
 
   return (
@@ -72,12 +72,23 @@ const Details = () => {
     >
       <div
         style={{
-          background: `url(${game?.screenshots[2]})`,
+          background: `url(${game?.videos == null ? game?.screenshots[2] : ''})`,
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover'
         }}
         className="h-100"
       >
+        {/* {game?.videos && <video
+          className="video"
+          autoPlay
+          muted
+          playsInline
+          loop
+
+        >
+          <source type="video/mp4" src={'src/public/videos/video-1.mp4'} id="url-video" />
+        </video>} */}
+
         {/* <video autoPlay muted loop id="myVideo">
           <source src="../../public/videos/video-1.mp4" type="video/mp4" />
         </video> */}

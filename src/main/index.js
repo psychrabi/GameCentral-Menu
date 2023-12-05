@@ -42,11 +42,11 @@ function createWindow() {
   // Create the browser window.
 
   const mainWindow = new BrowserWindow({
-    width: 2400,
-    height: 1080,
+    width: 1366,
+    height: 720,
     x: 0,
-    y: 2400,
-    fullscreen: true,
+    y: 0,
+    fullscreen: false,
     frame: false,
     kiosk: !app.isPackaged ? false : true,
     alwaysOnTop: false,

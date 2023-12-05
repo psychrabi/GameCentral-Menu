@@ -8,10 +8,14 @@ import Notifications from './ui/Notifications'
 import { useDataStore } from './stores/DataStore'
 
 export default function MemberLayout() {
-  const { token, loading, messages, alert } = useAuthStore()
+  const { token, loading, messages, alert, center_id } = useAuthStore()
   const { show, error, notifications } = useDataStore()
 
-  if (!token) {
+  if (!center_id) {
+    console.log('no center id')
+    return <Navigate to="/admin" />
+  } else if (!token) {
+    console.log('Member not logged in ')
     return <Navigate to="/login" />
   }
 

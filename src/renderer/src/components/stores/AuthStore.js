@@ -82,20 +82,23 @@ export const useAuthStore = create(
             password: password
           }
           const response = await axiosClient.post('/login', payload)
-          console.log(response)
+
           set({
             loading: false,
             messages: 'Center account set.',
             alert: 'success',
             center_id: response.data.user.id,
             center_name: response.data.user.name,
-            admin_token: response.data.token
+            admin_token: response.data.token,
+            settings: [response.data.settings]
           })
-          localStorage.setItem('admin_token', JSON.stringify({ token: response.data.token }))
-          localStorage.setItem('center_id', JSON.stringify(response.data.user.id))
-          localStorage.setItem('center_name', JSON.stringify(response.data.user.name))
+          localStorage.setItem('admin_token', response.data.token)
+          localStorage.setItem('center_id', response.data.user.id)
+          localStorage.setItem('center_name', response.data.user.name)
+          localStorage.setItem('settings', JSON.stringify(response.data.settings))
+
         } catch (err) {
-          set({ messages: err.response.data.message, loading: false, alert: 'danger' })
+          set({ messages: 'Failed to login', loading: false, alert: 'danger' })
         }
       },
       updateMember: async (id, updatedMember) => {
@@ -151,10 +154,10 @@ export const useAuthStore = create(
       logout: async (cost_per_hour) => {
         const total_time = (Date.now() - get().start_time) / 1000 //in seconds
         const usage_details = {
-          session_cost: ((total_time / (60 * 60)) * cost_per_hour).toFixed(2),
+          session_id: get().session.id,
           total_time: total_time,
           sessionType: get().sessionType,
-          session_id: get().session.id
+          session_cost: ((total_time / (60 * 60)) * cost_per_hour).toFixed(2)
         }
         axiosClient.defaults.headers.common['Authorization'] = `Bearer ${get().token}`
         axiosClient.post('/members/logout', usage_details).then(() => {
@@ -163,7 +166,6 @@ export const useAuthStore = create(
           localStorage.removeItem('session')
           localStorage.removeItem('start_time')
           localStorage.removeItem('data')
-          localStorage.removeItem('settings')
           set({ member: null, session: null, sessionType: null, start_time: null, token: null })
         })
         set({ messages: 'You have successfully logged out', alert: 'success' })
