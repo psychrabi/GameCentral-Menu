@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
-export const Notifications = ({ messages, alert }) => {
+export const Notifications = ({ messages, alert, setMessages, setAlert }) => {
   const [show, setShow] = useState(true)
 
   useEffect(() => {
     const closeNotification = setTimeout(() => {
       setShow(false)
+      setMessages(null)
+      setAlert(null)
     }, 2000)
 
     return () => {
@@ -39,7 +41,10 @@ export const Notifications = ({ messages, alert }) => {
 
 Notifications.propTypes = {
   messages: PropTypes.any,
-  alert: PropTypes.string
+  alert: PropTypes.string,
+  setMessages: PropTypes.func,
+  setAlert: PropTypes.func
+
 }
 
 export default Notifications

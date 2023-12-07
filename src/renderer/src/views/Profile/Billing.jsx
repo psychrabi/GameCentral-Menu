@@ -12,7 +12,7 @@ export default function Billing({ member }) {
   }, [])
   return (
     <>
-      <div className="row">
+      {/* <div className="row">
         <div className="col-lg-4 mb-4">
           <div className="card h-100 border-start-lg border-start-primary">
             <div className="card-body">
@@ -91,61 +91,6 @@ export default function Billing({ member }) {
             </div>
           </div>
         </div>
-      </div>
-      {/* <div className="card card-header-actions mb-4">
-        <div className="card-header">
-          Payment Methods
-          <button className="btn btn-sm btn-primary" type="button">
-            Add Payment Method
-          </button>
-        </div>
-        <div className="card-body px-0">
-          <div className="d-flex align-items-center justify-content-between px-4">
-            <div className="d-flex align-items-center">
-              <i className="fab fa-cc-visa fa-2x cc-color-visa"></i>
-              <div className="ms-4">
-                <div className="small">Visa ending in 1234</div>
-                <div className="text-xs text-muted">Expires 04/2024</div>
-              </div>
-            </div>
-            <div className="ms-4 small">
-              <div className="badge bg-light text-dark me-3">Default</div>
-              <a href="#!">Edit</a>
-            </div>
-          </div>
-          <hr />
-          <div className="d-flex align-items-center justify-content-between px-4">
-            <div className="d-flex align-items-center">
-              <i className="fab fa-cc-mastercard fa-2x cc-color-mastercard"></i>
-              <div className="ms-4">
-                <div className="small">Mastercard ending in 5678</div>
-                <div className="text-xs text-muted">Expires 05/2022</div>
-              </div>
-            </div>
-            <div className="ms-4 small">
-              <a className="text-muted me-3" href="#!">
-                Make Default
-              </a>
-              <a href="#!">Edit</a>
-            </div>
-          </div>
-          <hr />
-          <div className="d-flex align-items-center justify-content-between px-4">
-            <div className="d-flex align-items-center">
-              <i className="fab fa-cc-amex fa-2x cc-color-amex"></i>
-              <div className="ms-4">
-                <div className="small">American Express ending in 9012</div>
-                <div className="text-xs text-muted">Expires 01/2026</div>
-              </div>
-            </div>
-            <div className="ms-4 small">
-              <a className="text-muted me-3" href="#!">
-                Make Default
-              </a>
-              <a href="#!">Edit</a>
-            </div>
-          </div>
-        </div>
       </div> */}
       <div className="card mb-4">
         <div className="card-header">Billing History</div>
@@ -155,34 +100,28 @@ export default function Billing({ member }) {
               <thead>
                 <tr>
                   <th className="border-gray-200" scope="col">
-                    Start Time
+                    Session Start
                   </th>
                   <th className="border-gray-200" scope="col">
-                    End Time
+                    Session End
                   </th>
                   <th className="border-gray-200" scope="col">
-                    Duration
+                    Usage
                   </th>
                   <th className="border-gray-200" scope="col">
-                    Session Cost
-                  </th>
-                  <th className="border-gray-200" scope="col">
-                    Status
+                    Paid
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {sessions.map((session) => (
+                {sessions?.map((session) => (
                   <tr key={session.id}>
-                    <td>{session.start_time}</td>
-                    <td>{session.end_time}</td>
-                    <td>{session.total_time}</td>
-                    <td>$ {session.session_cost}</td>
+                    <td>{new Date(session.start_time).toLocaleString()}</td>
                     <td>
-                      <span className={`badge ${session.end_time ? 'bg-success' : 'bg-primary'}`}>
-                        {session.end_time ? 'Ended' : 'On-going'}
-                      </span>
+                      {session.end_time ? new Date(session.end_time).toLocaleString() : 'On-going'}
                     </td>
+                    <td>{session.total_time % 60} minutes</td>
+                    <td>$ {session.session_cost}</td>
                   </tr>
                 ))}
               </tbody>

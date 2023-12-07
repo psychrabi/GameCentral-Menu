@@ -24,7 +24,6 @@ const Header = ({ categories, page_title }) => {
       <div className="d-flex">
         <Filter categories={categories} handleCategoriesChange={handleCategoriesChange} />
       </div>
-
     </div>
   )
 }

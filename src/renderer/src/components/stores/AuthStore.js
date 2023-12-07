@@ -39,38 +39,39 @@ export const useAuthStore = create(
               settings: response.data.settings
             })
             set({ messages: 'You have successfully logged in.', alert: 'success' })
-          } else {
-            console.log(response.data.message)
-            set({ messages: response.data.message, alert: 'danger' })
-          }
 
-          const balance = get().member.balance
-          const bonus_balance = get().member.bonus_balance
-          const sessionType = balance > 0 || bonus_balance > 0 ? 'balance' : 'credit'
-          set({ sessionType: sessionType })
+            const balance = get().member.balance
+            const bonus_balance = get().member.bonus_balance
+            const sessionType = balance > 0 || bonus_balance > 0 ? 'balance' : 'credit'
+            set({ sessionType: sessionType })
 
-          if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
-            set({ messages: 'Not enough balance. Please top up your account.', alert: 'danger' })
-            return
-          }
-          const credit = get().member.credit
-          if (credit > 30) {
-            set({
-              messages: `You have ${credit} credit to be paid. Please pay it first.`,
-              alert: 'info',
-              loading: false
-            })
-            return
-          }
+            if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
+              set({ messages: 'Not enough balance. Please top up your account.', alert: 'danger' })
+              return
+            }
+            const credit = get().member.credit
+            if (credit > 30) {
+              set({
+                messages: `You have ${credit} credit to be paid. Please pay it first.`,
+                alert: 'info',
+                loading: false
+              })
+              return
+            }
 
-          localStorage.setItem('token', JSON.stringify({ token: get().token }))
-          localStorage.setItem('member', JSON.stringify(get().member))
-          localStorage.setItem('session', JSON.stringify(get().session))
-          localStorage.setItem('start_time', JSON.stringify(get().start_time))
-          localStorage.setItem('settings', JSON.stringify(get().settings))
-          localStorage.setItem('sessionType', JSON.stringify(get().sessionType))
+            localStorage.setItem('token', JSON.stringify({ token: get().token }))
+            localStorage.setItem('member', JSON.stringify(get().member))
+            localStorage.setItem('session', JSON.stringify(get().session))
+            localStorage.setItem('start_time', JSON.stringify(get().start_time))
+            localStorage.setItem('settings', JSON.stringify(get().settings))
+            localStorage.setItem('sessionType', JSON.stringify(get().sessionType))
+          }
         } catch (err) {
-          set({ messages: err.response.data.message, loading: false, alert: 'danger' })
+          set({
+            messages: 'Login couldnot proceed due to network error.',
+            loading: false,
+            alert: 'danger'
+          })
         }
       },
       authenticateAdmin: async (license, username, password) => {
@@ -92,11 +93,10 @@ export const useAuthStore = create(
             admin_token: response.data.token,
             settings: [response.data.settings]
           })
-          localStorage.setItem('admin_token', response.data.token)
-          localStorage.setItem('center_id', response.data.user.id)
-          localStorage.setItem('center_name', response.data.user.name)
+          localStorage.setItem('admin_token', JSON.stringify(response.data.token))
+          localStorage.setItem('center_id', JSON.stringify(response.data.user.id))
+          localStorage.setItem('center_name', JSON.stringify(response.data.user.name))
           localStorage.setItem('settings', JSON.stringify(response.data.settings))
-
         } catch (err) {
           set({ messages: 'Failed to login', loading: false, alert: 'danger' })
         }
@@ -116,30 +116,14 @@ export const useAuthStore = create(
           set({ messages: err.response.data.message, loading: false, alert: 'danger' })
         }
       },
-      // updatePassword: async (id, newPassword) => {
-      //   set({ loading: true })
-      //   try {
-      //     const data = await updateData(`/members/${id}`, newPassword)
-      //     console.log(data)
-      //     set({
-      //       loading: false,
-      //       error: null,
-      //       member: updatedMember
-      //     })
-      //     localStorage.setItem('member', JSON.stringify(get().member))
-      //   } catch (err) {
-      //     set({ error: err.response.data.message, loading: false })
-      //   }
-      // },
+
       checkCenterID: () => {
         if (localStorage.getItem('center_id')) {
-          console.log(JSON.parse(localStorage.getItem('center_id')))
           set({ center_id: JSON.parse(localStorage.getItem('center_id')) })
         }
       },
       checkSession: () => {
         if (localStorage.getItem('token')) {
-          console.log(JSON.parse(localStorage.getItem('token')).token)
           set({ token: JSON.parse(localStorage.getItem('token')).token })
         }
         if (localStorage.getItem('member'))
@@ -182,7 +166,28 @@ export const useAuthStore = create(
             ip4: info.networkInterfaces[0].ip4
           }
         })
+      },
+      setMessages: (message) => {
+        set({ messages: message })
+      },
+      setAlert: (type) => {
+        set({ alert: type })
       }
+      // updatePassword: async (id, newPassword) => {
+      //   set({ loading: true })
+      //   try {
+      //     const data = await updateData(`/members/${id}`, newPassword)
+      //     console.log(data)
+      //     set({
+      //       loading: false,
+      //       error: null,
+      //       member: updatedMember
+      //     })
+      //     localStorage.setItem('member', JSON.stringify(get().member))
+      //   } catch (err) {
+      //     set({ error: err.response.data.message, loading: false })
+      //   }
+      // }
     }),
     {
       name: 'auth-storage',

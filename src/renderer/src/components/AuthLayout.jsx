@@ -8,7 +8,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import Notifications from './ui/Notifications'
 
 export default function AuthLayout() {
-  const { token, checkSession, messages, alert } = useAuthStore()
+  const { token, checkSession, messages, alert, setMessages, setAlert } = useAuthStore()
 
   useEffect(() => {
     checkSession()
@@ -37,7 +37,14 @@ export default function AuthLayout() {
             </div>
           </main>
           <ClientStats />
-          {messages && <Notifications messages={messages} alert={alert} />}
+          {messages && (
+            <Notifications
+              messages={messages}
+              setMessages={setMessages}
+              alert={alert}
+              setAlert={setAlert}
+            />
+          )}
         </div>
       </>
     )

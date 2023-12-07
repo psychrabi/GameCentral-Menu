@@ -1,42 +1,7 @@
 import { app, shell, BrowserWindow, dialog } from 'electron'
 import * as path from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-// import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import './utils/ipc-handler'
-
-// import fs from 'fs'
-
-// // const WebSocket = require('ws')
-// // const ws = new WebSocket('ws://localhost:9000')
-// const configPath = path.join(app.getPath('userData'), 'config.json')
-
-// function saveData(data) {
-//   const text = JSON.stringify(data)
-//   fs.writeFile(configPath, text, (err) => {
-//     if (err) {
-//       console.error(err)
-//     }
-//   })
-// }
-
-// function readData() {
-//   if (fs.existsSync(configPath)) {
-//     fs.readFile(configPath, 'utf8', (err, data) => {
-//       if (err) {
-//         console.error(err)
-//         return
-//       }
-//       // handle the json data here
-//       return JSON.parse(data)
-//     })
-//   } else {
-//     fs.writeFileSync(configPath, JSON.stringify(''), (err) => {
-//       if (err) {
-//         console.error(err)
-//       }
-//     })
-//   }
-// }
 
 function createWindow() {
   // Create the browser window.
@@ -118,7 +83,8 @@ function createWindow() {
       mainWindow.webContents.executeJavaScript('window.showButton()')
       console.log('gamemodal shown')
     }
-    if (!is.dev && input.control && input.key.toLowerCase() === 'r') {
+    if (app.isPackaged && input.control && input.key.toLowerCase() === 'r') {
+      console.log('refresh stopped')
       event.preventDefault()
     }
     if (input.control && input.shift && input.key.toLowerCase() === 'i') {

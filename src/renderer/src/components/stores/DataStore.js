@@ -95,7 +95,7 @@ export const useDataStore = create(
           set({ error: err.message, loading: false })
         }
       },
-      setNotification: (message) => {
+      setMessages: (message) => {
         set({ notification: message })
       },
       setError: (message) => {

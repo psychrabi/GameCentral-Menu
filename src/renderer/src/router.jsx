@@ -16,74 +16,84 @@ const Profile = lazy(() => import('./views/Profile/Profile'))
 const Notification = lazy(() => import('./views/Profile/Notification'))
 const Security = lazy(() => import('./views/Profile/Security'))
 const Billing = lazy(() => import('./views/Profile/Billing'))
+const NotFound = lazy(() => import('./views/NotFound'))
+
+//Member Profile Routes
+const memberProfileRoutes = [
+  {
+    path: 'details',
+    element: <Profile />
+  },
+  {
+    path: 'security',
+    element: <Security />
+  },
+  {
+    path: 'billing',
+    element: <Billing />
+  },
+  {
+    path: 'notification',
+    element: <Notification />
+  }
+]
+//Member Routes
+const memberRoutes = [
+  {
+    path: '/',
+    element: <Home />
+  },
+  {
+    path: '/games',
+    element: <Games />
+  },
+  {
+    path: '/applications',
+    element: <Applications />
+  },
+  {
+    path: '/shop',
+    element: <Shop />
+  },
+  {
+    path: '/profile',
+    element: <ProfileLayout />,
+    children: memberProfileRoutes
+  }
+]
+
+//Auth Routes
+const authRoutes = [
+  {
+    path: '/admin',
+    element: <AdminLogin />
+  },
+  {
+    path: '/login',
+    element: <MemberLogin />
+  },
+  {
+    path: '/register',
+    element: <Register />
+  },
+  {
+    path: '/forgot-password',
+    element: <ResetPassword />
+  }
+]
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <MemberLayout />,
-    children: [
-      {
-        path: '/',
-        element: <Home />
-      },
-      {
-        path: '/games',
-        element: <Games />
-      },
-      {
-        path: '/applications',
-        element: <Applications />
-      },
-      {
-        path: '/shop',
-        element: <Shop />
-      },
-      {
-        path: '/profile',
-        element: <ProfileLayout />,
-        children: [
-          {
-            path: 'details',
-            element: <Profile />
-          },
-          {
-            path: 'security',
-            element: <Security />
-          },
-          {
-            path: 'billing',
-            element: <Billing />
-          },
-          {
-            path: 'notification',
-            element: <Notification />
-          }
-        ]
-      }
-    ]
-    // errorElement: <NotFound />
+    children: memberRoutes,
+    errorElement: <NotFound />
   },
   {
     path: '/',
     element: <AuthLayout />,
-    children: [
-      {
-        path: '/admin',
-        element: <AdminLogin />
-      },
-      {
-        path: '/login',
-        element: <MemberLogin />
-      },
-      {
-        path: '/register',
-        element: <Register />
-      },
-      {
-        path: '/forgot-password',
-        element: <ResetPassword />
-      }
-    ]
+    children: authRoutes,
+    errorElement: <NotFound />
   }
 ])
 
