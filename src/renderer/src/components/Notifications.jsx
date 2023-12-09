@@ -30,6 +30,12 @@ export const Notifications = ({ notifications }) => {
               <span key={key}>{notifications[key][0]}</span>
             ))}
           </div>
+          <button
+            type="button"
+            className="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
         </div>
       </div>
     )

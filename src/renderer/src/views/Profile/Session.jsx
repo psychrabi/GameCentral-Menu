@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import axiosClient from '../../lib/axios-client'
-
+import { formatTime } from '../../utils/formatTIme'
 export default function Billing({ member }) {
   const [sessions, setSessions] = useState([])
 
@@ -93,7 +93,7 @@ export default function Billing({ member }) {
         </div>
       </div> */}
       <div className="card mb-4">
-        <div className="card-header">Billing History</div>
+        <div className="card-header">Session History</div>
         <div className="card-body p-0">
           <div className="table-responsive table-billing-history">
             <table className="table mb-0">
@@ -120,7 +120,7 @@ export default function Billing({ member }) {
                     <td>
                       {session.end_time ? new Date(session.end_time).toLocaleString() : 'On-going'}
                     </td>
-                    <td>{session.total_time % 60} minutes</td>
+                    <td>{formatTime(session.total_time)}</td>
                     <td>$ {session.session_cost}</td>
                   </tr>
                 ))}

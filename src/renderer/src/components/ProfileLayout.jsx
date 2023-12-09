@@ -11,8 +11,8 @@ export default function ProfileLayout() {
             <NavLink className="nav-link ms-0" to="/profile/details">
               Profile
             </NavLink>
-            <NavLink className="nav-link" to="/profile/billing">
-              Billing
+            <NavLink className="nav-link" to="/profile/sessions">
+              Sessions
             </NavLink>
             <NavLink className="nav-link" to="/profile/security">
               Security

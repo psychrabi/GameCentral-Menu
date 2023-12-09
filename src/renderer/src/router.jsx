@@ -15,7 +15,7 @@ const Shop = lazy(() => import('./views/Shop/Shop'))
 const Profile = lazy(() => import('./views/Profile/Profile'))
 const Notification = lazy(() => import('./views/Profile/Notification'))
 const Security = lazy(() => import('./views/Profile/Security'))
-const Billing = lazy(() => import('./views/Profile/Billing'))
+const Session = lazy(() => import('./views/Profile/Session'))
 const NotFound = lazy(() => import('./views/NotFound'))
 
 //Member Profile Routes
@@ -29,8 +29,8 @@ const memberProfileRoutes = [
     element: <Security />
   },
   {
-    path: 'billing',
-    element: <Billing />
+    path: 'sessions',
+    element: <Session />
   },
   {
     path: 'notification',

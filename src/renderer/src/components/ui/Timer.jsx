@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAuthStore } from '../stores/AuthStore'
+import { formatTime } from '../../utils/formatTIme'
 // eslint-disable-next-line react/prop-types
 export const Timer = () => {
   const { start_time, member, logout, setNotification } = useAuthStore()
@@ -10,19 +11,6 @@ export const Timer = () => {
   const COST_PER_HOUR = 60
 
   const startTimeString = new Date(parseInt(start_time)).toLocaleTimeString()
-
-  function secondsToHms(d) {
-    // Set the duration state to the number of hours, minutes, and seconds
-    if (isNaN(d)) return '00:00:00'
-    d = Number(d)
-    const h = Math.floor(d / 3600)
-    const m = Math.floor((d % 3600) / 60)
-    const s = Math.floor((d % 3600) % 60)
-    // eslint-disable-next-line prettier/prettier
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s
-      .toString()
-      .padStart(2, '0')}`
-  }
 
   useEffect(() => {
     const durationInSeconds = calculateDurationInSeconds()
@@ -35,7 +23,7 @@ export const Timer = () => {
     const intervalId = setInterval(() => {
       // Calculate the duration of the session in seconds
       const durationInSeconds = calculateDurationInSeconds()
-      const string = secondsToHms(durationInSeconds.toFixed(0))
+      const string = formatTime(durationInSeconds.toFixed(0))
       setDurationString(string)
     }, 5000)
 
@@ -63,7 +51,7 @@ export const Timer = () => {
     // if (sessionType == 'balance') {
     //   setSessionDuration(
     //     (((member?.balance + member?.bonus_balance) / COST_PER_HOUR) * (60 * 60) * 1000).toFixed(0)
-    //   ) //in miliseconds
+    //   ) //in milliseconds
     // }
 
     // Clear the interval when the component unmounts

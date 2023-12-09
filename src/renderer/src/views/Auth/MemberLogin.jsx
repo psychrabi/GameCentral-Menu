@@ -27,6 +27,7 @@ export default function MemberLogin() {
           ref={loginRef}
           id="login-member"
           placeholder="Username or Email address"
+          autoFocus
         />
         <label htmlFor="login-member">Username or Email address</label>
       </div>
