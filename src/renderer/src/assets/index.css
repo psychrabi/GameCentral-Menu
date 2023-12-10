@@ -355,4 +355,10 @@ video {
 }
 .client-stats {
   width: 400px;
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 16px;
+  margin-right: 16px;
+  right: 0;
+  color: white;
 }

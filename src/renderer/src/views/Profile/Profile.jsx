@@ -116,7 +116,7 @@ export default function Profile() {
                     id="inputPhone"
                     type="tel"
                     placeholder="Enter your phone number"
-                    value={updatedMember?.phone}
+                    value={updatedMember?.phone ?? 9800000000}
                     onChange={(ev) =>
                       setUpdatedMember({ ...updatedMember, phone: ev.target.value })
                     }

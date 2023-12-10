@@ -1,18 +1,20 @@
 import { Navigate, NavLink, Outlet } from 'react-router-dom'
 import { useAuthStore } from './stores/AuthStore'
+// import { lazy } from 'react'
+
+// const Details = lazy(() => import('./ui/Details'))
 import Details from './ui/Details'
+import { useDataStore } from './stores/DataStore'
 import { Loading } from './ui/Loading'
 import Navigation from './ui/Navigation'
 import { Timer } from './ui/Timer'
 import Notifications from './ui/Notifications'
-import { useDataStore } from './stores/DataStore'
 
 export default function MemberLayout() {
-  const { token, loading, messages, alert, center_id } = useAuthStore()
-  const { show, error, notifications } = useDataStore()
-
+  const { token, loading, center_id } = useAuthStore()
+  const { show, messages, alert } = useDataStore()
   if (!center_id) {
-    console.log('no center id')
+    // console.log('no center id')
     return <Navigate to="/admin" />
   } else if (!token) {
     console.log('Member not logged in ')

@@ -60,7 +60,7 @@ const Details = () => {
   }, [])
 
   // useEffect(() => {
-    //   window.api.executableExited()
+  //   window.api.executableExited()
   // }, [])
 
   return (

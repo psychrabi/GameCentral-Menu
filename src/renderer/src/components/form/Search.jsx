@@ -1,10 +1,9 @@
 import { useDataStore } from '../stores/DataStore'
+import PropTypes from 'prop-types'
 
 const Filter = ({ categories, handleCategoriesChange }) => {
-  const filter = useDataStore((state) => state.filter)
-  const setFilter = useDataStore((state) => state.setFilter)
-  const type = useDataStore((state) => state.type)
-  const setType = useDataStore((state) => state.setType)
+  const { filter, setFilter, type, setType } = useDataStore()
+
   const handleSubmit = (ev) => {
     ev.preventDefault()
   }
@@ -60,4 +59,8 @@ const Filter = ({ categories, handleCategoriesChange }) => {
   )
 }
 
+Filter.propTypes = {
+  categories: PropTypes.array,
+  handleCategoriesChange: PropTypes.func
+}
 export default Filter

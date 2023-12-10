@@ -1,13 +1,15 @@
 import { useEffect, useRef } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuthStore } from '../../components/stores/AuthStore'
+import { Link } from 'react-router-dom'
 
-export default function AdminLogin() {
+export default function Register() {
   const { token, authenticateAdmin, checkSession, loading, error, checkCenterID } = useAuthStore()
 
-  const licenseRef = useRef()
+  const emailRef = useRef()
   const usernameRef = useRef()
   const passwordRef = useRef()
+  const confirm_passwordRef = useRef()
   const center_name = 'Hak3rz Juction'
 
   function onSubmit(ev) {
@@ -34,21 +36,21 @@ export default function AdminLogin() {
             <input
               type="text"
               className="form-control"
-              ref={licenseRef}
-              id="login-user"
-              placeholder="License"
+              ref={usernameRef}
+              id="username"
+              placeholder="Username"
             />
-            <label htmlFor="login-user">License</label>
+            <label htmlFor="username">Username</label>
           </div>
           <div className="form-floating">
             <input
-              type="text"
+              type="email"
               className="form-control"
-              ref={usernameRef}
+              ref={emailRef}
               id="email"
-              placeholder="Username or Email address"
+              placeholder="email"
             />
-            <label htmlFor="login-user">Username or Email</label>
+            <label htmlFor="email">Email</label>
           </div>
           <div className="form-floating">
             <input
@@ -56,8 +58,19 @@ export default function AdminLogin() {
               className="form-control"
               ref={passwordRef}
               placeholder="Password"
+              id="password"
             />
             <label htmlFor="password">Password</label>
+          </div>
+          <div className="form-floating">
+            <input
+              type="password"
+              className="form-control"
+              ref={confirm_passwordRef}
+              placeholder="Password"
+              id="confirm_password"
+            />
+            <label htmlFor="confirm_password">Confirm Password</label>
           </div>
           <button className="w-100 btn btn-lg btn-primary" type="submit" disabled={loading}>
             {loading ? (
@@ -67,12 +80,18 @@ export default function AdminLogin() {
                   role="status"
                   aria-hidden="true"
                 ></span>
-                Signing in...
+                Signing up...
               </>
             ) : (
-              'Sign in'
+              'Sign Up'
             )}
           </button>
+          <p>
+            <span className="me-2">Already have an account?</span>
+            <Link to="/login" className="text-decoration-none">
+              Sign In
+            </Link>
+          </p>
         </form>
       </>
     )

@@ -5,17 +5,18 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 export const useDataStore = create(
   persist(
     (set, get) => ({
+      alert: null,
+      applications: [],
+      error: null,
+      favoriteGames: [],
       filter: '',
       games: [],
-      favoriteGames: [],
-      applications: [],
+      loading: false,
+      message: null,
       products: [],
       game: [],
       type: '',
       show: false,
-      loading: false,
-      error: null,
-      notification: null,
       fetchGames: async (center_id, token) => {
         set({ loading: true })
         try {
@@ -53,9 +54,10 @@ export const useDataStore = create(
         }
       },
       getGame: async (id) => {
-        set({ loading: true })
+        // console.log(id)
         try {
           const data = await get().games.filter((game) => game.id === id)
+          // console.log(data)
           set({ error: null, loading: false, game: data[0] })
         } catch (err) {
           set({ error: err.message, loading: false })
@@ -96,10 +98,10 @@ export const useDataStore = create(
         }
       },
       setMessages: (message) => {
-        set({ notification: message })
+        set({ messages: message })
       },
-      setError: (message) => {
-        set({ error: message })
+      setAlert: (type) => {
+        set({ alert: type })
       }
     }),
     {

@@ -16,6 +16,9 @@ devDependencies:
   '@electron/notarize':
     specifier: ^2.2.0
     version: 2.2.0
+  '@types/bootstrap':
+    specifier: ^5.2.10
+    version: 5.2.10
   '@vitejs/plugin-react':
     specifier: ^4.2.1
     version: 4.2.1(vite@5.0.7)
@@ -1174,6 +1177,12 @@ packages:
     resolution: {integrity: sha512-mSM/iKUk5fDDrEV/e83qY+Cr3I1+Q3qqTuEn++HAWYjEa1+NxZr6CNrcJGf2ZTnq4HoFGC3zaTPZTobCzCFukA==}
     dependencies:
       '@babel/types': 7.23.5
+    dev: true
+
+  /@types/bootstrap@5.2.10:
+    resolution: {integrity: sha512-F2X+cd6551tep0MvVZ6nM8v7XgGN/twpdNDjqS1TUM7YFNEtQYWk+dKAnH+T1gr6QgCoGMPl487xw/9hXooa2g==}
+    dependencies:
+      '@popperjs/core': 2.11.8
     dev: true
 
   /@types/cacheable-request@6.0.3:

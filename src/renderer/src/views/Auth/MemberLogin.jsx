@@ -4,11 +4,9 @@ import { Link } from 'react-router-dom'
 import { useAuthStore } from '../../components/stores/AuthStore'
 
 export default function MemberLogin() {
-  const { authenticate, loading } = useAuthStore()
+  const { authenticate, loading, center_name } = useAuthStore()
   const loginRef = useRef()
   const passwordRef = useRef()
-  const center_name = 'Hak3rz Juction'
-  const oauth = false
 
   function onSubmit(ev) {
     ev.preventDefault()
@@ -49,27 +47,6 @@ export default function MemberLogin() {
           'Sign in'
         )}
       </button>
-      <Link className="btn btn-link mt-3" to="/forgot-password">
-        Forgot password?
-      </Link>
-      <div style={{ display: oauth ? 'block' : 'none' }}>
-        <div className="my-3 text-uppercase">Continue with</div>
-        <div className="d-flex justify-content-between mb-3">
-          <button className="btn btn-primary">
-            <i className="bi bi-facebook me-2"></i>
-            Facebook
-          </button>
-          <button className="btn btn-danger">
-            <i className="bi bi-google me-2"></i>
-            Google
-          </button>
-          <button className="btn btn-light">
-            <i className="bi bi-apple me-2"></i>
-            Apple
-          </button>
-        </div>
-      </div>
-
       <p>
         <span className="me-2">Don&apos;t have an account yet?</span>
         <Link to="/register" className="text-decoration-none">

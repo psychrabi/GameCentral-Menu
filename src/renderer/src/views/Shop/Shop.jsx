@@ -10,7 +10,7 @@ import Products from './Products'
 export default function Shop() {
   const { token, member } = useAuthStore()
   const { filter, type } = useDataStore()
-  const { fetchProducts, products, cart, error } = useProductStore()
+  const { fetchProducts, products, cart } = useProductStore()
 
   useEffect(() => {
     fetchProducts(member.center_id, token)

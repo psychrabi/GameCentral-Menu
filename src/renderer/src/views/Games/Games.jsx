@@ -13,6 +13,7 @@ function Games() {
     // console.log(games)
     setFilter('')
     setType('')
+    // console.log(games)
   }, [])
 
   return (

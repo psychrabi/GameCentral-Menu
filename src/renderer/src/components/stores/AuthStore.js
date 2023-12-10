@@ -14,13 +14,13 @@ export const useAuthStore = create(
       session: null,
       start_time: null,
       type: '',
-      client_details: null,
       token: null,
       admin_token: null,
       settings: null,
       center_id: null,
       center_name: null,
       sessionType: null,
+      systeminfo: null,
       authenticate: async (username, password) => {
         set({ loading: true })
         try {
@@ -101,6 +101,35 @@ export const useAuthStore = create(
           set({ messages: 'Failed to login', loading: false, alert: 'danger' })
         }
       },
+      registerMember: async (username, password, confirm_password, email) => {
+        set({ loading: true })
+        try {
+          const payload = {
+            center_id: get().center_id,
+            email: email,
+            username: username,
+            password: password,
+            confirm_password: confirm_password
+          }
+          const response = await axiosClient.post('/members/signup', payload)
+
+          set({
+            loading: false,
+            messages: 'Center account set.',
+            alert: 'success',
+            center_id: response.data.user.id,
+            center_name: response.data.user.name,
+            admin_token: response.data.token,
+            settings: [response.data.settings]
+          })
+          localStorage.setItem('admin_token', JSON.stringify(response.data.token))
+          localStorage.setItem('center_id', JSON.stringify(response.data.user.id))
+          localStorage.setItem('center_name', JSON.stringify(response.data.user.name))
+          localStorage.setItem('settings', JSON.stringify(response.data.settings))
+        } catch (err) {
+          set({ messages: 'Failed to login', loading: false, alert: 'danger' })
+        }
+      },
       updateMember: async (id, updatedMember) => {
         set({ loading: true })
         try {
@@ -116,7 +145,47 @@ export const useAuthStore = create(
           set({ messages: err.response.data.message, loading: false, alert: 'danger' })
         }
       },
-
+      setSystemInfo: async (info) => {
+        set({
+          systeminfo: {
+            cpu: info.cpu.manufacturer + ' ' + info.cpu.brand,
+            graphics: info.graphics.controllers.filter((controller) => controller.vram > 0)[0]
+              .model,
+            ram: (info.mem.total / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
+            os: info.osInfo.distro + ' build ' + info.osInfo.build,
+            ip4: info.networkInterfaces[0].ip4
+          }
+        })
+      },
+      checkSystemInfo: async () => {
+        if (localStorage.getItem('systemInfo')) {
+          set({ systeminfo: JSON.parse(localStorage.getItem('systemInfo')) })
+          // console.log(get().systeminfo)
+        } else {
+          // console.log('getting systeminfo')
+          try {
+            let info = await window.api.getSystemInfo()
+            if (info) {
+              set({
+                systeminfo: {
+                  cpu: info.cpu.manufacturer + ' ' + info.cpu.brand,
+                  graphics: info.graphics.controllers.filter((controller) => controller.vram > 0)[0]
+                    .model,
+                  ram: (info.mem.total / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
+                  os: info.osInfo.distro + ' build ' + info.osInfo.build,
+                  ip4: info.networkInterfaces[0].ip4
+                }
+              })
+            } else {
+              set({ message: 'Error getting system ', alert: 'danger ' })
+            }
+            localStorage.setItem('systemInfo', JSON.stringify(get().systeminfo))
+          } catch (error) {
+            console.log(error)
+            set({ message: error, alert: 'danger ' })
+          }
+        }
+      },
       checkCenterID: () => {
         if (localStorage.getItem('center_id')) {
           set({ center_id: JSON.parse(localStorage.getItem('center_id')) })
@@ -126,6 +195,9 @@ export const useAuthStore = create(
         if (localStorage.getItem('token')) {
           set({ token: JSON.parse(localStorage.getItem('token')).token })
         }
+        // if (localStorage.getItem('center_name')) {
+        //   set({ center_name: JSON.parse(localStorage.getItem('center_name')) })
+        // }
         if (localStorage.getItem('member'))
           set({ member: JSON.parse(localStorage.getItem('member')) })
         if (localStorage.getItem('start_time'))
@@ -156,14 +228,16 @@ export const useAuthStore = create(
       },
       checkClientInfo: async () => {
         let info = await window.api.getSystemInfo()
+        const sysinfo = JSON.parse(info)
+        console.log(sysinfo)
         set({
-          client_details: {
-            cpu: info.cpu.manufacturer + ' ' + info.cpu.brand,
-            graphics: info.graphics.controllers.filter((controller) => controller.vram > 0)[0]
+          systeminfo: {
+            cpu: sysinfo.cpu.manufacturer + ' ' + sysinfo.cpu.brand,
+            graphics: sysinfo.graphics.controllers.filter((controller) => controller.vram > 0)[0]
               .model,
-            ram: (info.mem.total / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
-            os: info.osInfo.distro + ' build ' + info.osInfo.build,
-            ip4: info.networkInterfaces[0].ip4
+            ram: (sysinfo.mem.total / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
+            os: sysinfo.osInfo.distro + ' build ' + sysinfo.osInfo.build,
+            ip4: sysinfo.networkInterfaces[0].ip4
           }
         })
       },

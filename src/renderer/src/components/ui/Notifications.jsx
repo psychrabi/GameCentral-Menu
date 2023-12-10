@@ -1,14 +1,12 @@
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
-export const Notifications = ({ messages, alert, setMessages, setAlert }) => {
+const Notifications = ({ messages, alert }) => {
   const [show, setShow] = useState(true)
 
   useEffect(() => {
     const closeNotification = setTimeout(() => {
       setShow(false)
-      setMessages(null)
-      setAlert(null)
     }, 2000)
 
     return () => {
@@ -17,9 +15,9 @@ export const Notifications = ({ messages, alert, setMessages, setAlert }) => {
   }, [])
   if (messages) {
     return (
-      <div className="toast-container top-0 end-0 p-3" style={{ zIndex: 2000 }}>
+      <div className="toast-container bottom-0 start-0 p-3" style={{ zIndex: 2000 }}>
         <div
-          className={`toast fade ${show ? 'show' : ''} ${
+          className={`toast d-flex fade ${show ? 'show' : ''} ${
             alert === 'success' ? 'bg-success' : 'bg-danger'
           }`}
           role="alert"
@@ -33,6 +31,12 @@ export const Notifications = ({ messages, alert, setMessages, setAlert }) => {
               <span key={key}>{messages[key][0]}</span>
             ))}
           </div>
+          <button
+            type="button"
+            className="btn-close me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
         </div>
       </div>
     )
