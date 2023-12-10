@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import axiosClient from '../../lib/axios-client'
 import { formatTime } from '../../utils/formatTIme'
-export default function Billing({ member }) {
+export default function Billing() {
   const [sessions, setSessions] = useState([])
 
-  const sum = sessions.reduce((prev, curr) => prev + curr.session_cost, 0)
+  // const sum = sessions.reduce((prev, curr) => prev + curr.session_cost, 0)
   useEffect(() => {
     axiosClient.get('/sessions').then((response) => {
       setSessions(response.data)
@@ -12,86 +12,6 @@ export default function Billing({ member }) {
   }, [])
   return (
     <>
-      {/* <div className="row">
-        <div className="col-lg-4 mb-4">
-          <div className="card h-100 border-start-lg border-start-primary">
-            <div className="card-body">
-              <div className="small text-muted">Balance</div>
-              <div className="h3">$20.00</div>
-              <a className="text-arrow-icon small" href="#!">
-                Switch to yearly billing
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="feather feather-arrow-right"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-4 mb-4">
-          <div className="card h-100 border-start-lg border-start-secondary">
-            <div className="card-body">
-              <div className="small text-muted">Next payment due</div>
-              <div className="h3">July 15</div>
-              <a className="text-arrow-icon small text-secondary" href="#!">
-                View payment history
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="feather feather-arrow-right"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-4 mb-4">
-          <div className="card h-100 border-start-lg border-start-success">
-            <div className="card-body">
-              <div className="small text-muted">Current plan</div>
-              <div className="h3 d-flex align-items-center">Freelancer</div>
-              <a className="text-arrow-icon small text-success" href="#!">
-                Upgrade plan
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="feather feather-arrow-right"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div> */}
       <div className="card mb-4">
         <div className="card-header">Session History</div>
         <div className="card-body p-0">

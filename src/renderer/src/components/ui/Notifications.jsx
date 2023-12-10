@@ -44,7 +44,6 @@ Notifications.propTypes = {
   alert: PropTypes.string,
   setMessages: PropTypes.func,
   setAlert: PropTypes.func
-
 }
 
 export default Notifications

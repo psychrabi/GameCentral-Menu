@@ -1,140 +1,135 @@
- // const API_URL = 'https://cors-anywhere.herokuapp.com/'
-  // const [apiKey, setApiKey] = useState('')
-  // const [show, setShow] = useState(false)
-  // const [disable, setDisable] = useState(true)
-  // const [game, setGame] = useState({
-  //   center_id: '',
-  //   name: '',
-  //   summary: '',
-  //   poster: '',
-  //   screenshots: '',
-  //   videos: '',
-  //   executable: '',
-  //   parameters: '',
-  //   game_type: '',
-  //   type: ''
-  // })
-  // const Api = new GameAPI(token)
+// const API_URL = 'https://cors-anywhere.herokuapp.com/'
+// const [apiKey, setApiKey] = useState('')
+// const [show, setShow] = useState(false)
+// const [disable, setDisable] = useState(true)
+// const [game, setGame] = useState({
+//   center_id: '',
+//   name: '',
+//   summary: '',
+//   poster: '',
+//   screenshots: '',
+//   videos: '',
+//   executable: '',
+//   parameters: '',
+//   game_type: '',
+//   type: ''
+// })
+// const Api = new GameAPI(token)
 
-  // const handleClose = () => setShow(false)
-  // const handleShow = () => setShow(true)
-  // const sortedCategories = categories?.sort((a, b) => a.description.localeCompare(b.description))
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault()
-  //   event.stopPropagation()
+// const handleClose = () => setShow(false)
+// const handleShow = () => setShow(true)
+// const sortedCategories = categories?.sort((a, b) => a.description.localeCompare(b.description))
+// const handleSubmit = async (event) => {
+//   event.preventDefault()
+//   event.stopPropagation()
 
-  //   // console.log(game)
-  //   const response = await Api.addGame(game)
-  //   console.log(response)
-  //   if (response.status === 201) {
-  //     setShow(false)
-  //     setGame([])
-  //   }
-  // }
-  // useEffect(() => {
-  //   window.showButton = () => {
-  //     const button = document.getElementById('GameModal')
-  //     button.style.display = 'block'
-  //   }
-  // }, [])
+//   // console.log(game)
+//   const response = await Api.addGame(game)
+//   console.log(response)
+//   if (response.status === 201) {
+//     setShow(false)
+//     setGame([])
+//   }
+// }
+// useEffect(() => {
+//   window.showButton = () => {
+//     const button = document.getElementById('GameModal')
+//     button.style.display = 'block'
+//   }
+// }, [])
 
-  // const getApiKey = async (client_id, client_secret) => {
-  //   const response = await fetch(
-  //     `https://id.twitch.tv/oauth2/token?client_id=${client_id}&client_secret=${client_secret}&grant_type=client_credentials`,
-  //     {
-  //       method: 'POST'
-  //     }
-  //   )
-  //   const data = await response.json()
-  //   setApiKey(data.token)
-  //   return data.token
-  // }
-  // useEffect(() => {
-  //   async function getKey() {
-  //     const key = await getApiKey(
-  //       'sz4fdut3dwthuoryprilvj8ce5fvg8',
-  //       'l56dya21c4u40vkjnvrvol1rttxfj3'
-  //     )
-  //     return () => {
-  //       setApiKey(key)
-  //     }
-  //   }
-  //   getKey()
-  // }, [])
-  // const fetchData = async (gameName, apiKey) => {
-  //   setGame({ ...game, name: gameName })
-  //   console.log(apiKey)
-  //   // Wait for response
-  //   const response = await fetch(API_URL + `https://api.igdb.com/v4/games`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Client-ID': 'sz4fdut3dwthuoryprilvj8ce5fvg8',
-  //       Authorization: `Bearer ${apiKey}`,
-  //       'Content-Type': 'text/plain'
-  //     },
-  //     body: `fields name,summary,cover.*,screenshots.*,videos.*'; search "${gameName}"; where version_parent = null;`
-  //   })
+// const getApiKey = async (client_id, client_secret) => {
+//   const response = await fetch(
+//     `https://id.twitch.tv/oauth2/token?client_id=${client_id}&client_secret=${client_secret}&grant_type=client_credentials`,
+//     {
+//       method: 'POST'
+//     }
+//   )
+//   const data = await response.json()
+//   setApiKey(data.token)
+//   return data.token
+// }
+// useEffect(() => {
+//   async function getKey() {
+//     const key = await getApiKey(
+//       'sz4fdut3dwthuoryprilvj8ce5fvg8',
+//       'l56dya21c4u40vkjnvrvol1rttxfj3'
+//     )
+//     return () => {
+//       setApiKey(key)
+//     }
+//   }
+//   getKey()
+// }, [])
+// const fetchData = async (gameName, apiKey) => {
+//   setGame({ ...game, name: gameName })
+//   console.log(apiKey)
+//   // Wait for response
+//   const response = await fetch(API_URL + `https://api.igdb.com/v4/games`, {
+//     method: 'POST',
+//     headers: {
+//       'Client-ID': 'sz4fdut3dwthuoryprilvj8ce5fvg8',
+//       Authorization: `Bearer ${apiKey}`,
+//       'Content-Type': 'text/plain'
+//     },
+//     body: `fields name,summary,cover.*,screenshots.*,videos.*'; search "${gameName}"; where version_parent = null;`
+//   })
 
-  //   const games = await response.json()
-  //   const center_id = JSON.parse(localStorage.getItem('session')).center_id
-  //   console.log(center_id)
-  //   // console.log(games)
-  //   if (games.length > 0) {
-  //     setGame({
-  //       center_id: center_id,
-  //       name: games[0].name,
-  //       summary: games[0].summary ?? '',
-  //       poster: `https:${games[0].cover?.url.replace('t_thumb', 't_cover_big')}`,
-  //       screenshots: JSON.stringify(
-  //         games[0].screenshots?.map(
-  //           (screenshot) => `https:${screenshot.url.replace('t_thumb', 't_screenshot_big')}`
-  //         )
-  //       ),
-  //       videos: JSON.stringify(
-  //         games[0].videos?.map((video) => `https://www.youtube.com/embed/${video.video_id}`)
-  //       ),
-  //       type: 'games'
-  //     })
-  //   }
-  // }
-  // const handleCategoryOnChange = useCallback((category) => {
-  //   if (category !== 'offline' || category !== 'wargaming') {
-  //     setDisable(false)
-  //   }
-  //   console.log(disable)
-  //   setDisable(true)
-  // })
+//   const games = await response.json()
+//   const center_id = JSON.parse(localStorage.getItem('session')).center_id
+//   console.log(center_id)
+//   // console.log(games)
+//   if (games.length > 0) {
+//     setGame({
+//       center_id: center_id,
+//       name: games[0].name,
+//       summary: games[0].summary ?? '',
+//       poster: `https:${games[0].cover?.url.replace('t_thumb', 't_cover_big')}`,
+//       screenshots: JSON.stringify(
+//         games[0].screenshots?.map(
+//           (screenshot) => `https:${screenshot.url.replace('t_thumb', 't_screenshot_big')}`
+//         )
+//       ),
+//       videos: JSON.stringify(
+//         games[0].videos?.map((video) => `https://www.youtube.com/embed/${video.video_id}`)
+//       ),
+//       type: 'games'
+//     })
+//   }
+// }
+// const handleCategoryOnChange = useCallback((category) => {
+//   if (category !== 'offline' || category !== 'wargaming') {
+//     setDisable(false)
+//   }
+//   console.log(disable)
+//   setDisable(true)
+// })
 
-  // const handleSelectExecutable = useCallback(async () => {
-  //   try {
-  //     const selectedFilePath = await window.api.selectExecutable()
-  //     if (selectedFilePath) {
-  //       setGame((game) => ({
-  //         ...game,
-  //         executable: selectedFilePath.executable,
-  //         parameters: selectedFilePath.parameters
-  //       }))
-  //     } else {
-  //       setNotifications('File dialog was cancelled')
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }, [])
+// const handleSelectExecutable = useCallback(async () => {
+//   try {
+//     const selectedFilePath = await window.api.selectExecutable()
+//     if (selectedFilePath) {
+//       setGame((game) => ({
+//         ...game,
+//         executable: selectedFilePath.executable,
+//         parameters: selectedFilePath.parameters
+//       }))
+//     } else {
+//       setNotifications('File dialog was cancelled')
+//     }
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }, [])
 
-
-
-
-
-
-
-
-
-    {/* <Button variant="primary" onClick={handleShow} id="GameModal" style={{ display: 'none' }}>
+{
+  /* <Button variant="primary" onClick={handleShow} id="GameModal" style={{ display: 'none' }}>
         Launch static backdrop modal
-      </Button> */}
+      </Button> */
+}
 
-      {/* <Modal
+{
+  /* <Modal
         onSubmit={handleSubmit}
         show={show}
         onHide={handleClose}
@@ -297,4 +292,5 @@
             </Button>
           </Modal.Footer>
         </Form>
-      </Modal> */}
+      </Modal> */
+}
