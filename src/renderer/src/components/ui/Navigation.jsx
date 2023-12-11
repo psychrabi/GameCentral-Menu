@@ -91,7 +91,7 @@ const Navigation = () => {
             <hr className="dropdown-divider" />
           </li>
           <li>
-            <NavLink className="dropdown-item" to=" " onClick={() => logout(COST_PER_HOUR)}>
+            <NavLink className="dropdown-item" onClick={() => logout(COST_PER_HOUR)}>
               Sign out
             </NavLink>
           </li>

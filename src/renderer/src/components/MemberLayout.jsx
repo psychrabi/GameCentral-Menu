@@ -9,11 +9,11 @@ import { Loading } from './ui/Loading'
 import Navigation from './ui/Navigation'
 import { Timer } from './ui/Timer'
 import Notifications from './ui/Notifications'
-import { useContext, useEffect } from 'react'
-import notificationContext from '../context/notificationContext'
+// import { useContext, useEffect } from 'react'
+// import notificationContext from '../context/notificationContext'
 
 export default function MemberLayout() {
-  const { showAlert } = useContext(notificationContext)
+  // const { showAlert } = useContext(notificationContext)
   const { token, loading, center_id } = useAuthStore()
   const { show, messages, alert } = useDataStore()
   if (!center_id) {
@@ -27,9 +27,9 @@ export default function MemberLayout() {
   if (loading) {
     return <Loading />
   }
-  useEffect(() => {
-    showAlert('Error', 'success')
-  }, [])
+  // useEffect(() => {
+  //   showAlert('Error', 'success')
+  // }, [])
   return (
     <>
       <header className="draggable">

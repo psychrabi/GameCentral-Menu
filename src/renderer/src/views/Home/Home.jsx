@@ -7,29 +7,44 @@ import { useAuthStore } from '../../components/stores/AuthStore'
 
 const Home = () => {
   const { token, member } = useAuthStore()
-  const { fetchFavoriteGames, favoriteGames, filter, type, getFavoriteGame } = useDataStore()
+  const {
+    fetchFavoriteGames,
+    favoriteGames,
+    setFilter,
+    setType,
+    filter,
+    type,
+    getFavoriteGame,
+    setCount
+  } = useDataStore()
 
   useEffect(() => {
-    fetchFavoriteGames(member.id, token)
-    // console.log(favoriteGames)
+    if (!favoriteGames.length > 0) {
+      fetchFavoriteGames(member.center_id, token)
+    }
+    setFilter('')
+    setType('')
   }, [])
+
+  const filteredGames = favoriteGames?.filter((item) => {
+    if (filter) {
+      return item.name.toLowerCase().includes(filter.toLowerCase())
+    } else if (type) {
+      return item.game_type === type
+    } else {
+      return true
+    }
+  })
+
+  useEffect(() => {
+    setCount(filteredGames.length)
+  }, [filter, type])
 
   return (
     <>
-      <Header categories={categories} page_title={'Favourites'} />
+      <Header categories={categories} page_title={'All Games'} />
       <div className="games" id="favorite-games-container">
-        <Grid
-          games={favoriteGames?.filter((game) => {
-            if (filter) {
-              return game.name.toLowerCase().includes(filter.toLowerCase())
-            } else if (type) {
-              return game.game_type === type
-            } else {
-              return true
-            }
-          })}
-          getData={getFavoriteGame}
-        />
+        <Grid games={filteredGames} getData={getFavoriteGame} />
       </div>
     </>
   )

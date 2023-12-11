@@ -195,64 +195,55 @@ code {
   flex-direction: column;
   justify-content: center;
   height: 100vh;
-  width: 480px;
-  background: rgba(33, 33, 33, 0.85);
+  width: 450px;
+  background: rgba(33, 33, 33, 0.5);
 }
 
 .form-signin .form-floating:focus-within {
   z-index: 2;
 }
 
+.form-signin label {
+  background: transparent;
+}
+
 .form-signin input[type='text'] {
   margin-bottom: 1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
-  background: rgba(44, 44, 44, 0.85);
   border: 0px;
-  color: #c9c9c9;
 }
 
 .form-signin input[type='email'] {
   margin-bottom: 1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
-  background: rgba(44, 44, 44, 0.85);
   border: 0px;
-  color: #c9c9c9;
 }
 
 .form-signin input[id='email'] {
   border-radius: 0;
   margin-bottom: 1px;
-  background: rgba(44, 44, 44, 0.85);
   border: 0px;
-  color: #c9c9c9;
 }
 
 .form-signin input[type='password'] {
   margin-bottom: 20px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  background: rgba(44, 44, 44, 0.85);
   border: 0px;
-  color: #c9c9c9;
 }
 
 .form-signin input[id='password'] {
   /* border-radius: 0;
   margin-bottom: -1px; */
-  background: rgba(44, 44, 44, 0.85);
   border: 0px;
-  color: #c9c9c9;
 }
 
 .form-register input[id='confirm_password'] {
-  margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  background: rgba(44, 44, 44, 0.85);
   border: 0px;
-  color: #c9c9c9;
 }
 
 video {
@@ -279,9 +270,6 @@ video {
   background: #1f3d4738;
   backdrop-filter: blur(1px);
   border-radius: 0.5rem;
-  /* color: white;
-  transition: all 0.5s ease;
-  opacity: 0; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -289,7 +277,7 @@ video {
   padding: 1rem 0.25rem;
 }
 
-.product > .card-body > button {
+.product  .card-body  button {
   transition: all 0.5s ease;
   opacity: 0;
 }

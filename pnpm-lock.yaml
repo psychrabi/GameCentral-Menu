@@ -11,6 +11,9 @@ dependencies:
   '@electron-toolkit/utils':
     specifier: ^2.0.1
     version: 2.0.1(electron@28.0.0)
+  bootstrap:
+    specifier: ^5.3.2
+    version: 5.3.2(@popperjs/core@2.11.8)
 
 devDependencies:
   '@electron/notarize':
@@ -28,9 +31,6 @@ devDependencies:
   axios:
     specifier: ^1.6.2
     version: 1.6.2
-  bootstrap:
-    specifier: ^5.3.2
-    version: 5.3.2(@popperjs/core@2.11.8)
   bootstrap-icons:
     specifier: ^1.11.2
     version: 1.11.2
@@ -988,7 +988,6 @@ packages:
 
   /@popperjs/core@2.11.8:
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
-    dev: true
 
   /@react-aria/ssr@3.9.0(react@18.2.0):
     resolution: {integrity: sha512-Bz6BqP6ZorCme9tSWHZVmmY+s7AU8l6Vl2NUYmBzezD//fVHHfFo4lFBn5tBuAaJEm3AuCLaJQ6H2qhxNSb7zg==}
@@ -1599,7 +1598,7 @@ packages:
       '@popperjs/core': ^2.11.8
     dependencies:
       '@popperjs/core': 2.11.8
-    dev: true
+    dev: false
 
   /bplist-parser@0.2.0:
     resolution: {integrity: sha512-z0M+byMThzQmD9NILRniCUXYsYpjwnlO8N5uCFaCqIOpqRsJCrQL9NK3JsD67CN5a08nF5oIL2bD6loTdHOuKw==}

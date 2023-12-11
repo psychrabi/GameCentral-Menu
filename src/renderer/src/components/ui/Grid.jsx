@@ -1,13 +1,19 @@
 import PropTypes from 'prop-types'
 import { useDataStore } from '../stores/DataStore'
+import { useEffect } from 'react'
 const Grid = ({ games, getData }) => {
-  const setShow = useDataStore((state) => state.setShow)
+  const { setShow, setCount } = useDataStore()
 
   const handleSelect = (id) => {
     getData(id).then(() => {
       setShow(true)
     })
   }
+
+  useEffect(() => {
+    // Update the count whenever games or the filter changes
+    setCount(games?.length)
+  }, [])
 
   return (
     <>

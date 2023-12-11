@@ -77,20 +77,6 @@ const Details = () => {
         }}
         className="h-100"
       >
-        {/* {game?.videos && <video
-          className="video"
-          autoPlay
-          muted
-          playsInline
-          loop
-
-        >
-          <source type="video/mp4" src={'src/public/videos/video-1.mp4'} id="url-video" />
-        </video>} */}
-
-        {/* <video autoPlay muted loop id="myVideo">
-          <source src="../../public/videos/video-1.mp4" type="video/mp4" />
-        </video> */}
         <Offcanvas.Header closeButton closeVariant={'white'}>
           <Offcanvas.Title></Offcanvas.Title>
         </Offcanvas.Header>

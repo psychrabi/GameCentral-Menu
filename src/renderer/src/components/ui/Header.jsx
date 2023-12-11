@@ -4,9 +4,7 @@ import Filter from '../form/Search.jsx'
 import { useDataStore } from '../stores/DataStore.js'
 
 const Header = ({ categories, page_title }) => {
-  const setType = useDataStore((state) => state.setType)
-  // const token = useAuthStore((state) => state.token)
-  const setFilter = useDataStore((state) => state.setFilter)
+  const { setType, setFilter, count } = useDataStore()
   const [title, setTitle] = useState(page_title)
 
   const handleCategoriesChange = useCallback((event) => {
@@ -20,7 +18,9 @@ const Header = ({ categories, page_title }) => {
 
   return (
     <div className="d-flex flex-wrap justify-content-between border-bottom mb-2 py-2">
-      <h2 className="h3 mb-2 mb-lg-0">{title}</h2>
+      <h2 className="h3 mb-2 mb-lg-0">
+        {title} ({count})
+      </h2>
       <div className="d-flex">
         <Filter categories={categories} handleCategoriesChange={handleCategoriesChange} />
       </div>
@@ -30,7 +30,8 @@ const Header = ({ categories, page_title }) => {
 
 Header.propTypes = {
   categories: PropTypes.array,
-  page_title: PropTypes.string
+  page_title: PropTypes.string,
+  count: PropTypes.number
 }
 
 export default Header

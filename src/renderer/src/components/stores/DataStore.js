@@ -17,6 +17,11 @@ export const useDataStore = create(
       game: [],
       type: '',
       show: false,
+      count: '',
+      setCount: (count) => {
+        console.log(count)
+        set({ count: count })
+      },
       fetchGames: async (center_id, token) => {
         set({ loading: true })
         try {
@@ -81,11 +86,14 @@ export const useDataStore = create(
           set({ error: err.message, loading: false })
         }
       },
-      setFilter: (filter) =>
-        set((state) => ({
-          ...state,
-          filter
-        })),
+      setFilter: (filter) => {
+        set({ loading: true })
+        try {
+          set({ filter: filter, loading: false })
+        } catch (err) {
+          set({ error: err.message, loading: false })
+        }
+      },
       setShow: (show) => {
         set({ show: show })
       },
