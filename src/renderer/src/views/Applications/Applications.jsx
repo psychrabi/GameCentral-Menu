@@ -7,8 +7,16 @@ import categories from '../../data/AppTypes.json'
 
 function Applications() {
   const { token, member } = useAuthStore()
-  const { fetchApplications, applications, setFilter, filter, setType, type, getApplication } =
-    useDataStore()
+  const {
+    fetchApplications,
+    applications,
+    setFilter,
+    filter,
+    setType,
+    type,
+    getApplication,
+    setCount
+  } = useDataStore()
 
   useEffect(() => {
     if (!applications.length > 0) {
@@ -18,22 +26,25 @@ function Applications() {
     setType('')
   }, [])
 
+  const filteredApps = applications?.filter((item) => {
+    if (filter) {
+      return item.name.toLowerCase().includes(filter.toLowerCase())
+    } else if (type) {
+      return item.game_type === type
+    } else {
+      return true
+    }
+  })
+
+  useEffect(() => {
+    setCount(filteredApps.length)
+  }, [filter, type])
+
   return (
     <>
       <Header categories={categories} page_title={'All Applications'} />
       <div className="games" id="favorite-games-container">
-        <Grid
-          games={applications?.filter((apps) => {
-            if (filter) {
-              return apps.name.toLowerCase().includes(filter.toLowerCase())
-            } else if (type) {
-              return apps.game_type === type
-            } else {
-              return true
-            }
-          })}
-          getData={getApplication}
-        />
+        <Grid games={filteredApps} getData={getApplication} />
       </div>
     </>
   )
