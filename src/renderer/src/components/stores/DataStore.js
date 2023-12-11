@@ -12,7 +12,7 @@ export const useDataStore = create(
       filter: '',
       games: [],
       loading: false,
-      message: null,
+      messages: null,
       products: [],
       game: [],
       type: '',

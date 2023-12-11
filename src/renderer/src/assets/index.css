@@ -25,9 +25,9 @@ code {
 }
 
 .games {
-  --grid-layout-gap: 0.5rem;
-  --grid-column-count: 10;
-  --grid-item--min-width: 8rem;
+  --grid-layout-gap: 1rem;
+  --grid-column-count: 8;
+  --grid-item--min-width: 7.5rem;
   --gap-count: calc(var(--grid-column-count) - 1);
   --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
   --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
@@ -41,8 +41,8 @@ code {
 
 .products {
   --grid-layout-gap: 0.5vw;
-  --grid-column-count: 12;
-  --grid-item--min-width: 8rem;
+  --grid-column-count: 10;
+  --grid-item--min-width: 10rem;
   --gap-count: calc(var(--grid-column-count) - 1);
   --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
   --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
@@ -57,28 +57,21 @@ code {
 @media screen and (min-width: 800px) {
   .games,
   .products {
-    --grid-item--min-width: 7rem;
+    --grid-item--min-width: 10rem;
   }
 }
 
 @media (min-width: 2560px) {
   .games,
   .products {
-    --grid-column-count: 15;
+    --grid-column-count: 12;
   }
 }
 
 @media screen and (min-width: 3840px) {
   .games,
   .products {
-    --grid-column-count: 20;
-  }
-}
-
-@media screen and (min-width: 5120px) {
-  .games,
-  .products {
-    --grid-column-count: 30;
+    --grid-column-count: 16;
   }
 }
 
@@ -106,8 +99,12 @@ code {
   border-radius: 7px;
   -webkit-border-radius: 7px;
   background-color: rgba(0, 0, 0, 0.15);
-  box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.05), inset 1px 1px 0 rgba(0, 0, 0, 0.05);
-  -webkit-box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.05), inset 1px 1px 0 rgba(0, 0, 0, 0.05);
+  box-shadow:
+    inset -1px -1px 0 rgba(0, 0, 0, 0.05),
+    inset 1px 1px 0 rgba(0, 0, 0, 0.05);
+  -webkit-box-shadow:
+    inset -1px -1px 0 rgba(0, 0, 0, 0.05),
+    inset 1px 1px 0 rgba(0, 0, 0, 0.05);
 }
 
 .no-scrollbar::-webkit-scrollbar-button {
@@ -180,12 +177,6 @@ code {
 
 .nav-link.active {
   border-bottom: 2px solid #fff;
-}
-
-body,
-html {
-  height: 100%;
-  color: #555;
 }
 
 .login,
@@ -285,14 +276,17 @@ video {
   left: 0;
   width: 100%;
   height: 100%;
-  /* background: rgba(0, 0, 0, 0.6);
-  color: white;
+  background: #1f3d4738;
+  backdrop-filter: blur(1px);
+  border-radius: 0.5rem;
+  /* color: white;
   transition: all 0.5s ease;
   opacity: 0; */
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  padding: 1rem 0.25rem;
 }
 
 .product > .card-body > button {

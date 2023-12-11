@@ -7,11 +7,15 @@ import categories from '../../data/AppTypes.json'
 
 function Applications() {
   const { token, member } = useAuthStore()
-  const { fetchApplications, applications, filter, type, getApplication } = useDataStore()
+  const { fetchApplications, applications, setFilter, filter, setType, type, getApplication } =
+    useDataStore()
 
   useEffect(() => {
-    fetchApplications(member.center_id, token)
-    // console.log(applications)
+    if (!applications.length > 0) {
+      fetchApplications(member.center_id, token)
+    }
+    setFilter('')
+    setType('')
   }, [])
 
   return (

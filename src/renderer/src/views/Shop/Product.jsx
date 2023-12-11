@@ -8,12 +8,12 @@ const Product = ({ product }) => {
   return (
     <div className="product card" key={product.id}>
       <img src={product.product_image} alt={product.name} className="card-img-top" loading="lazy" />
-      <div className="card-body">
+      <div className="card-body d-flex flex-col justify-between">
         <h5 className="card-title">{product.name}</h5>
         <p className="card-text price">{formatCurrency(product.sales_price)}</p>
         {product.stock > 0 && (
           <button className="btn btn-primary add-to-cart" onClick={() => addToCart(product.id)}>
-            Add to Cart
+            <i className="bi bi-cart-plus text-lg"></i>
           </button>
         )}
 

@@ -9,7 +9,9 @@ function Games() {
   const { token, member } = useAuthStore()
   const { fetchGames, games, filter, setFilter, type, setType, getGame } = useDataStore()
   useEffect(() => {
-    fetchGames(member.center_id, token)
+    if (!games.length > 0) {
+      fetchGames(member.center_id, token)
+    }
     // console.log(games)
     setFilter('')
     setType('')

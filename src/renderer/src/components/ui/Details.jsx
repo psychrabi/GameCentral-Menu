@@ -2,12 +2,13 @@ import Offcanvas from 'react-bootstrap/Offcanvas'
 import Carousel from 'react-bootstrap/Carousel'
 import { useCallback, useState } from 'react'
 import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
-import axiosClient from '../../lib/axios-client.js'
+// import axiosClient from '../../lib/axios-client.js'
 import { useDataStore } from '../stores/DataStore.js'
 import { useAuthStore } from '../stores/AuthStore.js'
+import { submitData } from '../../utils/fetchData.js'
 
 const Details = () => {
-  const { show, game, setShow, setNotification, setError } = useDataStore()
+  const { show, game, setShow, setMessages, setAlert, fetchFavoriteGames } = useDataStore()
   const [running, setRunning] = useState(false)
   const { member, token } = useAuthStore()
 
@@ -15,48 +16,46 @@ const Details = () => {
     setShow(false)
   }, [])
 
-  const handleFavoriteClick = useCallback((game_id) => {
+  const handleFavoriteClick = useCallback(async (game_id) => {
     const payload = {
       center_id: member.center_id,
       member_id: member.id,
       game_id: game_id
     }
 
-    axiosClient.defaults.headers.common['Authorization'] = 'Bearer ' + token
-    const favorite_games = JSON.parse(localStorage.getItem('favorite_games'))
-
-    axiosClient
-      .post('/favoriteGame', payload)
-      .then((response) => {
-        // console.log(response.status)
-        if (response.status === 204) {
-          setNotification(game.name + ' : removed from favorites')
-          localStorage.setItem(
-            'favorite_games',
-            JSON.stringify(favorite_games.filter((g) => g.id !== game.id))
-          )
-        } else {
-          setNotification(game.name + ' : added to favorites')
-          localStorage.setItem('favorite_games', JSON.stringify([...favorite_games, game]))
-        }
+    try {
+      const response = await submitData('/favoriteGame', token, payload)
+      if (response) {
+        setMessages(game.name + ' : ' + response.message)
+        setAlert('success')
+      }
+      setTimeout(() => {
+        fetchFavoriteGames(member.id, token)
         setShow(false)
-      })
-      .catch((error) => {
-        console.log(error.message)
-        setError('Favorite game status couldnot be changed for ' + game.name)
-      })
+      }, 3000)
+    } catch (error) {
+      console.log(error.message)
+      // setMessages('Favorite game status couldnot be changed for ' + game.name)
+      setMessages(error.message)
+    }
   }, [])
 
   const handleGamePlay = useCallback((filePath) => {
-    window.api.checkExecutable(filePath).then((response) => {
-      if (response.status === 'file-exists') {
-        window.api.launchExecutable(filePath).then((response) => setRunning(response))
-      } else {
-        setRunning(false)
-        setError('Game executable missing')
-      }
-      // console.log('game lauched')
-    })
+    try {
+      window.api.checkExecutable(filePath).then((response) => {
+        if (response.status === 'file-exists') {
+          window.api.launchExecutable(filePath).then((response) => setRunning(response))
+        }
+
+        if (response.statu === 'file-does-not-exist') {
+          setMessages('Game executable missing')
+          setAlert('danger')
+        }
+        // console.log(response)
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }, [])
 
   // useEffect(() => {

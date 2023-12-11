@@ -10,11 +10,14 @@ import Products from './Products'
 export default function Shop() {
   const { token, member } = useAuthStore()
   const { filter, type } = useDataStore()
-  const { fetchProducts, products, cart } = useProductStore()
+  const { fetchProducts, products, cart, setFilter, setType } = useProductStore()
 
   useEffect(() => {
-    fetchProducts(member.center_id, token)
-    // console.log(products)
+    if (!products.length > 0) {
+      fetchProducts(member.center_id, token)
+    }
+    setFilter('')
+    setType('')
   }, [])
 
   return (

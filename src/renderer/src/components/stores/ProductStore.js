@@ -16,11 +16,26 @@ export const useProductStore = create(
       loading: false,
       notification: null,
       error: null,
+      messages: '',
+      alert: '',
       fetchProducts: async (center_id, token) => {
         try {
           set({ loading: true })
           const data = await fetchData(`/clientProducts/${center_id}`, token)
           set({ error: null, products: data, loading: false })
+        } catch (err) {
+          set({ error: err.message, loading: false })
+        }
+      },
+      setFilter: (filter) =>
+        set((state) => ({
+          ...state,
+          filter
+        })),
+      setType: (type) => {
+        set({ loading: true })
+        try {
+          set({ type: type, loading: false })
         } catch (err) {
           set({ error: err.message, loading: false })
         }
@@ -33,7 +48,7 @@ export const useProductStore = create(
         const item = get().products.find((product) => product.id === id)
         const inCart = get().cart.find((item) => (item.id === id ? true : false))
         if (inCart && item.stock == inCart.quantity) {
-          set({ error: 'Product quatity exceed' })
+          set({ messages: 'Product quatity exceed', alert: 'danger' })
         } else {
           set((state) => ({
             cart: inCart

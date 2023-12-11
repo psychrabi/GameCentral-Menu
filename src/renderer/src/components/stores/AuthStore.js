@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import axiosClient from '../../lib/axios-client'
-import { updateData } from '../../utils/fetchData'
+import { updateData, submitData } from '../../utils/fetchData'
 
 export const useAuthStore = create(
   persist(
@@ -21,6 +21,7 @@ export const useAuthStore = create(
       center_name: null,
       sessionType: null,
       systeminfo: null,
+      subscription: '',
       authenticate: async (username, password) => {
         set({ loading: true })
         try {
@@ -86,12 +87,13 @@ export const useAuthStore = create(
 
           set({
             loading: false,
-            messages: 'Center account set.',
+            messages: 'Center Account set successfully.',
             alert: 'success',
             center_id: response.data.user.id,
-            center_name: response.data.user.name,
+            center_name: response.data.user.center_name,
             admin_token: response.data.token,
-            settings: [response.data.settings]
+            settings: response.data.settings ?? [],
+            subscription: response.data.expire_date
           })
           localStorage.setItem('admin_token', JSON.stringify(response.data.token))
           localStorage.setItem('center_id', JSON.stringify(response.data.user.id))
@@ -215,16 +217,16 @@ export const useAuthStore = create(
           sessionType: get().sessionType,
           session_cost: ((total_time / (60 * 60)) * cost_per_hour).toFixed(2)
         }
-        axiosClient.defaults.headers.common['Authorization'] = `Bearer ${get().token}`
-        axiosClient.post('/members/logout', usage_details).then(() => {
+        const logout = await submitData('/members/logout', get().token, usage_details)
+        if (logout) {
           localStorage.removeItem('token')
           localStorage.removeItem('member')
           localStorage.removeItem('session')
           localStorage.removeItem('start_time')
-          localStorage.removeItem('data')
+          localStorage.removeItem('sessionType')
           set({ member: null, session: null, sessionType: null, start_time: null, token: null })
-        })
-        set({ messages: 'You have successfully logged out', alert: 'success' })
+          set({ messages: 'You have successfully logged out', alert: 'success' })
+        }
       },
       checkClientInfo: async () => {
         let info = await window.api.getSystemInfo()
