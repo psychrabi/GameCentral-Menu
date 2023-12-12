@@ -27,7 +27,7 @@ function Games() {
 
   useEffect(() => {
     setCount(filteredGames.length)
-  }, [filter, type])
+  }, [games, filter, type])
 
   return (
     <>

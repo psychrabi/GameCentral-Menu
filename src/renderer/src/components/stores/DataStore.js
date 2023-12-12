@@ -27,10 +27,10 @@ export const useDataStore = create(
           set({ error: err.message, loading: false })
         }
       },
-      fetchFavoriteGames: async (id, token) => {
+      fetchFavoriteGames: async (member_id, token) => {
         set({ loading: true })
         try {
-          const data = await fetchData(`/favoriteGames/${id}`, token)
+          const data = await fetchData(`/favoriteGames/${member_id}`, token)
           set({ error: null, favoriteGames: data, loading: false })
         } catch (err) {
           set({ error: err.message, loading: false })
@@ -65,6 +65,7 @@ export const useDataStore = create(
           const response = await submitData('/favoriteGame', token, payload)
           if (response) {
             set({ messages: get().game.name + ' : ' + response.message, alert: 'success' })
+            get().fetchFavoriteGames(member_id, token)
           } else {
             console.log(response)
           }

@@ -29,17 +29,10 @@ export const useAuthStore = create(
             username: username,
             password: password
           }
-          const { data, status } = await axiosClient.post('/members/login', payload);
+          const { data, status } = await axiosClient.post('/members/login', payload)
           if (status === 200) {
             const { member, session, token, settings } = data
-            const localStorageItems = {
-              token,
-              member,
-              session,
-              start_time: Date.now(),
-              settings,
-              sessionType
-            }
+
             set({
               loading: false,
               member,
@@ -68,8 +61,17 @@ export const useAuthStore = create(
               })
               return
             }
-
-            get().saveToLocalStorage(localStorageItems)
+            const localStorageItems = {
+              token: token,
+              member: member,
+              session: session,
+              start_time: Date.now(),
+              settings: settings,
+              sessionType: sessionType
+            }
+            Object.entries(localStorageItems).forEach(([key, value]) => {
+              localStorage.setItem(key, JSON.stringify(value))
+            })
           }
         } catch (err) {
           set({
@@ -102,16 +104,14 @@ export const useAuthStore = create(
             subscription: data.expire_date
           })
 
-          get().saveToLocalStorage(localStorageItems)
+          Object.entries(localStorageItems).forEach(([key, value]) => {
+            localStorage.setItem(key, JSON.stringify(value))
+          })
         } catch (err) {
           set({ messages: 'Failed to login', loading: false, alert: 'danger' })
         }
       },
-      saveToLocalStorage: async (localStorageItems) => {
-        Object.entries(localStorageItems).forEach(([key, value]) => {
-          localStorage.setItem(key, JSON.stringify(value))
-        })
-      },
+
       registerMember: async (username, password, confirm_password, email) => {
         set({ loading: true })
         try {
@@ -128,7 +128,7 @@ export const useAuthStore = create(
             admin_token: token,
             center_id: user.id,
             center_name: user.name,
-            settings
+            settings: settings
           }
 
           set({
@@ -141,11 +141,14 @@ export const useAuthStore = create(
             settings: [settings]
           })
 
-          get().saveToLocalStorage(localStorageItems)
+          Object.entries(localStorageItems).forEach(([key, value]) => {
+            localStorage.setItem(key, JSON.stringify(value))
+          })
         } catch (err) {
           set({ messages: 'Failed to login', loading: false, alert: 'danger' })
         }
       },
+
       updateMember: async (id, updatedMember) => {
         set({ loading: true })
         try {

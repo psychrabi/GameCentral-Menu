@@ -21,7 +21,7 @@ const Home = () => {
   useEffect(() => {
     if (!favoriteGames?.length > 0) {
       console.log('game fresh')
-      fetchFavoriteGames(member.center_id, token)
+      fetchFavoriteGames(member.id, token)
     }
     console.log(favoriteGames)
     setFilter('')
@@ -40,7 +40,7 @@ const Home = () => {
 
   useEffect(() => {
     setCount(filteredGames?.length)
-  }, [filter, type])
+  }, [favoriteGames, filter, type])
 
   return (
     <>

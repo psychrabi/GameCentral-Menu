@@ -38,7 +38,7 @@ function Applications() {
 
   useEffect(() => {
     setCount(filteredApps.length)
-  }, [filter, type])
+  }, [applications, filter, type])
 
   return (
     <>

@@ -7,8 +7,7 @@ import { useDataStore } from '../stores/DataStore.js'
 import { useAuthStore } from '../stores/AuthStore.js'
 
 const Details = () => {
-  const { show, game, setShow, toggleFavoriteGame, runExecutable } =
-    useDataStore()
+  const { show, game, setShow, toggleFavoriteGame, runExecutable } = useDataStore()
   const [running, setRunning] = useState(false)
   const { member, token, center_id } = useAuthStore()
   const handleClose = useCallback(() => {
