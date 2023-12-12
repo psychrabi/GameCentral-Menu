@@ -6,22 +6,22 @@ import { updateData, submitData } from '../../utils/fetchData'
 export const useAuthStore = create(
   persist(
     (set, get) => ({
-      loading: false,
-      show: false,
-      messages: null,
-      alert: null,
-      member: null,
-      session: null,
-      start_time: null,
-      type: '',
-      token: null,
       admin_token: null,
-      settings: null,
+      alert: null,
       center_id: null,
       center_name: null,
+      loading: false,
+      member: null,
+      messages: null,
+      session: null,
       sessionType: null,
-      systeminfo: null,
+      settings: null,
+      show: false,
+      start_time: null,
       subscription: '',
+      systeminfo: null,
+      token: null,
+      type: '',
       authenticate: async (username, password) => {
         set({ loading: true })
         try {
@@ -29,22 +29,31 @@ export const useAuthStore = create(
             username: username,
             password: password
           }
-          const response = await axiosClient.post('/members/login', payload)
-          if (response && response.status === 200) {
+          const { data, status } = await axiosClient.post('/members/login', payload);
+          if (status === 200) {
+            const { member, session, token, settings } = data
+            const localStorageItems = {
+              token,
+              member,
+              session,
+              start_time: Date.now(),
+              settings,
+              sessionType
+            }
             set({
               loading: false,
-              member: response.data.member,
-              session: response.data.session,
+              member,
+              session,
               start_time: Date.now(),
-              token: response.data.token,
-              settings: response.data.settings
+              token,
+              settings
             })
             set({ messages: 'You have successfully logged in.', alert: 'success' })
 
             const balance = get().member.balance
             const bonus_balance = get().member.bonus_balance
             const sessionType = balance > 0 || bonus_balance > 0 ? 'balance' : 'credit'
-            set({ sessionType: sessionType })
+            set({ sessionType })
 
             if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
               set({ messages: 'Not enough balance. Please top up your account.', alert: 'danger' })
@@ -60,12 +69,7 @@ export const useAuthStore = create(
               return
             }
 
-            localStorage.setItem('token', JSON.stringify({ token: get().token }))
-            localStorage.setItem('member', JSON.stringify(get().member))
-            localStorage.setItem('session', JSON.stringify(get().session))
-            localStorage.setItem('start_time', JSON.stringify(get().start_time))
-            localStorage.setItem('settings', JSON.stringify(get().settings))
-            localStorage.setItem('sessionType', JSON.stringify(get().sessionType))
+            get().saveToLocalStorage(localStorageItems)
           }
         } catch (err) {
           set({
@@ -78,56 +82,66 @@ export const useAuthStore = create(
       authenticateAdmin: async (license, username, password) => {
         set({ loading: true })
         try {
-          const payload = {
-            license: license,
-            username: username,
-            password: password
+          const payload = { license, username, password }
+          const { data } = await axiosClient.post('/login', payload)
+          const localStorageItems = {
+            admin_token: data.token,
+            center_id: data.user.id,
+            center_name: data.user.name,
+            settings: data.settings
           }
-          const response = await axiosClient.post('/login', payload)
 
           set({
+            admin_token: data.token,
+            alert: 'success',
+            center_id: data.user.id,
+            center_name: data.user.center_name,
             loading: false,
             messages: 'Center Account set successfully.',
-            alert: 'success',
-            center_id: response.data.user.id,
-            center_name: response.data.user.center_name,
-            admin_token: response.data.token,
-            settings: response.data.settings ?? [],
-            subscription: response.data.expire_date
+            settings: data.settings ?? [''],
+            subscription: data.expire_date
           })
-          localStorage.setItem('admin_token', JSON.stringify(response.data.token))
-          localStorage.setItem('center_id', JSON.stringify(response.data.user.id))
-          localStorage.setItem('center_name', JSON.stringify(response.data.user.name))
-          localStorage.setItem('settings', JSON.stringify(response.data.settings))
+
+          get().saveToLocalStorage(localStorageItems)
         } catch (err) {
           set({ messages: 'Failed to login', loading: false, alert: 'danger' })
         }
+      },
+      saveToLocalStorage: async (localStorageItems) => {
+        Object.entries(localStorageItems).forEach(([key, value]) => {
+          localStorage.setItem(key, JSON.stringify(value))
+        })
       },
       registerMember: async (username, password, confirm_password, email) => {
         set({ loading: true })
         try {
           const payload = {
             center_id: get().center_id,
-            email: email,
-            username: username,
-            password: password,
-            confirm_password: confirm_password
+            email,
+            username,
+            password,
+            confirm_password
           }
           const response = await axiosClient.post('/members/signup', payload)
+          const { user, token, settings } = response.data
+          const localStorageItems = {
+            admin_token: token,
+            center_id: user.id,
+            center_name: user.name,
+            settings
+          }
 
           set({
             loading: false,
             messages: 'Center account set.',
             alert: 'success',
-            center_id: response.data.user.id,
-            center_name: response.data.user.name,
-            admin_token: response.data.token,
-            settings: [response.data.settings]
+            center_id: user.id,
+            center_name: user.name,
+            admin_token: token,
+            settings: [settings]
           })
-          localStorage.setItem('admin_token', JSON.stringify(response.data.token))
-          localStorage.setItem('center_id', JSON.stringify(response.data.user.id))
-          localStorage.setItem('center_name', JSON.stringify(response.data.user.name))
-          localStorage.setItem('settings', JSON.stringify(response.data.settings))
+
+          get().saveToLocalStorage(localStorageItems)
         } catch (err) {
           set({ messages: 'Failed to login', loading: false, alert: 'danger' })
         }
@@ -139,7 +153,7 @@ export const useAuthStore = create(
           console.log(data)
           set({
             loading: false,
-            messages: 'FYour profile is successfully updated.',
+            messages: 'Your profile is successfully updated.',
             member: updatedMember
           })
           localStorage.setItem('member', JSON.stringify(get().member))
@@ -147,68 +161,7 @@ export const useAuthStore = create(
           set({ messages: err.response.data.message, loading: false, alert: 'danger' })
         }
       },
-      setSystemInfo: async (info) => {
-        set({
-          systeminfo: {
-            cpu: info.cpu.manufacturer + ' ' + info.cpu.brand,
-            graphics: info.graphics.controllers.filter((controller) => controller.vram > 0)[0]
-              .model,
-            ram: (info.mem.total / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
-            os: info.osInfo.distro + ' build ' + info.osInfo.build,
-            ip4: info.networkInterfaces[0].ip4
-          }
-        })
-      },
-      checkSystemInfo: async () => {
-        if (localStorage.getItem('systemInfo')) {
-          set({ systeminfo: JSON.parse(localStorage.getItem('systemInfo')) })
-          // console.log(get().systeminfo)
-        } else {
-          // console.log('getting systeminfo')
-          try {
-            let info = await window.api.getSystemInfo()
-            if (info) {
-              set({
-                systeminfo: {
-                  cpu: info.cpu.manufacturer + ' ' + info.cpu.brand,
-                  graphics: info.graphics.controllers.filter((controller) => controller.vram > 0)[0]
-                    .model,
-                  ram: (info.mem.total / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
-                  os: info.osInfo.distro + ' build ' + info.osInfo.build,
-                  ip4: info.networkInterfaces[0].ip4
-                }
-              })
-            } else {
-              set({ message: 'Error getting system ', alert: 'danger ' })
-            }
-            localStorage.setItem('systemInfo', JSON.stringify(get().systeminfo))
-          } catch (error) {
-            console.log(error)
-            set({ message: error, alert: 'danger ' })
-          }
-        }
-      },
-      checkCenterID: () => {
-        if (localStorage.getItem('center_id')) {
-          set({ center_id: JSON.parse(localStorage.getItem('center_id')) })
-        }
-      },
-      checkSession: () => {
-        if (localStorage.getItem('token')) {
-          set({ token: JSON.parse(localStorage.getItem('token')).token })
-        }
-        // if (localStorage.getItem('center_name')) {
-        //   set({ center_name: JSON.parse(localStorage.getItem('center_name')) })
-        // }
-        if (localStorage.getItem('member'))
-          set({ member: JSON.parse(localStorage.getItem('member')) })
-        if (localStorage.getItem('start_time'))
-          set({ start_time: JSON.parse(localStorage.getItem('start_time')) })
-        if (localStorage.getItem('session'))
-          set({ session: JSON.parse(localStorage.getItem('session')) })
-        if (localStorage.getItem('sessionType'))
-          set({ sessionType: JSON.parse(localStorage.getItem('sessionType')) })
-      },
+
       logout: async (cost_per_hour) => {
         const total_time = (Date.now() - get().start_time) / 1000 //in seconds
         const usage_details = {
@@ -228,27 +181,57 @@ export const useAuthStore = create(
           set({ messages: 'You have successfully logged out', alert: 'success' })
         }
       },
-      checkClientInfo: async () => {
-        let info = await window.api.getSystemInfo()
-        const sysinfo = JSON.parse(info)
-        console.log(sysinfo)
+      checkSession: () => {
+        if (localStorage.getItem('token')) {
+          set({ token: JSON.parse(localStorage.getItem('token')).token })
+        }
+        // if (localStorage.getItem('center_name')) {
+        //   set({ center_name: JSON.parse(localStorage.getItem('center_name')) })
+        // }
+        if (localStorage.getItem('member'))
+          set({ member: JSON.parse(localStorage.getItem('member')) })
+        if (localStorage.getItem('start_time'))
+          set({ start_time: JSON.parse(localStorage.getItem('start_time')) })
+        if (localStorage.getItem('session'))
+          set({ session: JSON.parse(localStorage.getItem('session')) })
+        if (localStorage.getItem('sessionType'))
+          set({ sessionType: JSON.parse(localStorage.getItem('sessionType')) })
+      },
+      checkSystemInfo: async () => {
+        if (localStorage.getItem('systemInfo')) {
+          set({ systeminfo: JSON.parse(localStorage.getItem('systemInfo')) })
+          // console.log(get().systeminfo)
+        } else {
+          // console.log('getting systeminfo')
+          try {
+            let info = await window.api.getSystemInfo()
+            get().setSystemInfo(info)
+            localStorage.setItem('systemInfo', JSON.stringify(get().systeminfo))
+          } catch (error) {
+            console.log(error)
+            set({ message: error, alert: 'danger ' })
+          }
+        }
+      },
+      checkCenterID: () => {
+        if (localStorage.getItem('center_id')) {
+          set({ center_id: JSON.parse(localStorage.getItem('center_id')) })
+        }
+      },
+      setSystemInfo: async (info) => {
         set({
           systeminfo: {
-            cpu: sysinfo.cpu.manufacturer + ' ' + sysinfo.cpu.brand,
-            graphics: sysinfo.graphics.controllers.filter((controller) => controller.vram > 0)[0]
+            cpu: info.cpu.manufacturer + ' ' + info.cpu.brand,
+            graphics: info.graphics.controllers.filter((controller) => controller.vram > 0)[0]
               .model,
-            ram: (sysinfo.mem.total / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
-            os: sysinfo.osInfo.distro + ' build ' + sysinfo.osInfo.build,
-            ip4: sysinfo.networkInterfaces[0].ip4
+            ram: (info.mem.total / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
+            os: info.osInfo.distro + ' build ' + info.osInfo.build,
+            ip4: info.networkInterfaces[0].ip4
           }
         })
       },
-      setMessages: (message) => {
-        set({ messages: message })
-      },
-      setAlert: (type) => {
-        set({ alert: type })
-      }
+      setMessages: (messages) => set({ messages }),
+      setType: (type) => set({ type })
       // updatePassword: async (id, newPassword) => {
       //   set({ loading: true })
       //   try {

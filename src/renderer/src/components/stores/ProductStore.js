@@ -27,18 +27,28 @@ export const useProductStore = create(
           set({ error: err.message, loading: false })
         }
       },
-      setFilter: (filter) =>
-        set((state) => ({
-          ...state,
-          filter
-        })),
-      setType: (type) => {
-        set({ loading: true })
+      fetchSingleProduct: async (id, token) => {
         try {
-          set({ type: type, loading: false })
+          set({ loading: true })
+          const response = await fetchData(`/products/${id}`, token)
+          set({
+            loading: false,
+            singleProduct: response.data
+          })
         } catch (err) {
           set({ error: err.message, loading: false })
         }
+      },
+      checkOut: async (member_id, subTotal, tax, total) => {
+        const payload = {
+          member_id: member_id,
+          items: get().cart,
+          subTotal: subTotal,
+          tax: tax,
+          total: total,
+          paymentMode: get().paymentMode
+        }
+        console.log(payload)
       },
       subTotal: () =>
         get().cart.reduce((total, item) => total + item.sales_price * item.quantity, 0),
@@ -46,7 +56,8 @@ export const useProductStore = create(
       total: () => get().subTotal() + get().tax(),
       addToCart: (id) => {
         const item = get().products.find((product) => product.id === id)
-        const inCart = get().cart.find((item) => (item.id === id ? true : false))
+        const inCart = get().cart.find((item) => item.id === id)
+
         if (inCart && item.stock == inCart.quantity) {
           set({ messages: 'Product quatity exceed', alert: 'danger' })
         } else {
@@ -58,13 +69,11 @@ export const useProductStore = create(
               : [...state.cart, { ...item, quantity: 1 }]
           }))
         }
-
-        console.log(get().cart)
+        // console.log(get().cart)
       },
       removeFromCart: (id) => {
         const item = get().cart.find((item) => item.id === id)
         // console.log('remove : ', id, item)
-
         if (item) {
           if (item.quantity > 1) {
             item.quantity -= 1
@@ -78,35 +87,13 @@ export const useProductStore = create(
           }
         }
       },
-      setPaymentMode: (mode) => {
-        set({ paymentMode: mode })
-      },
       clearCart: () => {
         set({ cart: [] })
       },
-      fetchSingleProduct: async (id, token) => {
-        try {
-          set({ loading: true })
-          const response = await fetchData(`/products/${id}`, token)
-          set({
-            loading: false,
-            singleProduct: response.data
-          })
-        } catch (err) {
-          set({ error: err.message, loading: false })
-        }
-      },
-      checkOut: (member_id, subTotal, tax, total) => {
-        const payload = {
-          member_id: member_id,
-          items: get().cart,
-          subTotal: subTotal,
-          tax: tax,
-          total: total,
-          paymentMode: get().paymentMode
-        }
-        console.log(payload)
-      }
+
+      setPaymentMode: (paymentMode) => set({ paymentMode }),
+      setFilter: (filter) => set({ filter }),
+      setType: (type) => set({ type })
     }),
     {
       name: 'product-storage',

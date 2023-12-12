@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { fetchData } from '../../utils/fetchData'
+import { fetchData, submitData } from '../../utils/fetchData'
 import { persist, createJSONStorage } from 'zustand/middleware'
 
 export const useDataStore = create(
@@ -7,21 +7,17 @@ export const useDataStore = create(
     (set, get) => ({
       alert: null,
       applications: [],
+      count: 0,
       error: null,
       favoriteGames: [],
       filter: '',
+      game: [],
       games: [],
       loading: false,
       messages: null,
       products: [],
-      game: [],
-      type: '',
       show: false,
-      count: '',
-      setCount: (count) => {
-        console.log(count)
-        set({ count: count })
-      },
+      type: '',
       fetchGames: async (center_id, token) => {
         set({ loading: true })
         try {
@@ -58,6 +54,45 @@ export const useDataStore = create(
           set({ error: err.message, loading: false })
         }
       },
+      toggleFavoriteGame: async (center_id, member_id, game_id, token) => {
+        console.log('toggle favorite game')
+        const payload = {
+          center_id,
+          member_id,
+          game_id
+        }
+        try {
+          const response = await submitData('/favoriteGame', token, payload)
+          if (response) {
+            set({ messages: get().game.name + ' : ' + response.message, alert: 'success' })
+          } else {
+            console.log(response)
+          }
+        } catch (error) {
+          console.log(error.message)
+          // setMessages('Favorite game status couldnot be changed for ' + game.name)
+          set({ messages: error.message })
+        }
+      },
+      runExecutable: async () => {
+        try {
+          window.api.checkExecutable(get().game.executable).then((response) => {
+            console.log(response)
+            if (response.status === 'file-exists') {
+              window.api
+                .launchExecutable(get().game.executable)
+                .then((response) => console.log(response))
+            }
+
+            if (response.status === 'file-does-not-exist') {
+              set({ messages: 'Game executable missing', alert: 'danger' })
+            }
+            // console.log(response)
+          })
+        } catch (error) {
+          console.log(error)
+        }
+      },
       getGame: async (id) => {
         // console.log(id)
         try {
@@ -86,31 +121,12 @@ export const useDataStore = create(
           set({ error: err.message, loading: false })
         }
       },
-      setFilter: (filter) => {
-        set({ loading: true })
-        try {
-          set({ filter: filter, loading: false })
-        } catch (err) {
-          set({ error: err.message, loading: false })
-        }
-      },
-      setShow: (show) => {
-        set({ show: show })
-      },
-      setType: (type) => {
-        set({ loading: true })
-        try {
-          set({ type: type, loading: false })
-        } catch (err) {
-          set({ error: err.message, loading: false })
-        }
-      },
-      setMessages: (message) => {
-        set({ messages: message })
-      },
-      setAlert: (type) => {
-        set({ alert: type })
-      }
+      setCount: (count) => set({ count }),
+      setFilter: (filter) => set({ filter }),
+      setShow: (show) => set({ show }),
+      setType: (type) => set({ type }),
+      setMessages: (messages) => set({ messages }),
+      setAlert: (alert) => set({ alert })
     }),
     {
       name: 'data-storage',

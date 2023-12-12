@@ -19,9 +19,11 @@ const Home = () => {
   } = useDataStore()
 
   useEffect(() => {
-    if (!favoriteGames.length > 0) {
+    if (!favoriteGames?.length > 0) {
+      console.log('game fresh')
       fetchFavoriteGames(member.center_id, token)
     }
+    console.log(favoriteGames)
     setFilter('')
     setType('')
   }, [])
@@ -32,12 +34,12 @@ const Home = () => {
     } else if (type) {
       return item.game_type === type
     } else {
-      return true
+      return favoriteGames
     }
   })
 
   useEffect(() => {
-    setCount(filteredGames.length)
+    setCount(filteredGames?.length)
   }, [filter, type])
 
   return (

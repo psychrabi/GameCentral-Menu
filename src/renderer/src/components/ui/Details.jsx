@@ -5,57 +5,14 @@ import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
 // import axiosClient from '../../lib/axios-client.js'
 import { useDataStore } from '../stores/DataStore.js'
 import { useAuthStore } from '../stores/AuthStore.js'
-import { submitData } from '../../utils/fetchData.js'
 
 const Details = () => {
-  const { show, game, setShow, setMessages, setAlert, fetchFavoriteGames } = useDataStore()
+  const { show, game, setShow, toggleFavoriteGame, runExecutable } =
+    useDataStore()
   const [running, setRunning] = useState(false)
-  const { member, token } = useAuthStore()
-
+  const { member, token, center_id } = useAuthStore()
   const handleClose = useCallback(() => {
     setShow(false)
-  }, [])
-
-  const handleFavoriteClick = useCallback(async (game_id) => {
-    const payload = {
-      center_id: member.center_id,
-      member_id: member.id,
-      game_id: game_id
-    }
-
-    try {
-      const response = await submitData('/favoriteGame', token, payload)
-      if (response) {
-        setMessages(game.name + ' : ' + response.message)
-        setAlert('success')
-      }
-      setTimeout(() => {
-        fetchFavoriteGames(member.id, token)
-        setShow(false)
-      }, 3000)
-    } catch (error) {
-      console.log(error.message)
-      // setMessages('Favorite game status couldnot be changed for ' + game.name)
-      setMessages(error.message)
-    }
-  }, [])
-
-  const handleGamePlay = useCallback((filePath) => {
-    try {
-      window.api.checkExecutable(filePath).then((response) => {
-        if (response.status === 'file-exists') {
-          window.api.launchExecutable(filePath).then((response) => setRunning(response))
-        }
-
-        if (response.statu === 'file-does-not-exist') {
-          setMessages('Game executable missing')
-          setAlert('danger')
-        }
-        // console.log(response)
-      })
-    } catch (error) {
-      console.log(error)
-    }
   }, [])
 
   // useEffect(() => {
@@ -91,14 +48,14 @@ const Details = () => {
                   <i
                     className={game?.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'}
                     style={{ fontSize: '2rem' }}
-                    onClick={() => handleFavoriteClick(game.id)}
+                    onClick={() => toggleFavoriteGame(center_id, member.id, game.id, token)}
                   ></i>
                 </button>
               </div>
               <button
                 className="btn btn-primary p-0 fs-2 d-flex justify-content-center align-items-center"
                 id="play-button"
-                onClick={() => handleGamePlay(game.executable, game.parameters)}
+                onClick={() => runExecutable()}
               >
                 {running ? (
                   <>
@@ -118,7 +75,7 @@ const Details = () => {
               <button
                 className="btn btn-secondary p-0 fs-4 d-flex justify-content-center align-items-center"
                 id="play-button"
-                onClick={() => handleGamePlay(game.executable, game.parameters)}
+                onClick={() => runExecutable()}
               >
                 <i className="bi bi-play-fill" style={{ fontSize: '2.5rem' }}></i> With Center
                 account
