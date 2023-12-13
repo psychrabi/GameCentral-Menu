@@ -12,7 +12,7 @@ const Home = lazy(() => import('./views/Home/Home'))
 const Games = lazy(() => import('./views/Games/Games'))
 const Applications = lazy(() => import('./views/Applications/Applications'))
 const Shop = lazy(() => import('./views/Shop/Shop'))
-const Profile = lazy(() => import('./views/Profile/Profile'))
+const Details = lazy(() => import('./views/Profile/Details'))
 const Notification = lazy(() => import('./views/Profile/Notification'))
 const Security = lazy(() => import('./views/Profile/Security'))
 const Session = lazy(() => import('./views/Profile/Session'))
@@ -22,7 +22,7 @@ const NotFound = lazy(() => import('./views/NotFound'))
 const memberProfileRoutes = [
   {
     path: 'details',
-    element: <Profile />
+    element: <Details />
   },
   {
     path: 'security',
@@ -59,6 +59,10 @@ const memberRoutes = [
     path: '/profile',
     element: <ProfileLayout />,
     children: memberProfileRoutes
+  },
+  {
+    path: '/logout',
+    element: undefined
   }
 ]
 

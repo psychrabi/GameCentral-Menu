@@ -111,7 +111,6 @@ export const useAuthStore = create(
           set({ messages: 'Failed to login', loading: false, alert: 'danger' })
         }
       },
-
       registerMember: async (username, password, confirm_password, email) => {
         set({ loading: true })
         try {
@@ -148,23 +147,23 @@ export const useAuthStore = create(
           set({ messages: 'Failed to login', loading: false, alert: 'danger' })
         }
       },
-
-      updateMember: async (id, updatedMember) => {
+      updateMember: async (id, payload) => {
         set({ loading: true })
         try {
-          const data = await updateData(`/members/${id}`, updatedMember)
-          console.log(data)
+          // console.log(payload)
+          const data = await updateData(`/members/${id}`, get().token, payload)
+          // console.log(data)
           set({
             loading: false,
             messages: 'Your profile is successfully updated.',
-            member: updatedMember
+            member: data,
+            alert: 'success'
           })
           localStorage.setItem('member', JSON.stringify(get().member))
         } catch (err) {
-          set({ messages: err.response.data.message, loading: false, alert: 'danger' })
+          set({ messages: err.data.message, loading: false, alert: 'danger' })
         }
       },
-
       logout: async (cost_per_hour) => {
         const total_time = (Date.now() - get().start_time) / 1000 //in seconds
         const usage_details = {

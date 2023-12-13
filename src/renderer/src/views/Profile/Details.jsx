@@ -1,20 +1,75 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useAuthStore } from '../../components/stores/AuthStore'
 import { Loading } from '../../components/ui/Loading'
-
 export default function Profile() {
-  const { member, error, loading, updateMember, token } = useAuthStore()
-  const [updatedMember, setUpdatedMember] = useState(member)
+  const { member, error, loading, updateMember } = useAuthStore()
+  const [payload, setPayload] = useState()
+
+  const firstNameInputRef = useRef(null)
+  const lastNameInputRef = useRef(null)
+  const emailInputRef = useRef(null)
+  const birthdayInputRef = useRef(null)
+  const phoneInputRef = useRef(null)
+
+  const onSubmit = async (ev) => {
+    ev.preventDefault()
+
+    // axiosClient.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    console.log(payload)
+
+    // const { data } = await axiosClient.post(`/members/profile/${member.id}`, payload)
+    // console.log(data)
+    updateMember(member.id, payload)
+  }
+
+  const handleFirstNameChange = useCallback(() => {
+    setPayload((prev) => ({
+      ...prev,
+      first_name: firstNameInputRef.current.value
+    }))
+  })
+  const handleLastNameChange = useCallback(() => {
+    setPayload((prev) => ({
+      ...prev,
+      last_name: lastNameInputRef.current.value
+    }))
+  })
+  const handleEmailChange = useCallback(() => {
+    setPayload((prev) => ({
+      ...prev,
+      email: emailInputRef.current.value
+    }))
+  })
+  const handleBirthdayChange = useCallback(() => {
+    setPayload((prev) => ({
+      ...prev,
+      birthday: birthdayInputRef.current.value
+    }))
+  })
+  const handlePhoneChange = useCallback(() => {
+    setPayload((prev) => ({
+      ...prev,
+      phone: phoneInputRef.current.value
+    }))
+  })
 
   useEffect(() => {
-    console.log(updatedMember)
-  }, [updatedMember])
+    setPayload((prev) => ({
+      ...prev,
 
-  function onSubmit(ev) {
-    ev.preventDefault()
-    console.log(member)
-    updateMember(member.id, token, updatedMember)
-  }
+      first_name: member?.first_name,
+      last_name: member?.last_name,
+      birthday: member?.birthday,
+      phone: member?.phone,
+      email: member?.email
+    }))
+
+    firstNameInputRef.current.value = member?.first_name
+    lastNameInputRef.current.value = member?.last_name || ''
+    emailInputRef.current.value = member?.email || ''
+    birthdayInputRef.current.value = member?.birthday || '1990-01-01'
+    phoneInputRef.current.value = member?.phone || '9800000000'
+  }, [])
 
   if (loading) {
     return <Loading />
@@ -44,22 +99,12 @@ export default function Profile() {
       </div>
       <div className="col-xl-8">
         <div className="card mb-4">
-          <div className="card-header">Account Details</div>
+          <div className="card-header">
+            Account Details: <i className="bi-person-fill-gear"></i>
+            {member.username}
+          </div>
           <div className="card-body">
             <form onSubmit={onSubmit}>
-              <div className="mb-3">
-                <label className="small mb-1" htmlFor="inputUsername">
-                  Username (how your name will appear to other users on the site)
-                </label>
-                <input
-                  className="form-control"
-                  id="inputUsername"
-                  type="text"
-                  placeholder="Enter your username"
-                  value={updatedMember.username}
-                  readOnly
-                />
-              </div>
               <div className="row gx-3 mb-3">
                 <div className="col-md-6">
                   <label className="small mb-1" htmlFor="inputFirstName">
@@ -70,10 +115,8 @@ export default function Profile() {
                     id="inputFirstName"
                     type="text"
                     placeholder="Enter your first name"
-                    value={updatedMember?.first_name}
-                    onChange={(ev) =>
-                      setUpdatedMember({ ...updatedMember, first_name: ev.target.value })
-                    }
+                    ref={firstNameInputRef}
+                    onChange={handleFirstNameChange}
                   />
                 </div>
                 <div className="col-md-6">
@@ -85,10 +128,8 @@ export default function Profile() {
                     id="inputLastName"
                     type="text"
                     placeholder="Enter your last name"
-                    value={updatedMember?.last_name}
-                    onChange={(ev) =>
-                      setUpdatedMember({ ...updatedMember, last_name: ev.target.value })
-                    }
+                    ref={lastNameInputRef}
+                    onChange={handleLastNameChange}
                   />
                 </div>
               </div>
@@ -102,8 +143,8 @@ export default function Profile() {
                   id="inputEmailAddress"
                   type="email"
                   placeholder="Enter your email address"
-                  value={updatedMember?.email}
-                  onChange={(ev) => setUpdatedMember({ ...updatedMember, email: ev.target.value })}
+                  ref={emailInputRef}
+                  onChange={handleEmailChange}
                 />
               </div>
               <div className="row gx-3 mb-3">
@@ -116,10 +157,8 @@ export default function Profile() {
                     id="inputPhone"
                     type="tel"
                     placeholder="Enter your phone number"
-                    value={updatedMember?.phone ?? 9800000000}
-                    onChange={(ev) =>
-                      setUpdatedMember({ ...updatedMember, phone: ev.target.value })
-                    }
+                    ref={phoneInputRef}
+                    onChange={handlePhoneChange}
                   />
                 </div>
                 <div className="col-md-6">
@@ -132,10 +171,8 @@ export default function Profile() {
                     type="date"
                     name="birthday"
                     placeholder="Enter your birthday"
-                    value={updatedMember.birthday}
-                    onChange={(ev) =>
-                      setUpdatedMember({ ...updatedMember, birthday: ev.target.value })
-                    }
+                    ref={birthdayInputRef}
+                    onChange={handleBirthdayChange}
                   />
                 </div>
               </div>

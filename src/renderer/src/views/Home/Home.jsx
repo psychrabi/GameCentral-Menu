@@ -20,10 +20,10 @@ const Home = () => {
 
   useEffect(() => {
     if (!favoriteGames?.length > 0) {
-      console.log('game fresh')
+      // console.log('game fresh')
       fetchFavoriteGames(member.id, token)
     }
-    console.log(favoriteGames)
+    // console.log(favoriteGames)
     setFilter('')
     setType('')
   }, [])
