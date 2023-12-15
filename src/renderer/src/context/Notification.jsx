@@ -1,22 +1,22 @@
 import { useState } from 'react'
 import { NotificationProvider } from './notificationContext'
 import PropTypes from 'prop-types'
+import { useDataStore } from '../components/stores/DataStore'
 
 const Notification = ({ children }) => {
+  const { messages, setMessages, alert, setAlert } = useDataStore()
   const [showAlert, toggleAlert] = useState(false)
-  const [message, setMessage] = useState([''])
-  const [type, setType] = useState('')
   return (
     <NotificationProvider
       value={{
-        showAlert: (text, alert) => {
+        showAlert: () => {
           toggleAlert(true)
-          setMessage(text)
-          setType(alert)
+          setMessages(messages)
+          setAlert(alert)
           setTimeout(() => {
             toggleAlert(false)
-            setMessage([''])
-            setType('')
+            setMessages(null)
+            setAlert(null)
           }, 3000)
         }
       }}
@@ -25,7 +25,9 @@ const Notification = ({ children }) => {
       {showAlert && (
         <div className="toast-container bottom-0 start-0 p-3" style={{ zIndex: 5000 }}>
           <div
-            className={`toast d-flex fade show  ${type === 'success' ? 'bg-success' : 'bg-danger'}`}
+            className={`toast d-flex fade show  ${
+              alert === 'success' ? 'bg-success' : 'bg-danger'
+            }`}
             role="alert"
             aria-live="assertive"
             aria-atomic="true"
@@ -33,9 +35,7 @@ const Notification = ({ children }) => {
             data-bs-delay="1000"
           >
             <div className="toast-body text-light">
-              {Object.keys(message).map((key) => (
-                <span key={key}>{message[key][0]}</span>
-              ))}
+              <span>{messages}</span>
             </div>
             <button
               type="button"

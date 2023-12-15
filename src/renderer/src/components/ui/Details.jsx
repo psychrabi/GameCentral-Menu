@@ -1,22 +1,26 @@
 import Offcanvas from 'react-bootstrap/Offcanvas'
 import Carousel from 'react-bootstrap/Carousel'
-import { useCallback, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
 // import axiosClient from '../../lib/axios-client.js'
 import { useDataStore } from '../stores/DataStore.js'
 import { useAuthStore } from '../stores/AuthStore.js'
+import notificationContext from '../../context/notificationContext.js'
 
 const Details = () => {
-  const { show, game, setShow, toggleFavoriteGame, runExecutable } = useDataStore()
+  const { show, game, setShow, toggleFavoriteGame, runExecutable, messages, alert } = useDataStore()
   const [running, setRunning] = useState(false)
   const { member, token, center_id } = useAuthStore()
+  const { showAlert } = useContext(notificationContext)
   const handleClose = useCallback(() => {
     setShow(false)
   }, [])
 
   // useEffect(() => {
-  //   window.api.executableExited()
-  // }, [])
+  //   if (messages && alert) {
+  //     showAlert(messages, alert)
+  //   }
+  // }, [messages, alert])
 
   return (
     <Offcanvas

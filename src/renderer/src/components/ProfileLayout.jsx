@@ -1,8 +1,19 @@
-import { Suspense } from 'react'
+import { Suspense, useEffect, useContext } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import '../assets/css/Profile.css'
 import { Loading } from './ui/Loading.jsx'
+import notificationContext from '../context/notificationContext'
+import { useAuthStore } from './stores/AuthStore.js'
+
 export default function ProfileLayout() {
+  // const { showAlert } = useContext(notificationContext)
+  // const { messages, alert } = useAuthStore()
+  // useEffect(() => {
+  //   if (messages && alert) {
+  //     showAlert(messages, alert)
+  //   }
+  // }, [messages, alert])
+
   return (
     <>
       <div className="card mt-2">

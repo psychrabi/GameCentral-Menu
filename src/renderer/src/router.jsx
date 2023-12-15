@@ -13,7 +13,6 @@ const Games = lazy(() => import('./views/Games/Games'))
 const Applications = lazy(() => import('./views/Applications/Applications'))
 const Shop = lazy(() => import('./views/Shop/Shop'))
 const Details = lazy(() => import('./views/Profile/Details'))
-const Notification = lazy(() => import('./views/Profile/Notification'))
 const Security = lazy(() => import('./views/Profile/Security'))
 const Session = lazy(() => import('./views/Profile/Session'))
 const NotFound = lazy(() => import('./views/NotFound'))
@@ -31,10 +30,6 @@ const memberProfileRoutes = [
   {
     path: 'sessions',
     element: <Session />
-  },
-  {
-    path: 'notification',
-    element: <Notification />
   }
 ]
 //Member Routes

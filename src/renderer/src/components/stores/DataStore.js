@@ -8,7 +8,6 @@ export const useDataStore = create(
       alert: null,
       applications: [],
       count: 0,
-      error: null,
       favoriteGames: [],
       filter: '',
       game: [],
@@ -22,36 +21,40 @@ export const useDataStore = create(
         set({ loading: true })
         try {
           const data = await fetchData(`/clientGames/${center_id}`, token)
-          set({ error: null, games: data, loading: false })
+          set({ games: data, loading: false })
         } catch (err) {
-          set({ error: err.message, loading: false })
+          console.error(err)
+          set({ messages: err.message, loading: false, alert: 'danger' })
         }
       },
       fetchFavoriteGames: async (member_id, token) => {
         set({ loading: true })
         try {
           const data = await fetchData(`/favoriteGames/${member_id}`, token)
-          set({ error: null, favoriteGames: data, loading: false })
+          set({ favoriteGames: data, loading: false })
         } catch (err) {
-          set({ error: err.message, loading: false })
+          console.error(err)
+          set({ messages: err.message, loading: false, alert: 'danger' })
         }
       },
       fetchApplications: async (center_id, token) => {
         set({ loading: true })
         try {
           const data = await fetchData(`/clientApps/${center_id}`, token)
-          set({ error: null, applications: data, loading: false })
+          set({ applications: data, loading: false })
         } catch (err) {
-          set({ error: err.message, loading: false })
+          console.error(err)
+          set({ messages: err.message, loading: false, alert: 'danger' })
         }
       },
       fetchProducts: async (center_id, token) => {
         set({ loading: true })
         try {
           const data = await fetchData(`/clientProducts/${center_id}`, token)
-          set({ error: null, products: data, loading: false })
+          set({ products: data, loading: false })
         } catch (err) {
-          set({ error: err.message, loading: false })
+          console.error(err)
+          set({ messages: err.message, loading: false, alert: 'danger' })
         }
       },
       toggleFavoriteGame: async (center_id, member_id, game_id, token) => {
@@ -63,16 +66,15 @@ export const useDataStore = create(
         }
         try {
           const response = await submitData('/favoriteGame', token, payload)
-          if (response) {
-            set({ messages: get().game.name + ' : ' + response.message, alert: 'success' })
-            get().fetchFavoriteGames(member_id, token)
-          } else {
-            console.log(response)
-          }
-        } catch (error) {
-          console.log(error.message)
-          // setMessages('Favorite game status couldnot be changed for ' + game.name)
-          set({ messages: error.message })
+          set({
+            messages: get().game.name + ' : ' + response.message,
+            alert: 'success',
+            show: !get().show
+          })
+          get().fetchFavoriteGames(member_id, token)
+        } catch (err) {
+          console.error(err)
+          set({ messages: err.message, loading: false, alert: 'danger' })
         }
       },
       runExecutable: async () => {
@@ -90,8 +92,9 @@ export const useDataStore = create(
             }
             // console.log(response)
           })
-        } catch (error) {
-          console.log(error)
+        } catch (err) {
+          console.error(err)
+          set({ messages: err.message, loading: false, alert: 'danger' })
         }
       },
       getGame: async (id) => {
@@ -99,32 +102,35 @@ export const useDataStore = create(
         try {
           const data = await get().games.filter((game) => game.id === id)
           // console.log(data)
-          set({ error: null, loading: false, game: data[0] })
+          set({ loading: false, game: data[0] })
         } catch (err) {
-          set({ error: err.message, loading: false })
+          console.error(err)
+          set({ messages: err.message, loading: false, alert: 'danger' })
         }
       },
       getFavoriteGame: async (id) => {
         set({ loading: true })
         try {
           const data = await get().favoriteGames.filter((game) => game.id === id)
-          set({ error: null, loading: false, game: data[0] })
+          set({ loading: false, game: data[0] })
         } catch (err) {
-          set({ error: err.message, loading: false })
+          console.error(err)
+          set({ messages: err.message, loading: false, alert: 'danger' })
         }
       },
       getApplication: async (id) => {
         set({ loading: true })
         try {
           const data = await get().applications.filter((app) => app.id === id)
-          set({ error: null, loading: false, game: data[0] })
+          set({ loading: false, game: data[0] })
         } catch (err) {
-          set({ error: err.message, loading: false })
+          console.error(err)
+          set({ messages: err.message, loading: false, alert: 'danger' })
         }
       },
       setCount: (count) => set({ count }),
       setFilter: (filter) => set({ filter }),
-      setShow: (show) => set({ show }),
+      setShow: () => set((state) => ({ show: !state.show })),
       setType: (type) => set({ type }),
       setMessages: (messages) => set({ messages }),
       setAlert: (alert) => set({ alert })

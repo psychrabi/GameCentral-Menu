@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useAuthStore } from '../../components/stores/AuthStore'
 import { Loading } from '../../components/ui/Loading'
 export default function Profile() {
-  const { member, error, loading, updateMember } = useAuthStore()
+  const { member, loading, updateMember, messages, alert } = useAuthStore()
   const [payload, setPayload] = useState()
 
   const firstNameInputRef = useRef(null)
@@ -13,12 +13,6 @@ export default function Profile() {
 
   const onSubmit = async (ev) => {
     ev.preventDefault()
-
-    // axiosClient.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    console.log(payload)
-
-    // const { data } = await axiosClient.post(`/members/profile/${member.id}`, payload)
-    // console.log(data)
     updateMember(member.id, payload)
   }
 
@@ -56,7 +50,6 @@ export default function Profile() {
   useEffect(() => {
     setPayload((prev) => ({
       ...prev,
-
       first_name: member?.first_name,
       last_name: member?.last_name,
       birthday: member?.birthday,
@@ -71,15 +64,9 @@ export default function Profile() {
     phoneInputRef.current.value = member?.phone || '9800000000'
   }, [])
 
-  if (loading) {
-    return <Loading />
-  }
-
-  if (error) {
-    console.log(error)
-  }
-
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className="row">
       <div className="col-xl-4">
         <div className="card mb-4 mb-xl-0">
