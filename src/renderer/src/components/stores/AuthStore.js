@@ -89,7 +89,7 @@ export const useAuthStore = create(
           const localStorageItems = {
             admin_token: data.token,
             center_id: data.user.id,
-            center_name: data.user.name,
+            center_name: data.user.center_name,
             settings: data.settings
           }
 
@@ -126,7 +126,7 @@ export const useAuthStore = create(
           const localStorageItems = {
             admin_token: token,
             center_id: user.id,
-            center_name: user.name,
+            center_name: user.center_name,
             settings: settings
           }
 
@@ -135,7 +135,7 @@ export const useAuthStore = create(
             messages: 'Center account set.',
             alert: 'success',
             center_id: user.id,
-            center_name: user.name,
+            center_name: user.center_name,
             admin_token: token,
             settings: [settings]
           })
