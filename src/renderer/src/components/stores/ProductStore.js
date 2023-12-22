@@ -64,8 +64,8 @@ export const useProductStore = create(
           set((state) => ({
             cart: inCart
               ? state.cart.map((item) =>
-                  item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-                )
+                item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+              )
               : [...state.cart, { ...item, quantity: 1 }]
           }))
         }

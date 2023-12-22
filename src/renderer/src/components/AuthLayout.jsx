@@ -27,40 +27,36 @@ export default function AuthLayout() {
   //   return <Navigate to="/" />
   // }
 
-  if (!token) {
-    return (
-      <>
-        <VideoBackground />
-        <div className="login">
-          <main className="px-4">
-            <div className="form-signin position-relative">
-              <div autoComplete="off" className={'mb-3 px-5 mx-4 text-secondary'}>
-                <div>
-                  <img src={logo} alt="" style={{ width: '8rem', height: '8rem' }} />
-                </div>
-                <Outlet />
+  return (
+    <>
+      <VideoBackground />
+      <div className="login">
+        <main className="px-4">
+          <div className="form-signin position-relative">
+            <div autoComplete="off" className={'mb-3 px-5 mx-4 text-secondary'}>
+              <div>
+                <img src={logo} alt="" style={{ width: '8rem', height: '8rem' }} />
               </div>
-              <div className="py-2 bg-dark text-light position-absolute bottom-0 start-0 end-0">
-                <span className="fs-3">
-                  <i className="bi bi-pc-display me-2"></i>PC01
-                </span>
-              </div>
+              {!token ? <Outlet /> : <Navigate to="/" />}
             </div>
-          </main>
-          {messages && (
-            <Notifications
-              messages={messages}
-              setMessages={setMessages}
-              alert={alert}
-              setAlert={setAlert}
-            />
-          )}
-        </div>
-        {/* <ClientStats /> */}
-        <SystemInfo stats={systeminfo} />
-      </>
-    )
-  } else {
-    return <Navigate to="/" />
-  }
+            <div className="py-2 bg-dark text-light position-absolute bottom-0 start-0 end-0">
+              <span className="fs-3">
+                <i className="bi bi-pc-display me-2"></i>PC01
+              </span>
+            </div>
+          </div>
+        </main>
+        {messages && (
+          <Notifications
+            messages={messages}
+            setMessages={setMessages}
+            alert={alert}
+            setAlert={setAlert}
+          />
+        )}
+      </div>
+      {/* <ClientStats /> */}
+      <SystemInfo stats={systeminfo} />
+    </>
+  )
 }

@@ -7,7 +7,7 @@ export const VideoBackground = () => {
 
   const selectRandomVideo = () => {
     const videoUrl = `../src/public/videos/${videos[currentVideoIndex]}`
-    console.log(videoUrl)
+    // console.log(videoUrl)
     return <source type="video/mp4" src={videoUrl} id="url-video" />
   }
 

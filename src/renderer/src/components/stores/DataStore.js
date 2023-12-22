@@ -17,6 +17,8 @@ export const useDataStore = create(
       products: [],
       show: false,
       type: '',
+      filter: '',
+      alert: '',
       fetchGames: async (center_id, token) => {
         set({ loading: true })
         try {

@@ -4,28 +4,37 @@ import { useAuthStore } from '../../components/stores/AuthStore'
 import { Link } from 'react-router-dom'
 
 export default function Register() {
-  const authenticateAdmin = useAuthStore((state) => state.authenticateAdmin)
+  const registerMember = useAuthStore((state) => state.registerMember)
+  const center_name = useAuthStore((state) => state.center_name)
   const loading = useAuthStore((state) => state.loading)
   const token = useAuthStore((state) => state.token)
   const checkSession = useAuthStore((state) => state.checkSession)
   const checkCenterID = useAuthStore((state) => state.checkCenterID)
   const error = useAuthStore((state) => state.error)
+  const setMessages = useAuthStore((state) => state.setMessages)
+  const setType = useAuthStore((state) => state.setType)
 
   const emailRef = useRef()
   const usernameRef = useRef()
   const passwordRef = useRef()
   const confirm_passwordRef = useRef()
-  const center_name = 'Hak3rz Juction'
 
   function onSubmit(ev) {
     ev.preventDefault()
-    authenticateAdmin(usernameRef.current.value, passwordRef.current.value)
+    registerMember(
+      usernameRef.current.value,
+      passwordRef.current.value,
+      confirm_passwordRef.current.value,
+      emailRef.current.value
+    )
   }
   if (error) {
     console.log(error)
   }
 
   useEffect(() => {
+    setMessages('')
+    setType('')
     checkSession()
     checkCenterID()
   }, [])

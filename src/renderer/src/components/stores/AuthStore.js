@@ -6,7 +6,6 @@ import { updateData, submitData } from '../../utils/fetchData'
 export const useAuthStore = create(
   persist(
     (set, get) => ({
-      admin_token: null,
       alert: null,
       center_id: null,
       center_name: null,
@@ -87,14 +86,13 @@ export const useAuthStore = create(
           const payload = { license, username, password }
           const { data } = await axiosClient.post('/login', payload)
           const localStorageItems = {
-            admin_token: data.token,
             center_id: data.user.id,
             center_name: data.user.center_name,
-            settings: data.settings
+            settings: data.settings,
+            subscription: data.expire_date
           }
 
           set({
-            admin_token: data.token,
             alert: 'success',
             center_id: data.user.id,
             center_name: data.user.center_name,
@@ -111,7 +109,7 @@ export const useAuthStore = create(
           set({ messages: 'Failed to login', loading: false, alert: 'danger' })
         }
       },
-      registerMember: async (username, password, confirm_password, email) => {
+      registerMember: async (username, password, password_confirmation, email) => {
         set({ loading: true })
         try {
           const payload = {
@@ -119,12 +117,12 @@ export const useAuthStore = create(
             email,
             username,
             password,
-            confirm_password
+            password_confirmation
           }
           const response = await axiosClient.post('/members/signup', payload)
           const { user, token, settings } = response.data
           const localStorageItems = {
-            admin_token: token,
+            token,
             center_id: user.id,
             center_name: user.center_name,
             settings: settings
@@ -132,11 +130,10 @@ export const useAuthStore = create(
 
           set({
             loading: false,
-            messages: 'Center account set.',
+            messages: 'Account registration successful',
             alert: 'success',
             center_id: user.id,
             center_name: user.center_name,
-            admin_token: token,
             settings: [settings]
           })
 
