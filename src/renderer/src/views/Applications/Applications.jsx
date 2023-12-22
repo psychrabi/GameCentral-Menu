@@ -1,21 +1,20 @@
 import { useEffect } from 'react'
-import { useAuthStore } from '../../components/stores/AuthStore'
-import { useDataStore } from '../../components/stores/DataStore'
+import { useBoundStore } from '../../components/stores/BoundStore'
 import Grid from '../../components/ui/Grid'
 import Header from '../../components/ui/Header'
 import categories from '../../data/AppTypes.json'
 
 function Applications() {
-  const token = useAuthStore((state) => state.token)
-  const member = useAuthStore((state) => state.member)
-  const fetchApplications = useDataStore((state) => state.fetchApplications)
-  const applications = useDataStore((state) => state.applications)
-  const filter = useDataStore((state) => state.filter)
-  const setFilter = useDataStore((state) => state.setFilter)
-  const type = useDataStore((state) => state.type)
-  const setType = useDataStore((state) => state.setType)
-  const getApplication = useDataStore((state) => state.getApplication)
-  const setCount = useDataStore((state) => state.setCount)
+  const token = useBoundStore((state) => state.token)
+  const member = useBoundStore((state) => state.member)
+  const fetchApplications = useBoundStore((state) => state.fetchApplications)
+  const applications = useBoundStore((state) => state.applications)
+  const filter = useBoundStore((state) => state.filter)
+  const setFilter = useBoundStore((state) => state.setFilter)
+  const type = useBoundStore((state) => state.type)
+  const setType = useBoundStore((state) => state.setType)
+  const getApplication = useBoundStore((state) => state.getApplication)
+  const setCount = useBoundStore((state) => state.setCount)
 
   useEffect(() => {
     if (!applications.length > 0) {

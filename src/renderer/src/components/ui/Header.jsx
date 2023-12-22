@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types'
 import { useCallback, useState } from 'react'
 import Filter from '../form/Search.jsx'
-import { useDataStore } from '../stores/DataStore.js'
+import { useBoundStore } from '../stores/BoundStore.js'
 
 const Header = ({ categories, page_title }) => {
-  const setType = useDataStore((state) => state.setType)
-  const setFilter = useDataStore((state) => state.setFilter)
-  const count = useDataStore((state) => state.count)
+  const setType = useBoundStore((state) => state.setType)
+  const setFilter = useBoundStore((state) => state.setFilter)
+  const count = useBoundStore((state) => state.count)
   const [title, setTitle] = useState(page_title)
 
   const handleCategoriesChange = useCallback((event) => {

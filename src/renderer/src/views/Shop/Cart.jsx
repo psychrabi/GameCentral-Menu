@@ -1,19 +1,18 @@
-import { useAuthStore } from '../../components/stores/AuthStore'
-import { useProductStore } from '../../components/stores/ProductStore'
+import { useBoundStore } from '../../components/stores/BoundStore'
 import { PaymentModes } from '../../components/ui/PaymentModes'
 import { formatCurrency } from '../../utils/formatCurrency'
 
 const Cart = () => {
-  const member = useAuthStore((state) => state.member)
-  const checkOut = useProductStore((state) => state.checkOut)
-  const clearCart = useProductStore((state) => state.clearCart)
-  const removeFromCart = useProductStore((state) => state.removeFromCart)
-  const cart = useProductStore((state) => state.cart)
-  const addToCart = useProductStore((state) => state.addToCart)
-  const taxRate = useProductStore((state) => state.taxRate)
-  const subTotal = useProductStore((state) => state.subTotal)
-  const tax = useProductStore((state) => state.tax)
-  const total = useProductStore((state) => state.total)
+  const member = useBoundStore((state) => state.member)
+  const checkOut = useBoundStore((state) => state.checkOut)
+  const clearCart = useBoundStore((state) => state.clearCart)
+  const removeFromCart = useBoundStore((state) => state.removeFromCart)
+  const cart = useBoundStore((state) => state.cart)
+  const addToCart = useBoundStore((state) => state.addToCart)
+  const taxRate = useBoundStore((state) => state.taxRate)
+  const subTotal = useBoundStore((state) => state.subTotal)
+  const tax = useBoundStore((state) => state.tax)
+  const total = useBoundStore((state) => state.total)
 
   return (
     <div className="w-25 sticky-top overflow-y z-0">

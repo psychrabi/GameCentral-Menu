@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useAuthStore } from '../stores/AuthStore'
+import { useBoundStore } from '../stores/BoundStore'
 import { formatTime } from '../../utils/formatTIme'
 // eslint-disable-next-line react/prop-types
 export const Timer = () => {
-  const member = useAuthStore((state) => state.member)
-  const start_time = useAuthStore((state) => state.start_time)
-  const logout = useAuthStore((state) => state.logout)
-  const setNotification = useAuthStore((state) => state.member)
+  const member = useBoundStore((state) => state.member)
+  const start_time = useBoundStore((state) => state.start_time)
+  const logout = useBoundStore((state) => state.logout)
+  const setNotification = useBoundStore((state) => state.member)
 
   const [durationString, setDurationString] = useState('00:00:00')
   // const [sessionDuration, setSessionDuration] = useState(0)

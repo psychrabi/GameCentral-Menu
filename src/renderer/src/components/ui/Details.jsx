@@ -3,25 +3,24 @@ import Carousel from 'react-bootstrap/Carousel'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
 // import axiosClient from '../../lib/axios-client.js'
-import { useDataStore } from '../stores/DataStore.js'
-import { useAuthStore } from '../stores/AuthStore.js'
 import notificationContext from '../../context/notificationContext.js'
 import { Button } from 'react-bootstrap'
+import { useBoundStore } from '../stores/BoundStore.js'
 
 const Details = () => {
-  const show = useDataStore((state) => state.show)
-  const game = useDataStore((state) => state.game)
-  const setShow = useDataStore((state) => state.setShow)
-  const toggleFavoriteGame = useDataStore((state) => state.toggleFavoriteGame)
-  const runExecutable = useDataStore((state) => state.runExecutable)
-  const messages = useDataStore((state) => state.messages)
-  const alert = useDataStore((state) => state.alert)
+  const show = useBoundStore((state) => state.show)
+  const game = useBoundStore((state) => state.game)
+  const setShow = useBoundStore((state) => state.setShow)
+  const toggleFavoriteGame = useBoundStore((state) => state.toggleFavoriteGame)
+  const runExecutable = useBoundStore((state) => state.runExecutable)
+  const messages = useBoundStore((state) => state.messages)
+  const alert = useBoundStore((state) => state.alert)
 
   const [running, setRunning] = useState(false)
 
-  const token = useAuthStore((state) => state.token)
-  const member = useAuthStore((state) => state.member)
-  const center_id = useAuthStore((state) => state.center_id)
+  const token = useBoundStore((state) => state.token)
+  const member = useBoundStore((state) => state.member)
+  const center_id = useBoundStore((state) => state.center_id)
 
   const { showAlert } = useContext(notificationContext)
   const handleClose = useCallback(() => {

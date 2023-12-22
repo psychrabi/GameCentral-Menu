@@ -1,15 +1,15 @@
 import { useEffect, useRef } from 'react'
 import { Link, Navigate } from 'react-router-dom'
-import { useAuthStore } from '../../components/stores/AuthStore'
+import { useBoundStore } from '../../components/stores/BoundStore'
 
 export default function ForgotPassword() {
-  const forgotPassword = useAuthStore((state) => state.forgotPassword)
-  const loading = useAuthStore((state) => state.loading)
-  const token = useAuthStore((state) => state.token)
-  const checkSession = useAuthStore((state) => state.checkSession)
-  const checkCenterID = useAuthStore((state) => state.checkCenterID)
-  const center_id = useAuthStore((state) => state.center_id)
-  const error = useAuthStore((state) => state.error)
+  const forgotPassword = useBoundStore((state) => state.forgotPassword)
+  const loading = useBoundStore((state) => state.loading)
+  const token = useBoundStore((state) => state.token)
+  const checkSession = useBoundStore((state) => state.checkSession)
+  const checkCenterID = useBoundStore((state) => state.checkCenterID)
+  const center_id = useBoundStore((state) => state.center_id)
+  const error = useBoundStore((state) => state.error)
 
   const usernameRef = useRef()
   const emailRef = useRef()

@@ -1,12 +1,12 @@
 import { Col, FloatingLabel, Form, Row } from 'react-bootstrap'
-import { useDataStore } from '../stores/DataStore'
 import PropTypes from 'prop-types'
+import { useBoundStore } from '../stores/BoundStore'
 
 const Filter = ({ categories, handleCategoriesChange }) => {
-  const filter = useDataStore((state) => state.filter)
-  const setFilter = useDataStore((state) => state.setFilter)
-  const type = useDataStore((state) => state.type)
-  const setType = useDataStore((state) => state.setType)
+  const filter = useBoundStore((state) => state.filter)
+  const setFilter = useBoundStore((state) => state.setFilter)
+  const type = useBoundStore((state) => state.type)
+  const setType = useBoundStore((state) => state.setType)
 
   const handleSubmit = (ev) => {
     ev.preventDefault()

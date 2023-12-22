@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
-import { useAuthStore } from '../../components/stores/AuthStore'
 import { Loading } from '../../components/ui/Loading'
+import { useBoundStore } from '../../components/stores/BoundStore'
 
 export default function Security() {
-  const member = useAuthStore((state) => state.member)
-  const loading = useAuthStore((state) => state.loading)
-  const updateMember = useAuthStore((state) => state.updateMember)
-  const error = useAuthStore((state) => state.error)
-  const token = useAuthStore((state) => state.token)
+  const member = useBoundStore((state) => state.member)
+  const loading = useBoundStore((state) => state.loading)
+  const updateMember = useBoundStore((state) => state.updateMember)
+  const error = useBoundStore((state) => state.error)
+  const token = useBoundStore((state) => state.token)
 
   const [updatedMember, setUpdatedMember] = useState(member)
 

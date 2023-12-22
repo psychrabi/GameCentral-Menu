@@ -1,8 +1,8 @@
 import paymentModes from '../../data/PaymentModes.json'
-import { useProductStore } from '../stores/ProductStore'
+import { useBoundStore } from '../stores/BoundStore'
 
 export const PaymentModes = () => {
-  const setPaymentMode = useProductStore((state) => state.setPaymentMode)
+  const setPaymentMode = useBoundStore((state) => state.setPaymentMode)
 
   return paymentModes.map((mode, key) => {
     return mode.active ? (

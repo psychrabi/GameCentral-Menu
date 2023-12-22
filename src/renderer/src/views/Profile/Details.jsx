@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useAuthStore } from '../../components/stores/AuthStore'
+import { useBoundStore } from '../../components/stores/BoundStore'
 import { Loading } from '../../components/ui/Loading'
 export default function Profile() {
-  const member = useAuthStore((state) => state.member)
-  const loading = useAuthStore((state) => state.loading)
-  const updateMember = useAuthStore((state) => state.updateMember)
-  const messages = useAuthStore((state) => state.messages)
-  const alert = useAuthStore((state) => state.alert)
+  const member = useBoundStore((state) => state.member)
+  const loading = useBoundStore((state) => state.loading)
+  const updateMember = useBoundStore((state) => state.updateMember)
+  const messages = useBoundStore((state) => state.messages)
+  const alert = useBoundStore((state) => state.alert)
 
   const [payload, setPayload] = useState()
 

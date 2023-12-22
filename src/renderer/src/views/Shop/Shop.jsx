@@ -1,23 +1,21 @@
 import { useEffect } from 'react'
-import { useAuthStore } from '../../components/stores/AuthStore'
-import { useDataStore } from '../../components/stores/DataStore'
-import { useProductStore } from '../../components/stores/ProductStore'
+import { useBoundStore } from '../../components/stores/BoundStore'
 import Header from '../../components/ui/Header'
 import categories from '../../data/ProductTypes.json'
 import Cart from './Cart'
 import Products from './Products'
 
 export default function Shop() {
-  const token = useAuthStore((state) => state.token)
-  const member = useAuthStore((state) => state.member)
-  const filter = useDataStore((state) => state.filter)
-  const type = useDataStore((state) => state.type)
-  const setCount = useDataStore((state) => state.setCount)
-  const fetchProducts = useProductStore((state) => state.fetchProducts)
-  const products = useProductStore((state) => state.products)
-  const setFilter = useProductStore((state) => state.setFilter)
-  const cart = useProductStore((state) => state.cart)
-  const setType = useProductStore((state) => state.setType)
+  const token = useBoundStore((state) => state.token)
+  const member = useBoundStore((state) => state.member)
+  const filter = useBoundStore((state) => state.filter)
+  const type = useBoundStore((state) => state.type)
+  const setCount = useBoundStore((state) => state.setCount)
+  const fetchProducts = useBoundStore((state) => state.fetchProducts)
+  const products = useBoundStore((state) => state.products)
+  const setFilter = useBoundStore((state) => state.setFilter)
+  const cart = useBoundStore((state) => state.cart)
+  const setType = useBoundStore((state) => state.setType)
 
   useEffect(() => {
     if (!products.length > 0) {

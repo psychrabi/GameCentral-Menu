@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import logo from '../public/logo512.png'
-import { useAuthStore } from './stores/AuthStore'
+import { useBoundStore } from './stores/BoundStore'
 // import ClientStats from '../components/ui/ClientStats'
 import { VideoBackground } from '../components/ui/VideoBackground'
 import 'bootstrap-icons/font/bootstrap-icons.css'
@@ -9,14 +9,14 @@ import Notifications from './ui/Notifications'
 import { SystemInfo } from './ui/SystemInfo'
 
 export default function AuthLayout() {
-  const token = useAuthStore((state) => state.token)
-  const messages = useAuthStore((state) => state.messages)
-  const setMessages = useAuthStore((state) => state.setMessages)
-  const alert = useAuthStore((state) => state.alert)
-  const setAlert = useAuthStore((state) => state.setAlert)
-  const checkSession = useAuthStore((state) => state.checkSession)
-  const checkSystemInfo = useAuthStore((state) => state.checkSystemInfo)
-  const systeminfo = useAuthStore((state) => state.systeminfo)
+  const token = useBoundStore((state) => state.token)
+  const messages = useBoundStore((state) => state.messages)
+  const setMessages = useBoundStore((state) => state.setMessages)
+  const alert = useBoundStore((state) => state.alert)
+  const setAlert = useBoundStore((state) => state.setAlert)
+  const checkSession = useBoundStore((state) => state.checkSession)
+  const checkSystemInfo = useBoundStore((state) => state.checkSystemInfo)
+  const systeminfo = useBoundStore((state) => state.systeminfo)
 
   useEffect(() => {
     checkSession()

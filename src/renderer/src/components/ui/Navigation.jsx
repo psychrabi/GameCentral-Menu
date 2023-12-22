@@ -1,13 +1,13 @@
 import { NavLink } from 'react-router-dom'
 import 'bootstrap-icons/font/bootstrap-icons.css'
-import { useAuthStore } from '../stores/AuthStore'
+import { useBoundStore } from '../stores/BoundStore'
 import navListData from '../../data/navListData'
 import NavListItem from './NavListItem'
 
 const Navigation = () => {
-  const member = useAuthStore((state) => state.member)
-  const logout = useAuthStore((state) => state.logout)
-  const sessionType = useAuthStore((state) => state.sessionType)
+  const member = useBoundStore((state) => state.member)
+  const logout = useBoundStore((state) => state.logout)
+  const sessionType = useBoundStore((state) => state.sessionType)
   const COST_PER_HOUR = 60
   return (
     <>
@@ -65,7 +65,7 @@ const Navigation = () => {
 
         <ul className="dropdown-menu" style={{ zIndex: 2000 }}>
           <li>
-            <NavLink className="dropdown-item" onClick={() => logout(COST_PER_HOUR)}>
+            <NavLink className="dropdown-item" to="/" onClick={() => logout(COST_PER_HOUR)}>
               Sign out
             </NavLink>
           </li>

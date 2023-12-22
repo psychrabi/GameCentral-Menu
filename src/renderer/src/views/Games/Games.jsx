@@ -1,21 +1,20 @@
 import { useEffect } from 'react'
-import { useAuthStore } from '../../components/stores/AuthStore'
-import { useDataStore } from '../../components/stores/DataStore'
+import { useBoundStore } from '../../components/stores/BoundStore'
 import Grid from '../../components/ui/Grid'
 import Header from '../../components/ui/Header'
 import categories from '../../data/GameTypes.json'
 
 function Games() {
-  const token = useAuthStore((state) => state.token)
-  const member = useAuthStore((state) => state.member)
-  const fetchGames = useDataStore((state) => state.fetchGames)
-  const games = useDataStore((state) => state.games)
-  const filter = useDataStore((state) => state.filter)
-  const setFilter = useDataStore((state) => state.setFilter)
-  const type = useDataStore((state) => state.type)
-  const setType = useDataStore((state) => state.setType)
-  const getGame = useDataStore((state) => state.getGame)
-  const setCount = useDataStore((state) => state.setCount)
+  const token = useBoundStore((state) => state.token)
+  const member = useBoundStore((state) => state.member)
+  const fetchGames = useBoundStore((state) => state.fetchGames)
+  const games = useBoundStore((state) => state.games)
+  const filter = useBoundStore((state) => state.filter)
+  const setFilter = useBoundStore((state) => state.setFilter)
+  const type = useBoundStore((state) => state.type)
+  const setType = useBoundStore((state) => state.setType)
+  const getGame = useBoundStore((state) => state.getGame)
+  const setCount = useBoundStore((state) => state.setCount)
 
   useEffect(() => {
     if (!games.length > 0) {

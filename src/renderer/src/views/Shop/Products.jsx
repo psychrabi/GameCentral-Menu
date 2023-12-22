@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
 import Product from './Product'
 import { useEffect } from 'react'
-import { useDataStore } from '../../components/stores/DataStore'
+import { useBoundStore } from '../../components/stores/BoundStore'
 
 export default function Products({ products }) {
-  const setCount = useDataStore((state) => state.setCount)
+  const setCount = useBoundStore((state) => state.setCount)
 
   useEffect(() => {
     // Update the count whenever games or the filter changes

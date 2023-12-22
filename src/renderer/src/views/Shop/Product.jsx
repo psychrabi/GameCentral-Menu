@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import { useProductStore } from '../../components/stores/ProductStore'
+import { useBoundStore } from '../../components/stores/BoundStore'
 import { formatCurrency } from '../../utils/formatCurrency'
 
 const Product = ({ product }) => {
-  const addToCart = useProductStore((state) => state.addToCart)
+  const addToCart = useBoundStore((state) => state.addToCart)
 
   return (
     <div className="product card" key={product.id}>

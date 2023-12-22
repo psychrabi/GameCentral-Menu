@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { NotificationProvider } from './notificationContext'
 import PropTypes from 'prop-types'
-import { useDataStore } from '../components/stores/DataStore'
+import { useBoundStore } from '../components/stores/BoundStore'
 
 const Notification = ({ children }) => {
-  const messages = useDataStore((state) => state.messages)
-  const setMessages = useDataStore((state) => state.setMessages)
-  const alert = useDataStore((state) => state.alert)
-  const setAlert = useDataStore((state) => state.setAlert)
+  const messages = useBoundStore((state) => state.messages)
+  const setMessages = useBoundStore((state) => state.setMessages)
+  const alert = useBoundStore((state) => state.alert)
+  const setAlert = useBoundStore((state) => state.setAlert)
 
   const [showAlert, toggleAlert] = useState(false)
   return (
@@ -16,7 +16,7 @@ const Notification = ({ children }) => {
         showAlert: () => {
           toggleAlert(true)
           setMessages(messages)
-          setAlert(alert)
+          a(alert)
           setTimeout(() => {
             toggleAlert(false)
             setMessages(null)

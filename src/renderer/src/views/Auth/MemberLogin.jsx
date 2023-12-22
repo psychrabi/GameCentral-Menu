@@ -1,13 +1,13 @@
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuthStore } from '../../components/stores/AuthStore'
 import { Button, Form, Spinner } from 'react-bootstrap'
+import { useBoundStore } from '../../components/stores/BoundStore'
 
 export default function MemberLogin() {
-  const authenticate = useAuthStore((state) => state.authenticate)
-  const loading = useAuthStore((state) => state.loading)
-  const center_name = useAuthStore((state) => state.center_name)
+  const authenticate = useBoundStore((state) => state.authenticate)
+  const loading = useBoundStore((state) => state.loading)
+  const center_name = useBoundStore((state) => state.center_name)
 
   const loginRef = useRef()
   const passwordRef = useRef()

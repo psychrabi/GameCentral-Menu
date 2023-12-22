@@ -1,18 +1,18 @@
 import { useEffect, useRef } from 'react'
 import { Navigate } from 'react-router-dom'
-import { useAuthStore } from '../../components/stores/AuthStore'
+import { useBoundStore } from '../../components/stores/BoundStore'
 import { Link } from 'react-router-dom'
 
 export default function Register() {
-  const registerMember = useAuthStore((state) => state.registerMember)
-  const center_name = useAuthStore((state) => state.center_name)
-  const loading = useAuthStore((state) => state.loading)
-  const token = useAuthStore((state) => state.token)
-  const checkSession = useAuthStore((state) => state.checkSession)
-  const checkCenterID = useAuthStore((state) => state.checkCenterID)
-  const error = useAuthStore((state) => state.error)
-  const setMessages = useAuthStore((state) => state.setMessages)
-  const setType = useAuthStore((state) => state.setType)
+  const registerMember = useBoundStore((state) => state.registerMember)
+  const center_name = useBoundStore((state) => state.center_name)
+  const loading = useBoundStore((state) => state.loading)
+  const token = useBoundStore((state) => state.token)
+  const checkSession = useBoundStore((state) => state.checkSession)
+  const checkCenterID = useBoundStore((state) => state.checkCenterID)
+  const error = useBoundStore((state) => state.error)
+  const setMessages = useBoundStore((state) => state.setMessages)
+  const setType = useBoundStore((state) => state.setType)
 
   const emailRef = useRef()
   const usernameRef = useRef()

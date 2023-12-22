@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import { Navigate, NavLink, Outlet } from 'react-router-dom'
-import { useAuthStore } from './stores/AuthStore'
-import { useDataStore } from './stores/DataStore'
+import { useBoundStore } from './stores/BoundStore'
 import Details from './ui/Details'
 import { Loading } from './ui/Loading'
 import Navigation from './ui/Navigation'
@@ -14,12 +13,12 @@ import notificationContext from '../context/notificationContext'
 const MemoizedDetails = React.memo(Details)
 
 function MemberLayout() {
-  const token = useAuthStore((state) => state.token)
-  const loading = useAuthStore((state) => state.loading)
-  const center_id = useAuthStore((state) => state.center_id)
-  const show = useDataStore((state) => state.show)
-  const messages = useDataStore((state) => state.messages)
-  const alert = useDataStore((state) => state.alert)
+  const token = useBoundStore((state) => state.token)
+  const loading = useBoundStore((state) => state.loading)
+  const center_id = useBoundStore((state) => state.center_id)
+  const show = useBoundStore((state) => state.show)
+  const messages = useBoundStore((state) => state.messages)
+  const alert = useBoundStore((state) => state.alert)
   const { showAlert } = useContext(notificationContext)
 
   // Redirect if the user is not logged in or has no center_id
