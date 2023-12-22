@@ -6,17 +6,16 @@ import Header from '../../components/ui/Header'
 import categories from '../../data/AppTypes.json'
 
 function Applications() {
-  const { token, member } = useAuthStore()
-  const {
-    fetchApplications,
-    applications,
-    setFilter,
-    filter,
-    setType,
-    type,
-    getApplication,
-    setCount
-  } = useDataStore()
+  const token = useAuthStore((state) => state.token)
+  const member = useAuthStore((state) => state.member)
+  const fetchApplications = useDataStore((state) => state.fetchApplications)
+  const applications = useDataStore((state) => state.applications)
+  const filter = useDataStore((state) => state.filter)
+  const setFilter = useDataStore((state) => state.setFilter)
+  const type = useDataStore((state) => state.type)
+  const setType = useDataStore((state) => state.setType)
+  const getApplication = useDataStore((state) => state.getApplication)
+  const setCount = useDataStore((state) => state.setCount)
 
   useEffect(() => {
     if (!applications.length > 0) {

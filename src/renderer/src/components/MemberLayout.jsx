@@ -14,14 +14,19 @@ import notificationContext from '../context/notificationContext'
 const MemoizedDetails = React.memo(Details)
 
 function MemberLayout() {
-  const { token, loading, center_id } = useAuthStore()
-  const { show, messages, alert } = useDataStore()
+  const token = useAuthStore((state) => state.token)
+  const loading = useAuthStore((state) => state.loading)
+  const center_id = useAuthStore((state) => state.center_id)
+  const show = useDataStore((state) => state.show)
+  const messages = useDataStore((state) => state.messages)
+  const alert = useDataStore((state) => state.alert)
   const { showAlert } = useContext(notificationContext)
 
   // Redirect if the user is not logged in or has no center_id
   if (!center_id) {
     return <Navigate to="/admin" />
-  } else if (!token) {
+  }
+  if (!token) {
     console.log('Member not logged in')
     return <Navigate to="/login" />
   }

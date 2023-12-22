@@ -3,7 +3,12 @@ import { useAuthStore } from '../../components/stores/AuthStore'
 import { Loading } from '../../components/ui/Loading'
 
 export default function Security() {
-  const { member, error, loading, updateMember, token } = useAuthStore()
+  const member = useAuthStore((state) => state.member)
+  const loading = useAuthStore((state) => state.loading)
+  const updateMember = useAuthStore((state) => state.updateMember)
+  const error = useAuthStore((state) => state.error)
+  const token = useAuthStore((state) => state.token)
+
   const [updatedMember, setUpdatedMember] = useState(member)
 
   useEffect(() => {

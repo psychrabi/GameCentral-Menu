@@ -4,14 +4,16 @@ import { PaymentModes } from '../../components/ui/PaymentModes'
 import { formatCurrency } from '../../utils/formatCurrency'
 
 const Cart = () => {
-  const { member } = useAuthStore()
-  const { cart, addToCart, removeFromCart, clearCart, checkOut, taxRate, subTotal, tax, total } =
-    useProductStore()
-  // const subTotal = parseFloat(
-  //   cart.reduce((acc, item) => acc + item.sales_price * item.quantity, 0)
-  // ).toFixed(2)
-  // const tax = parseFloat(subTotal * 0.13).toFixed(2)
-  // const total = parseFloat(subTotal + tax).toFixed(2)
+  const member = useAuthStore((state) => state.member)
+  const checkOut = useProductStore((state) => state.checkOut)
+  const clearCart = useProductStore((state) => state.clearCart)
+  const removeFromCart = useProductStore((state) => state.removeFromCart)
+  const cart = useProductStore((state) => state.cart)
+  const addToCart = useProductStore((state) => state.addToCart)
+  const taxRate = useProductStore((state) => state.taxRate)
+  const subTotal = useProductStore((state) => state.subTotal)
+  const tax = useProductStore((state) => state.tax)
+  const total = useProductStore((state) => state.total)
 
   return (
     <div className="w-25 sticky-top overflow-y z-0">

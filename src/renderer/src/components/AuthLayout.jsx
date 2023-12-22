@@ -9,16 +9,14 @@ import Notifications from './ui/Notifications'
 import { SystemInfo } from './ui/SystemInfo'
 
 export default function AuthLayout() {
-  const {
-    token,
-    checkSession,
-    messages,
-    alert,
-    setMessages,
-    setAlert,
-    checkSystemInfo,
-    systeminfo
-  } = useAuthStore()
+  const token = useAuthStore((state) => state.token)
+  const messages = useAuthStore((state) => state.messages)
+  const setMessages = useAuthStore((state) => state.setMessages)
+  const alert = useAuthStore((state) => state.alert)
+  const setAlert = useAuthStore((state) => state.setAlert)
+  const checkSession = useAuthStore((state) => state.checkSession)
+  const checkSystemInfo = useAuthStore((state) => state.checkSystemInfo)
+  const systeminfo = useAuthStore((state) => state.systeminfo)
 
   useEffect(() => {
     checkSession()

@@ -2,7 +2,8 @@ import PropTypes from 'prop-types'
 import { useDataStore } from '../stores/DataStore'
 import { useEffect } from 'react'
 const Grid = ({ games, getData }) => {
-  const { setShow, setCount } = useDataStore()
+  const setCount = useDataStore((state) => state.setCount)
+  const setShow = useDataStore((state) => state.setShow)
 
   const handleSelect = (id) => {
     getData(id).then(() => {

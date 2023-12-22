@@ -3,7 +3,7 @@ import { useProductStore } from '../../components/stores/ProductStore'
 import { formatCurrency } from '../../utils/formatCurrency'
 
 const Product = ({ product }) => {
-  const { addToCart } = useProductStore()
+  const addToCart = useProductStore((state) => state.addToCart)
 
   return (
     <div className="product card" key={product.id}>

@@ -35,7 +35,7 @@ const memberProfileRoutes = [
 //Member Routes
 const memberRoutes = [
   {
-    path: '/',
+    index: true,
     element: <Home />
   },
   {

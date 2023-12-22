@@ -6,11 +6,23 @@ import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
 import { useDataStore } from '../stores/DataStore.js'
 import { useAuthStore } from '../stores/AuthStore.js'
 import notificationContext from '../../context/notificationContext.js'
+import { Button } from 'react-bootstrap'
 
 const Details = () => {
-  const { show, game, setShow, toggleFavoriteGame, runExecutable, messages, alert } = useDataStore()
+  const show = useDataStore((state) => state.show)
+  const game = useDataStore((state) => state.game)
+  const setShow = useDataStore((state) => state.setShow)
+  const toggleFavoriteGame = useDataStore((state) => state.toggleFavoriteGame)
+  const runExecutable = useDataStore((state) => state.runExecutable)
+  const messages = useDataStore((state) => state.messages)
+  const alert = useDataStore((state) => state.alert)
+
   const [running, setRunning] = useState(false)
-  const { member, token, center_id } = useAuthStore()
+
+  const token = useAuthStore((state) => state.token)
+  const member = useAuthStore((state) => state.member)
+  const center_id = useAuthStore((state) => state.center_id)
+
   const { showAlert } = useContext(notificationContext)
   const handleClose = useCallback(() => {
     setShow(false)
@@ -28,6 +40,8 @@ const Details = () => {
       onHide={handleClose}
       placement="end"
       onExited={() => removeFromLocalStorage('current-selected')}
+      keyboard="false"
+      backdrop="static"
     >
       <div
         style={{
@@ -47,16 +61,17 @@ const Details = () => {
                 className="cover position-relative"
                 style={{ backgroundImage: `url(${game?.poster})`, backgroundColor: '#ccc' }}
               >
-                <button className="btn btn-outline-danger position-absolute top-0 end-0 m-3">
+                <Button variant="outline-danger" className="position-absolute top-0 end-0 m-3">
                   <i
                     className={game?.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'}
                     style={{ fontSize: '2rem' }}
                     onClick={() => toggleFavoriteGame(center_id, member.id, game.id, token)}
                   ></i>
-                </button>
+                </Button>
               </div>
-              <button
-                className="btn btn-primary p-0 fs-2 d-flex justify-content-center align-items-center"
+              <Button
+                variant="primary"
+                className="p-0 fs-2 d-flex justify-content-center align-items-center"
                 id="play-button"
                 onClick={() => runExecutable()}
               >
@@ -74,15 +89,16 @@ const Details = () => {
                     <i className="bi bi-play-fill" style={{ fontSize: '2.5rem' }}></i> Play
                   </>
                 )}
-              </button>
-              <button
-                className="btn btn-secondary p-0 fs-4 d-flex justify-content-center align-items-center"
+              </Button>
+              <Button
+                variant="secondary"
+                className="p-0 fs-5 d-flex justify-content-center align-items-center"
                 id="play-button"
                 onClick={() => runExecutable()}
               >
                 <i className="bi bi-play-fill" style={{ fontSize: '2.5rem' }}></i> With Center
                 account
-              </button>
+              </Button>
             </div>
             <div className="ms-5">
               <div className="d-flex flex-column justify-content-between">

@@ -6,8 +6,17 @@ import Header from '../../components/ui/Header'
 import categories from '../../data/GameTypes.json'
 
 function Games() {
-  const { token, member } = useAuthStore()
-  const { fetchGames, games, filter, setFilter, type, setType, getGame, setCount } = useDataStore()
+  const token = useAuthStore((state) => state.token)
+  const member = useAuthStore((state) => state.member)
+  const fetchGames = useDataStore((state) => state.fetchGames)
+  const games = useDataStore((state) => state.games)
+  const filter = useDataStore((state) => state.filter)
+  const setFilter = useDataStore((state) => state.setFilter)
+  const type = useDataStore((state) => state.type)
+  const setType = useDataStore((state) => state.setType)
+  const getGame = useDataStore((state) => state.getGame)
+  const setCount = useDataStore((state) => state.setCount)
+
   useEffect(() => {
     if (!games.length > 0) {
       fetchGames(member.center_id, token)
@@ -15,6 +24,7 @@ function Games() {
     setFilter('')
     setType('')
   }, [])
+
   const filteredGames = games?.filter((item) => {
     if (filter) {
       return item.name.toLowerCase().includes(filter.toLowerCase())

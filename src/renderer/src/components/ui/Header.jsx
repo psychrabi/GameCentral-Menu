@@ -4,7 +4,9 @@ import Filter from '../form/Search.jsx'
 import { useDataStore } from '../stores/DataStore.js'
 
 const Header = ({ categories, page_title }) => {
-  const { setType, setFilter, count } = useDataStore()
+  const setType = useDataStore((state) => state.setType)
+  const setFilter = useDataStore((state) => state.setFilter)
+  const count = useDataStore((state) => state.count)
   const [title, setTitle] = useState(page_title)
 
   const handleCategoriesChange = useCallback((event) => {

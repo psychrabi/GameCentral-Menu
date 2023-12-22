@@ -3,8 +3,13 @@ import { Link, Navigate } from 'react-router-dom'
 import { useAuthStore } from '../../components/stores/AuthStore'
 
 export default function ForgotPassword() {
-  const { token, forgotPassword, checkSession, loading, error, center_id, checkCenterID } =
-    useAuthStore()
+  const forgotPassword = useAuthStore((state) => state.forgotPassword)
+  const loading = useAuthStore((state) => state.loading)
+  const token = useAuthStore((state) => state.token)
+  const checkSession = useAuthStore((state) => state.checkSession)
+  const checkCenterID = useAuthStore((state) => state.checkCenterID)
+  const center_id = useAuthStore((state) => state.center_id)
+  const error = useAuthStore((state) => state.error)
 
   const usernameRef = useRef()
   const emailRef = useRef()

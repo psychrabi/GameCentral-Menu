@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useDataStore } from '../../components/stores/DataStore'
 
 export default function Products({ products }) {
-  const { setCount } = useDataStore()
+  const setCount = useDataStore((state) => state.setCount)
 
   useEffect(() => {
     // Update the count whenever games or the filter changes

@@ -4,7 +4,11 @@ import PropTypes from 'prop-types'
 import { useDataStore } from '../components/stores/DataStore'
 
 const Notification = ({ children }) => {
-  const { messages, setMessages, alert, setAlert } = useDataStore()
+  const messages = useDataStore((state) => state.messages)
+  const setMessages = useDataStore((state) => state.setMessages)
+  const alert = useDataStore((state) => state.alert)
+  const setAlert = useDataStore((state) => state.setAlert)
+
   const [showAlert, toggleAlert] = useState(false)
   return (
     <NotificationProvider

@@ -8,10 +8,17 @@ import Cart from './Cart'
 import Products from './Products'
 
 export default function Shop() {
-  const { token, member } = useAuthStore()
-  const { filter, type } = useDataStore()
-  const { fetchProducts, products, cart, setFilter, setType } = useProductStore()
-  const { setCount } = useDataStore()
+  const token = useAuthStore((state) => state.token)
+  const member = useAuthStore((state) => state.member)
+  const filter = useDataStore((state) => state.filter)
+  const type = useDataStore((state) => state.type)
+  const setCount = useDataStore((state) => state.setCount)
+  const fetchProducts = useProductStore((state) => state.fetchProducts)
+  const products = useProductStore((state) => state.products)
+  const setFilter = useProductStore((state) => state.setFilter)
+  const cart = useProductStore((state) => state.cart)
+  const setType = useProductStore((state) => state.setType)
+
   useEffect(() => {
     if (!products.length > 0) {
       fetchProducts(member.center_id, token)
@@ -41,16 +48,7 @@ export default function Shop() {
           <Header categories={categories} page_title={'All Products'} />
           <Products products={filteredProducts} />
         </div>
-        {cart.length > 0 ? (
-          <Cart
-            cart={cart}
-            // onClear={onClear}
-            // handleSubmitOrder={handleSubmitOrder}
-            // handlePaymentModeChange={handlePaymentModeChange}
-          />
-        ) : (
-          ''
-        )}
+        {cart.length > 0 ? <Cart cart={cart} /> : ''}
       </div>
     </>
   )

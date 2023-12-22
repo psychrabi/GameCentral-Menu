@@ -7,6 +7,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min'
 import './assets/index.css'
 import { Loading } from './components/ui/Loading'
 import Notification from './context/Notification'
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Notification>

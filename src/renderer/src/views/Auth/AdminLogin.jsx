@@ -3,8 +3,13 @@ import { Navigate } from 'react-router-dom'
 import { useAuthStore } from '../../components/stores/AuthStore'
 // import { ImageBackground } from '../../components/ui/ImageBackground'
 export default function AdminLogin() {
-  const { token, authenticateAdmin, checkSession, loading, error, center_id, checkCenterID } =
-    useAuthStore()
+  const authenticateAdmin = useAuthStore((state) => state.authenticateAdmin)
+  const loading = useAuthStore((state) => state.loading)
+  const token = useAuthStore((state) => state.token)
+  const checkSession = useAuthStore((state) => state.checkSession)
+  const checkCenterID = useAuthStore((state) => state.checkCenterID)
+  const center_id = useAuthStore((state) => state.center_id)
+  const error = useAuthStore((state) => state.error)
 
   const licenseRef = useRef()
   const usernameRef = useRef()

@@ -2,7 +2,8 @@ import paymentModes from '../../data/PaymentModes.json'
 import { useProductStore } from '../stores/ProductStore'
 
 export const PaymentModes = () => {
-  const { setPaymentMode } = useProductStore()
+  const setPaymentMode = useProductStore((state) => state.setPaymentMode)
+
   return paymentModes.map((mode, key) => {
     return mode.active ? (
       <div className="d-flex flex-row pb-1" key={key}>

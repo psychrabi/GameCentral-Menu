@@ -6,24 +6,21 @@ import { useDataStore } from '../../components/stores/DataStore'
 import { useAuthStore } from '../../components/stores/AuthStore'
 
 const Home = () => {
-  const { token, member } = useAuthStore()
-  const {
-    fetchFavoriteGames,
-    favoriteGames,
-    setFilter,
-    setType,
-    filter,
-    type,
-    getFavoriteGame,
-    setCount
-  } = useDataStore()
+  const token = useAuthStore((state) => state.token)
+  const member = useAuthStore((state) => state.member)
+  const fetchFavoriteGames = useDataStore((state) => state.fetchFavoriteGames)
+  const favoriteGames = useDataStore((state) => state.favoriteGames)
+  const filter = useDataStore((state) => state.filter)
+  const setFilter = useDataStore((state) => state.setFilter)
+  const type = useDataStore((state) => state.type)
+  const setType = useDataStore((state) => state.setType)
+  const getFavoriteGame = useDataStore((state) => state.getFavoriteGame)
+  const setCount = useDataStore((state) => state.setCount)
 
   useEffect(() => {
     if (!favoriteGames?.length > 0) {
-      // console.log('game fresh')
       fetchFavoriteGames(member.id, token)
     }
-    // console.log(favoriteGames)
     setFilter('')
     setType('')
   }, [])

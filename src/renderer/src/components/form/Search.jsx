@@ -1,8 +1,12 @@
+import { Col, FloatingLabel, Form, Row } from 'react-bootstrap'
 import { useDataStore } from '../stores/DataStore'
 import PropTypes from 'prop-types'
 
 const Filter = ({ categories, handleCategoriesChange }) => {
-  const { filter, setFilter, type, setType } = useDataStore()
+  const filter = useDataStore((state) => state.filter)
+  const setFilter = useDataStore((state) => state.setFilter)
+  const type = useDataStore((state) => state.type)
+  const setType = useDataStore((state) => state.setType)
 
   const handleSubmit = (ev) => {
     ev.preventDefault()
@@ -16,46 +20,40 @@ const Filter = ({ categories, handleCategoriesChange }) => {
   }
 
   return (
-    <div className="d-flex">
-      <form className="me-2" role="search" onSubmit={handleSubmit}>
-        <label htmlFor="search" className="visually-hidden">
-          Search
-        </label>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Search..."
-          name="search"
-          id="search"
-          aria-label="Search"
-          value={filter}
-          onInput={(event) => handleFilterUpdate(event.target.value)}
-        />
-      </form>
-
-      <div className="form-group">
-        <label htmlFor="categories" className="visually-hidden">
-          Category
-        </label>
-        <select
-          id="categories"
-          className="form-select"
-          style={{ width: '12rem' }}
-          value={type || ''}
-          aria-label="Select a game type"
-          onChange={(ev) => handleCategoriesChange(ev)}
-        >
-          <option value="">All </option>
-          {categories
-            ?.sort((a, b) => a.description.localeCompare(b.description))
-            .map(({ category, description, id }) => (
-              <option value={category} key={id}>
-                {description}
-              </option>
-            ))}
-        </select>
-      </div>
-    </div>
+    <>
+      <Form role="search" onSubmit={handleSubmit}>
+        <Row className="g-2">
+          <Col md>
+            <FloatingLabel controlId="search" label="Search..">
+              <Form.Control
+                type="email"
+                placeholder="name@example.com"
+                value={filter}
+                onInput={(event) => handleFilterUpdate(event.target.value)}
+              />
+            </FloatingLabel>
+          </Col>
+          <Col md>
+            <FloatingLabel controlId="floatingSelectGrid" label="Categories">
+              <Form.Select
+                aria-label="Select a game type"
+                onChange={(ev) => handleCategoriesChange(ev)}
+                value={type || ''}
+              >
+                <option value="">All </option>
+                {categories
+                  ?.sort((a, b) => a.description.localeCompare(b.description))
+                  .map(({ category, description, id }) => (
+                    <option value={category} key={id}>
+                      {description}
+                    </option>
+                  ))}
+              </Form.Select>
+            </FloatingLabel>
+          </Col>
+        </Row>
+      </Form>
+    </>
   )
 }
 

@@ -4,7 +4,12 @@ import { useAuthStore } from '../../components/stores/AuthStore'
 import { Link } from 'react-router-dom'
 
 export default function Register() {
-  const { token, authenticateAdmin, checkSession, loading, error, checkCenterID } = useAuthStore()
+  const authenticateAdmin = useAuthStore((state) => state.authenticateAdmin)
+  const loading = useAuthStore((state) => state.loading)
+  const token = useAuthStore((state) => state.token)
+  const checkSession = useAuthStore((state) => state.checkSession)
+  const checkCenterID = useAuthStore((state) => state.checkCenterID)
+  const error = useAuthStore((state) => state.error)
 
   const emailRef = useRef()
   const usernameRef = useRef()

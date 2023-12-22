@@ -3,7 +3,11 @@ import { useAuthStore } from '../stores/AuthStore'
 import { formatTime } from '../../utils/formatTIme'
 // eslint-disable-next-line react/prop-types
 export const Timer = () => {
-  const { start_time, member, logout, setNotification } = useAuthStore()
+  const member = useAuthStore((state) => state.member)
+  const start_time = useAuthStore((state) => state.start_time)
+  const logout = useAuthStore((state) => state.logout)
+  const setNotification = useAuthStore((state) => state.member)
+
   const [durationString, setDurationString] = useState('00:00:00')
   // const [sessionDuration, setSessionDuration] = useState(0)
   const [cost, setCost] = useState('0.00')
