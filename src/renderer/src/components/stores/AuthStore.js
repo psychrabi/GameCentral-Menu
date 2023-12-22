@@ -2,7 +2,6 @@ import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import axiosClient from '../../lib/axios-client'
 import { updateData, submitData } from '../../utils/fetchData'
-import { Navigate } from 'react-router-dom'
 
 export const useAuthStore = create(
   persist(
@@ -174,7 +173,6 @@ export const useAuthStore = create(
           session_cost: ((total_time / (60 * 60)) * cost_per_hour).toFixed(2)
         }
         const logout = await submitData('/members/logout', get().token, usage_details)
-        console.log(logout)
         if (logout) {
           localStorage.removeItem('token')
           localStorage.removeItem('member')
@@ -183,7 +181,6 @@ export const useAuthStore = create(
           localStorage.removeItem('sessionType')
           set({ member: null, session: null, sessionType: null, start_time: null, token: null })
           set({ messages: 'You have successfully logged out', alert: 'success' })
-          return <Navigate to='/' />
         }
       },
       checkSession: () => {
