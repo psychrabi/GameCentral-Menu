@@ -16,7 +16,7 @@ const Notification = ({ children }) => {
         showAlert: () => {
           toggleAlert(true)
           setMessages(messages)
-          a(alert)
+          setAlert(alert)
           setTimeout(() => {
             toggleAlert(false)
             setMessages(null)
