@@ -1,26 +1,31 @@
-import { useEffect } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import logo from '../public/logo512.png'
 import { useBoundStore } from './stores/BoundStore'
 // import ClientStats from '../components/ui/ClientStats'
 import { VideoBackground } from '../components/ui/VideoBackground'
 import 'bootstrap-icons/font/bootstrap-icons.css'
-import Notifications from './ui/Notifications'
 import { SystemInfo } from './ui/SystemInfo'
-
+import { useContext, useEffect } from 'react'
+import notificationContext from '../context/notificationContext'
 export default function AuthLayout() {
   const token = useBoundStore((state) => state.token)
   const messages = useBoundStore((state) => state.messages)
-  const setMessages = useBoundStore((state) => state.setMessages)
   const alert = useBoundStore((state) => state.alert)
-  const setAlert = useBoundStore((state) => state.setAlert)
   const checkSession = useBoundStore((state) => state.checkSession)
-  const checkSystemInfo = useBoundStore((state) => state.checkSystemInfo)
-  const systeminfo = useBoundStore((state) => state.systeminfo)
+  // const checkSystemInfo = useBoundStore((state) => state.checkSystemInfo)
+  // const systeminfo = useBoundStore((state) => state.systeminfo)
+  const { showAlert } = useContext(notificationContext)
+
+  useEffect(() => {
+    if (messages && alert) {
+      console.log(messages)
+      showAlert(messages, alert)
+    }
+  }, [messages, alert])
 
   useEffect(() => {
     checkSession()
-    checkSystemInfo()
+    // checkSystemInfo()
   }, [])
 
   // if (!center_id) {
@@ -46,17 +51,8 @@ export default function AuthLayout() {
             </div>
           </div>
         </main>
-        {messages && (
-          <Notifications
-            messages={messages}
-            setMessages={setMessages}
-            alert={alert}
-            setAlert={setAlert}
-          />
-        )}
       </div>
-      {/* <ClientStats /> */}
-      <SystemInfo stats={systeminfo} />
+      {/* <SystemInfo stats={systeminfo} /> */}
     </>
   )
 }

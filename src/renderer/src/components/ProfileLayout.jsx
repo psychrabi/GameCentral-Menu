@@ -7,7 +7,7 @@ export default function ProfileLayout() {
   return (
     <>
       <div className="card mt-2">
-        <div className="container-fluid px-4 mt-4">
+        <div className="container-fluid p-2">
           <nav className="nav nav-borders">
             <NavLink className="nav-link ms-0" to="/profile/details">
               Profile
@@ -22,7 +22,7 @@ export default function ProfileLayout() {
                   Notifications
               </NavLink> */}
           </nav>
-          <hr className="mt-0 mb-4" />
+          <hr className="mt-0 mb-2" />
           <Suspense fallback={<Loading />}>
             <Outlet />
           </Suspense>

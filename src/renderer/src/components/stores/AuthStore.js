@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import axiosClient from '../../lib/axios-client'
-import { updateData, submitData } from '../../utils/fetchData'
+import { updateData, submitData, fetchData } from '../../utils/fetchData'
 
 export const createAuthSlice =
   (set, get) => ({
@@ -20,6 +20,7 @@ export const createAuthSlice =
     systeminfo: null,
     token: null,
     type: '',
+    sessions: null,
     authenticate: async (username, password) => {
       set({ loading: true })
       try {
@@ -31,49 +32,53 @@ export const createAuthSlice =
         if (status === 200) {
           const { member, session, token, settings } = data
 
-          set({
-            loading: false,
-            member,
-            session,
-            start_time: Date.now(),
-            token,
-            settings
-          })
           set({ messages: 'You have successfully logged in.', alert: 'success' })
 
-          const balance = get().member.balance
-          const bonus_balance = get().member.bonus_balance
-          const sessionType = balance > 0 || bonus_balance > 0 ? 'balance' : 'credit'
-          set({ sessionType })
-
-          if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
-            set({ messages: 'Not enough balance. Please top up your account.', alert: 'danger' })
-            return
-          }
-          const credit = get().member.credit
-          if (credit > 30) {
+          setTimeout(() => {
             set({
-              messages: `You have ${credit} credit to be paid. Please pay it first.`,
-              alert: 'info',
-              loading: false
+              loading: false,
+              member,
+              session,
+              start_time: Date.now(),
+              token,
+              settings
             })
-            return
-          }
-          const localStorageItems = {
-            token: token,
-            member: member,
-            session: session,
-            start_time: Date.now(),
-            settings: settings,
-            sessionType: sessionType
-          }
-          Object.entries(localStorageItems).forEach(([key, value]) => {
-            localStorage.setItem(key, JSON.stringify(value))
-          })
+
+            const balance = get().member.balance
+            const bonus_balance = get().member.bonus_balance
+            const sessionType = balance > 0 || bonus_balance > 0 ? 'balance' : 'credit'
+            set({ sessionType })
+
+            if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
+              set({ messages: 'Not enough balance. Please top up your account.', alert: 'danger' })
+              return
+            }
+            const credit = get().member.credit
+            if (credit > 30) {
+              set({
+                messages: `You have ${credit} credit to be paid. Please pay it first.`,
+                alert: 'info',
+                loading: false
+              })
+              return
+            }
+            const localStorageItems = {
+              token: token,
+              member: member,
+              session: session,
+              start_time: Date.now(),
+              settings: settings,
+              sessionType: sessionType
+            }
+            Object.entries(localStorageItems).forEach(([key, value]) => {
+              localStorage.setItem(key, JSON.stringify(value))
+            })
+
+          }, 3000);
         }
       } catch (err) {
         set({
-          messages: 'Login couldnot proceed due to network error.',
+          messages: 'Provided username or password is incorrect',
           loading: false,
           alert: 'danger'
         })
@@ -177,6 +182,15 @@ export const createAuthSlice =
         localStorage.removeItem('sessionType')
         set({ member: null, session: null, sessionType: null, start_time: null, token: null })
         set({ messages: 'You have successfully logged out', alert: 'success' })
+      }
+    },
+    getSessions: async () => {
+      try {
+        const data = await fetchData(`/sessions`, get().token)
+        set({ sessions: data, loading: false })
+      } catch (err) {
+        console.error(err)
+        set({ messages: err.message, loading: false, alert: 'danger' })
       }
     },
     checkSession: () => {

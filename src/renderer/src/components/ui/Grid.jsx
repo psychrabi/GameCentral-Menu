@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'
 import { useBoundStore } from '../stores/BoundStore'
+import { LazyLoadImage } from 'react-lazy-load-image-component'
+
 const Grid = ({ games, getData }) => {
   const setCount = useBoundStore((state) => state.setCount)
   const setShow = useBoundStore((state) => state.setShow)
@@ -20,7 +22,7 @@ const Grid = ({ games, getData }) => {
     <>
       {games?.map((game) => (
         <div key={game.id} onClick={() => handleSelect(game.id)} className="card game shadow-sm">
-          <img
+          <LazyLoadImage
             className="card-img"
             src={game.poster}
             alt={game.name}

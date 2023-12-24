@@ -8,7 +8,6 @@ const Notification = ({ children }) => {
   const setMessages = useBoundStore((state) => state.setMessages)
   const alert = useBoundStore((state) => state.alert)
   const setAlert = useBoundStore((state) => state.setAlert)
-
   const [showAlert, toggleAlert] = useState(false)
   return (
     <NotificationProvider
@@ -29,9 +28,7 @@ const Notification = ({ children }) => {
       {showAlert && (
         <div className="toast-container bottom-0 start-0 p-3" style={{ zIndex: 5000 }}>
           <div
-            className={`toast d-flex fade show  ${
-              alert === 'success' ? 'bg-success' : 'bg-danger'
-            }`}
+            className={`toast fade show  ${alert === 'success' ? 'bg-success' : 'bg-danger'}`}
             role="alert"
             aria-live="assertive"
             aria-atomic="true"
@@ -41,12 +38,6 @@ const Notification = ({ children }) => {
             <div className="toast-body text-light">
               <span>{messages}</span>
             </div>
-            <button
-              type="button"
-              className="btn-close me-2 m-auto"
-              data-bs-dismiss="toast"
-              aria-label="Close"
-            ></button>
           </div>
         </div>
       )}

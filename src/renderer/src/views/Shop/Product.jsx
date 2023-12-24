@@ -1,13 +1,19 @@
 import PropTypes from 'prop-types'
 import { useBoundStore } from '../../components/stores/BoundStore'
 import { formatCurrency } from '../../utils/formatCurrency'
+import { LazyLoadImage } from 'react-lazy-load-image-component'
 
 const Product = ({ product }) => {
   const addToCart = useBoundStore((state) => state.addToCart)
 
   return (
-    <div className="product card" key={product.id}>
-      <img src={product.product_image} alt={product.name} className="card-img-top" loading="lazy" />
+    <div className="product card">
+      <LazyLoadImage
+        src={product.product_image}
+        alt={product.name}
+        className="card-img-top"
+        loading="lazy"
+      />
       <div className="card-body d-flex flex-col justify-between">
         <h5 className="card-title">{product.name}</h5>
         <p className="card-text price">{formatCurrency(product.sales_price)}</p>

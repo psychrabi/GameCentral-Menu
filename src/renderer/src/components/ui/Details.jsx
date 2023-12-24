@@ -6,7 +6,7 @@ import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
 import notificationContext from '../../context/notificationContext.js'
 import { Button } from 'react-bootstrap'
 import { useBoundStore } from '../stores/BoundStore.js'
-
+import { LazyLoadImage } from 'react-lazy-load-image-component'
 const Details = () => {
   const show = useBoundStore((state) => state.show)
   const game = useBoundStore((state) => state.game)
@@ -48,14 +48,14 @@ const Details = () => {
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover'
         }}
-        className="h-100"
+        className="h-100 overflow-y-auto no-scrollbar"
       >
         <Offcanvas.Header closeButton closeVariant={'white'}>
           <Offcanvas.Title></Offcanvas.Title>
         </Offcanvas.Header>
-        <Offcanvas.Body className="no-scrollbar text-light">
-          <div className="top mx-5">
-            <div className="d-grid gap-3">
+        <Offcanvas.Body className="text-light d-flex flex-column">
+          <div className="top mx-5 sticky">
+            <div className="d-grid gap-3 ">
               <div
                 className="cover position-relative"
                 style={{ backgroundImage: `url(${game?.poster})`, backgroundColor: '#ccc' }}
@@ -122,7 +122,7 @@ const Details = () => {
               <Carousel indicators={false}>
                 {game?.screenshots.map((screenshot, i) => (
                   <Carousel.Item key={i}>
-                    <img className="d-block w-100" src={screenshot} alt={game?.name} />
+                    <LazyLoadImage className="d-block w-100" src={screenshot} alt={game?.name} />
                   </Carousel.Item>
                 ))}
               </Carousel>
