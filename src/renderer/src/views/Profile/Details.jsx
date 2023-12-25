@@ -148,6 +148,7 @@ export default function Profile() {
                     className="form-control"
                     id="inputPhone"
                     type="tel"
+                    pattern="[0-9]{10}"
                     placeholder="Enter your phone number"
                     ref={phoneInputRef}
                     onChange={handlePhoneChange}

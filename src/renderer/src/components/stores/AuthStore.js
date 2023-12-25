@@ -20,7 +20,7 @@ export const createAuthSlice =
     systeminfo: null,
     token: null,
     type: '',
-    sessions: null,
+    sessions: [],
     authenticate: async (username, password) => {
       set({ loading: true })
       try {
@@ -30,7 +30,7 @@ export const createAuthSlice =
         }
         const { data, status } = await axiosClient.post('/members/login', payload)
         if (status === 200) {
-          const { member, session, token, settings } = data
+          const { member, session, token, settings, sessions } = data
 
           set({ messages: 'You have successfully logged in.', alert: 'success' })
 
@@ -41,7 +41,8 @@ export const createAuthSlice =
               session,
               start_time: Date.now(),
               token,
-              settings
+              settings,
+              sessions
             })
 
             const balance = get().member.balance
@@ -68,7 +69,8 @@ export const createAuthSlice =
               session: session,
               start_time: Date.now(),
               settings: settings,
-              sessionType: sessionType
+              sessionType: sessionType,
+              sessions: sessions
             }
             Object.entries(localStorageItems).forEach(([key, value]) => {
               localStorage.setItem(key, JSON.stringify(value))
@@ -182,15 +184,6 @@ export const createAuthSlice =
         localStorage.removeItem('sessionType')
         set({ member: null, session: null, sessionType: null, start_time: null, token: null })
         set({ messages: 'You have successfully logged out', alert: 'success' })
-      }
-    },
-    getSessions: async () => {
-      try {
-        const data = await fetchData(`/sessions`, get().token)
-        set({ sessions: data, loading: false })
-      } catch (err) {
-        console.error(err)
-        set({ messages: err.message, loading: false, alert: 'danger' })
       }
     },
     checkSession: () => {

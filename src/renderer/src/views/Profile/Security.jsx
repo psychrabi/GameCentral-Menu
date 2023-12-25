@@ -12,7 +12,7 @@ export default function Security() {
   const [updatedMember, setUpdatedMember] = useState(member)
 
   useEffect(() => {
-    console.log(updatedMember)
+    // console.log(updatedMember)
   }, [updatedMember])
 
   function onSubmit(ev) {
