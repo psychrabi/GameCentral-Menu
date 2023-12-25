@@ -1,9 +1,10 @@
-import { useEffect } from 'react'
+import { lazy, useEffect } from 'react'
 import { useBoundStore } from '../../components/stores/BoundStore'
-import Header from '../../components/ui/Header'
+const Header = lazy(() => import('../../components/ui/Header'))
+const Cart = lazy(() => import('./Cart'))
+const Products = lazy(() => import('./Products'))
+
 import categories from '../../data/ProductTypes.json'
-import Cart from './Cart'
-import Products from './Products'
 
 export default function Shop() {
   const token = useBoundStore((state) => state.token)

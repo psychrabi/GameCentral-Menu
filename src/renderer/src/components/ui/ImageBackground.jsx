@@ -1,35 +1,39 @@
-import { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
+import { useEffect, useRef, useState } from 'react'
+import backgrounds from '../../data/backgrounds'
 
-export const ImageBackground = ({ images }) => {
+const ImageBackground = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => {
-        if (prevIndex === images?.length - 1) {
-          return 0
-        } else {
-          return prevIndex + 1
-        }
-      })
-    }, 15000)
-
-    return () => clearInterval(intervalId)
-  }, [images])
-
-  const currentImage = images[currentImageIndex]
-
-  const style = {
-    backgroundImage: `url(${currentImage})`,
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
+  const backgroundStyle = {
+    backgroundImage: `url('../src/public/backgrounds/bg-${currentImageIndex}.jpg')`,
     backgroundPosition: 'center',
-    height: '100vh'
+    backgroundSize: 'cover',
+    height: '100%'
   }
 
-  return <img style={style} />
+  const handleImageEnd = () => {
+    // Choose the next video index
+    const index = Math.floor(Math.random() * backgrounds.length)
+    setCurrentImageIndex(index + 1)
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleImageEnd()
+    }, 2000)
+
+    return () => {
+      clearInterval(timer)
+      console.log('timeout cleared')
+    }
+  }, [])
+
+  return (
+    <>
+      <div className="position-absolute top-0 left-0 h-100 w-100">
+        <div style={backgroundStyle}></div>
+      </div>
+    </>
+  )
 }
-ImageBackground.propTypes = {
-  images: PropTypes.any
-}
+
+export default ImageBackground

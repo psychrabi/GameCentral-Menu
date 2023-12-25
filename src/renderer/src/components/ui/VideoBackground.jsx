@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import videos from '../../data/videos'
 
-export const VideoBackground = () => {
+const VideoBackground = () => {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
   const videoRef = useRef(null)
 
@@ -36,3 +36,5 @@ export const VideoBackground = () => {
     </video>
   )
 }
+
+export default VideoBackground

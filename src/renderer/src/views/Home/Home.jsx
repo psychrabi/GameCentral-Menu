@@ -17,7 +17,7 @@ const Home = () => {
   const setCount = useBoundStore((state) => state.setCount)
 
   useEffect(() => {
-    if (!favoriteGames?.length > 0) {
+    if (!favoriteGames) {
       fetchFavoriteGames(member.id, token)
     }
     setFilter('')

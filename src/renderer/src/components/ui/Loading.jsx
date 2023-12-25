@@ -1,6 +1,6 @@
 import Spinner from 'react-bootstrap/Spinner'
 
-export const Loading = () => {
+const Loading = () => {
   return (
     <div className="d-flex justify-content-center align-items-center h-100 w-100 position-absolute top-0 start-0">
       <Spinner animation="border" role="status" style={{ width: '6rem', height: '6rem' }}>
@@ -9,3 +9,5 @@ export const Loading = () => {
     </div>
   )
 }
+
+export default Loading

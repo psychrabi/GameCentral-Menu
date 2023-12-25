@@ -1,12 +1,14 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import logo from '../public/logo512.png'
 import { useBoundStore } from './stores/BoundStore'
-// import ClientStats from '../components/ui/ClientStats'
-import { VideoBackground } from '../components/ui/VideoBackground'
 import 'bootstrap-icons/font/bootstrap-icons.css'
-import { SystemInfo } from './ui/SystemInfo'
-import { useContext, useEffect } from 'react'
+// import { SystemInfo } from './ui/SystemInfo'
+import { lazy, useContext, useEffect, useState } from 'react'
 import notificationContext from '../context/notificationContext'
+
+const ImageBackground = lazy(() => import('./ui/ImageBackground'))
+const VideoBackground = lazy(() => import('./ui/VideoBackground'))
+
 export default function AuthLayout() {
   const token = useBoundStore((state) => state.token)
   const messages = useBoundStore((state) => state.messages)
@@ -15,6 +17,7 @@ export default function AuthLayout() {
   // const checkSystemInfo = useBoundStore((state) => state.checkSystemInfo)
   // const systeminfo = useBoundStore((state) => state.systeminfo)
   const { showAlert } = useContext(notificationContext)
+  const videoBackground = false
 
   useEffect(() => {
     if (messages && alert) {
@@ -34,7 +37,8 @@ export default function AuthLayout() {
 
   return (
     <>
-      <VideoBackground />
+      {videoBackground && <VideoBackground />}
+      {!videoBackground && <ImageBackground />}
       <div className="login">
         <main className="px-4">
           <div className="form-signin position-relative">

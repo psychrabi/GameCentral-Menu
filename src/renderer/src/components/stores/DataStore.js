@@ -1,13 +1,11 @@
-import { create } from 'zustand'
 import { fetchData, submitData } from '../../utils/fetchData'
-import { persist, createJSONStorage } from 'zustand/middleware'
 
 export const createDataSlice =
   (set, get) => ({
     alert: null,
     applications: [],
     count: 0,
-    favoriteGames: [],
+    favoriteGames: null,
     filter: '',
     game: [],
     games: [],
@@ -32,7 +30,13 @@ export const createDataSlice =
       set({ loading: true })
       try {
         const data = await fetchData(`/favoriteGames/${member_id}`, token)
-        set({ favoriteGames: data, loading: false })
+        if (data) {
+          set({ favoriteGames: data, loading: false })
+
+        } else {
+          console.log('no favorite games')
+          set({ loading: false })
+        }
       } catch (err) {
         console.error(err)
         set({ messages: err.message, loading: false, alert: 'danger' })

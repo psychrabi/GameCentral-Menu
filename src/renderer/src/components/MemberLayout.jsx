@@ -1,13 +1,13 @@
-import React, { useMemo } from 'react'
+import React, { lazy, useMemo } from 'react'
 import { Navigate, NavLink, Outlet } from 'react-router-dom'
 import { useBoundStore } from './stores/BoundStore'
-import Details from './ui/Details'
-import { Loading } from './ui/Loading'
-import Navigation from './ui/Navigation'
-import { Timer } from './ui/Timer'
-import Notifications from './ui/Notifications'
+
 import { useContext, useEffect } from 'react'
 import notificationContext from '../context/notificationContext'
+const Loading = lazy(() => import('./ui/Loading'))
+const Timer = lazy(() => import('./ui/Timer'))
+const Navigation = lazy(() => import('./ui/Navigation'))
+const Details = lazy(() => import('./ui/Details'))
 
 // Memoized Details component to prevent unnecessary re-renders
 const MemoizedDetails = React.memo(Details)

@@ -1,31 +1,16 @@
-import { useEffect, useState } from 'react'
-import { Loading } from '../../components/ui/Loading'
+import { useState } from 'react'
 import { useBoundStore } from '../../components/stores/BoundStore'
 
 export default function Security() {
   const member = useBoundStore((state) => state.member)
-  const loading = useBoundStore((state) => state.loading)
   const updateMember = useBoundStore((state) => state.updateMember)
-  const error = useBoundStore((state) => state.error)
   const token = useBoundStore((state) => state.token)
 
   const [updatedMember, setUpdatedMember] = useState(member)
 
-  useEffect(() => {
-    // console.log(updatedMember)
-  }, [updatedMember])
-
   function onSubmit(ev) {
     ev.preventDefault()
     updateMember(member.id, token, updatedMember)
-  }
-
-  if (loading) {
-    return <Loading />
-  }
-
-  if (error) {
-    console.log(error)
   }
 
   return (

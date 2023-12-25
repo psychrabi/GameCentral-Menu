@@ -256,6 +256,16 @@ video {
   z-index: -99;
 }
 
+background {
+  object-fit: cover;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -600;
+}
+
 .product.card {
   position: relative;
   overflow: hidden;

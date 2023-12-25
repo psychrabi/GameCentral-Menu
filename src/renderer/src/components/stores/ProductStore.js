@@ -1,6 +1,4 @@
-import { create } from 'zustand'
 import { fetchData } from '../../utils/fetchData'
-import { persist, createJSONStorage } from 'zustand/middleware'
 
 export const createProductSlice =
   (set, get) => ({

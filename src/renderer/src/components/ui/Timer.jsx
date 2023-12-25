@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useBoundStore } from '../stores/BoundStore'
 import { formatTime } from '../../utils/formatTIme'
 // eslint-disable-next-line react/prop-types
-export const Timer = () => {
+const Timer = () => {
   const member = useBoundStore((state) => state.member)
   const start_time = useBoundStore((state) => state.start_time)
   const logout = useBoundStore((state) => state.logout)
@@ -87,3 +87,5 @@ export const Timer = () => {
     </ul>
   )
 }
+
+export default Timer

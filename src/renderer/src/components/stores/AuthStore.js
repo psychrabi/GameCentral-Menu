@@ -1,7 +1,5 @@
-import { create } from 'zustand'
-import { createJSONStorage, persist } from 'zustand/middleware'
 import axiosClient from '../../lib/axios-client'
-import { updateData, submitData, fetchData } from '../../utils/fetchData'
+import { updateData, submitData } from '../../utils/fetchData'
 
 export const createAuthSlice =
   (set, get) => ({

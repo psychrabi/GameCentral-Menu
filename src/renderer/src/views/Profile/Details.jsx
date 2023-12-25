@@ -1,13 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useBoundStore } from '../../components/stores/BoundStore'
-import { Loading } from '../../components/ui/Loading'
+
 export default function Profile() {
   const member = useBoundStore((state) => state.member)
   const loading = useBoundStore((state) => state.loading)
   const updateMember = useBoundStore((state) => state.updateMember)
-  const messages = useBoundStore((state) => state.messages)
-  const alert = useBoundStore((state) => state.alert)
-
   const [payload, setPayload] = useState()
 
   const firstNameInputRef = useRef(null)
@@ -69,9 +66,7 @@ export default function Profile() {
     phoneInputRef.current.value = member?.phone || '9800000000'
   }, [])
 
-  return loading ? (
-    <Loading />
-  ) : (
+  return (
     <div className="row">
       <div className="col-xl-4">
         <div className="card mb-4 mb-xl-0">
@@ -169,8 +164,8 @@ export default function Profile() {
                   />
                 </div>
               </div>
-              <button className="btn btn-primary" type="submit">
-                Save changes
+              <button className="btn btn-primary" type="submit" disabled={loading}>
+                {loading ? 'Saving Changes...' : 'Save Changes'}
               </button>
             </form>
           </div>

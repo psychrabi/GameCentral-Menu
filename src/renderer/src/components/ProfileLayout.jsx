@@ -1,7 +1,6 @@
-import { Suspense } from 'react'
+import { Suspense, lazy } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import '../assets/css/Profile.css'
-import { Loading } from './ui/Loading.jsx'
 
 export default function ProfileLayout() {
   return (
@@ -23,9 +22,7 @@ export default function ProfileLayout() {
               </NavLink> */}
           </nav>
           <hr className="mt-0 mb-2" />
-          <Suspense fallback={<Loading />}>
-            <Outlet />
-          </Suspense>
+          <Outlet />
         </div>
       </div>
     </>
