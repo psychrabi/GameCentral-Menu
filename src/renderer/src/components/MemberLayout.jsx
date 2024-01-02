@@ -1,16 +1,12 @@
-import React, { lazy, useMemo } from 'react'
-import { Navigate, NavLink, Outlet } from 'react-router-dom'
+import React, { lazy, useMemo, useEffect, useContext } from 'react'
+import { NavLink, Navigate, Outlet } from 'react-router-dom'
 import { useBoundStore } from './stores/BoundStore'
-
-import { useContext, useEffect } from 'react'
 import notificationContext from '../context/notificationContext'
+
 const Loading = lazy(() => import('./ui/Loading'))
 const Timer = lazy(() => import('./ui/Timer'))
 const Navigation = lazy(() => import('./ui/Navigation'))
 const Details = lazy(() => import('./ui/Details'))
-
-// Memoized Details component to prevent unnecessary re-renders
-const MemoizedDetails = React.memo(Details)
 
 function MemberLayout() {
   const token = useBoundStore((state) => state.token)
@@ -30,9 +26,6 @@ function MemberLayout() {
     return <Navigate to="/login" />
   }
 
-  // Memoize the Timer component to prevent unnecessary re-renders
-  const memoizedTimer = useMemo(() => <Timer />, [])
-
   // Show loading spinner while data is being loaded
 
   useEffect(() => {
@@ -41,6 +34,12 @@ function MemberLayout() {
       showAlert(messages, alert)
     }
   }, [messages, alert])
+
+  // Memoize the Timer component to prevent unnecessary re-renders
+  const memoizedTimer = useMemo(() => <Timer />, [])
+
+  // Memoize Details component to prevent unnecessary re-renders
+  const MemoizedDetails = useMemo(() => React.memo(Details), [])
 
   return loading ? (
     <Loading />

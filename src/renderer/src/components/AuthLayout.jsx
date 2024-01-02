@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import logo from '../public/logo512.png'
+import logo from '../public/logo.png'
 import { useBoundStore } from './stores/BoundStore'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 // import { SystemInfo } from './ui/SystemInfo'
