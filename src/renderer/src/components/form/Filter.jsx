@@ -1,27 +1,31 @@
 import { Col, FloatingLabel, Form, Row } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 import { useBoundStore } from '../stores/BoundStore'
+import { useCallback } from 'react'
 
-const Filter = ({ categories, handleCategoriesChange }) => {
+const Filter = ({ categories }) => {
   const filter = useBoundStore((state) => state.filter)
   const setFilter = useBoundStore((state) => state.setFilter)
   const type = useBoundStore((state) => state.type)
   const setType = useBoundStore((state) => state.setType)
+  const setTitle = useBoundStore((state) => state.setTitle)
 
-  const handleSubmit = (ev) => {
-    ev.preventDefault()
-  }
+  const handleCategoriesChange = useCallback((event) => {
+    let index = event.target.selectedIndex
+    setTitle(event.target[index].text)
 
-  const handleFilterUpdate = (value) => {
-    if (value) {
-      setType('')
-    }
+    if (event.target.value) setFilter('')
+    setType(event.target.value)
+  }, [])
+
+  const handleFilterUpdate = useCallback((value) => {
+    if (value) setType('')
     setFilter(value)
-  }
+  }, [])
 
   return (
     <>
-      <Form role="search" onSubmit={handleSubmit}>
+      <Form role="search" onSubmit={(ev) => ev.preventDefault()}>
         <Row className="g-2">
           <Col md>
             <FloatingLabel controlId="search" label="Search..">
@@ -59,6 +63,5 @@ const Filter = ({ categories, handleCategoriesChange }) => {
 
 Filter.propTypes = {
   categories: PropTypes.array,
-  handleCategoriesChange: PropTypes.func
 }
 export default Filter

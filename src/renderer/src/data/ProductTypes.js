@@ -1,4 +1,4 @@
-[
+const ProductTypes = [
   {
     "id": 1,
     "category": "food",
@@ -20,3 +20,6 @@
     "description": "Peripherals"
   }
 ]
+
+
+export default ProductTypes

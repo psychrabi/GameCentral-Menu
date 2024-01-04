@@ -1,3 +1,4 @@
+const Games =
 [
   {
     "id": 1,
@@ -2315,3 +2316,4 @@
     "isPlaying": false
   }
 ]
+export default Games

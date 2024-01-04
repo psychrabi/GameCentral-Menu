@@ -16,6 +16,7 @@ export const createDataSlice =
     type: '',
     filter: '',
     alert: '',
+    title: 'Favorite Games',
     fetchGames: async (center_id, token) => {
       set({ loading: true })
       try {
@@ -107,30 +108,28 @@ export const createDataSlice =
       try {
         const data = await get().games.filter((game) => game.id === id)
         // console.log(data)
-        set({ loading: false, game: data[0] })
+        set({ game: data[0] })
       } catch (err) {
         console.error(err)
-        set({ messages: err.message, loading: false, alert: 'danger' })
+        set({ messages: err.message, alert: 'danger' })
       }
     },
     getFavoriteGame: async (id) => {
-      set({ loading: true })
       try {
         const data = await get().favoriteGames.filter((game) => game.id === id)
-        set({ loading: false, game: data[0] })
+        set({ game: data[0] })
       } catch (err) {
         console.error(err)
-        set({ messages: err.message, loading: false, alert: 'danger' })
+        set({ messages: err.message, alert: 'danger' })
       }
     },
     getApplication: async (id) => {
-      set({ loading: true })
       try {
         const data = await get().applications.filter((app) => app.id === id)
-        set({ loading: false, game: data[0] })
+        set({ game: data[0] })
       } catch (err) {
         console.error(err)
-        set({ messages: err.message, loading: false, alert: 'danger' })
+        set({ messages: err.message, alert: 'danger' })
       }
     },
     setCount: (count) => set({ count }),
@@ -138,5 +137,6 @@ export const createDataSlice =
     setShow: () => set((state) => ({ show: !state.show })),
     setType: (type) => set({ type }),
     setMessages: (messages) => set({ messages }),
-    setAlert: (alert) => set({ alert })
+    setAlert: (alert) => set({ alert }),
+    setTitle: (title) => set({ title })
   })

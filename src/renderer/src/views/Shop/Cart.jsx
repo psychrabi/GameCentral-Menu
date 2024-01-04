@@ -1,5 +1,5 @@
 import { useBoundStore } from '../../components/stores/BoundStore'
-import { PaymentModes } from '../../components/ui/PaymentModes'
+import { PaymentTypes } from '../../components/ui/PaymentTypes'
 import { formatCurrency } from '../../utils/formatCurrency'
 
 const Cart = () => {
@@ -68,7 +68,7 @@ const Cart = () => {
         <div className="card-body p-0">
           <div>
             <div className="pb-0">
-              <PaymentModes />
+              <PaymentTypes />
             </div>
             <hr className="my-2" />
 

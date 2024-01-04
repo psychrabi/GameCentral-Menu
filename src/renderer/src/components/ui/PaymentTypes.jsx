@@ -1,10 +1,10 @@
-import paymentModes from '../../data/PaymentModes.json'
+import PaymentModes from '../../data/PaymentModes.js'
 import { useBoundStore } from '../stores/BoundStore'
 
-export const PaymentModes = () => {
+export const PaymentTypes = () => {
   const setPaymentMode = useBoundStore((state) => state.setPaymentMode)
 
-  return paymentModes.map((mode, key) => {
+  return PaymentModes.map((mode, key) => {
     return mode.active ? (
       <div className="d-flex flex-row pb-1" key={key}>
         <div className="d-flex align-items-center px-2">
@@ -16,6 +16,7 @@ export const PaymentModes = () => {
             value={mode.category}
             aria-label="..."
             onChange={(ev) => setPaymentMode(ev.target.value)}
+            checked={mode.id === 2}
           />
         </div>
         <div className="rounded border w-100 px-2 py-1">

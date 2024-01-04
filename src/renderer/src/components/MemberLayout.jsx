@@ -1,9 +1,8 @@
 import React, { lazy, useMemo, useEffect, useContext } from 'react'
-import { NavLink, Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
 import { useBoundStore } from './stores/BoundStore'
 import notificationContext from '../context/notificationContext'
 
-const Loading = lazy(() => import('./ui/Loading'))
 const Timer = lazy(() => import('./ui/Timer'))
 const Navigation = lazy(() => import('./ui/Navigation'))
 const Details = lazy(() => import('./ui/Details'))
@@ -19,11 +18,8 @@ function MemberLayout() {
 
   // Redirect if the user is not logged in or has no center_id
   if (!center_id) {
+    // console.log('no center id')
     return <Navigate to="/admin" />
-  }
-  if (!token) {
-    console.log('Member not logged in')
-    return <Navigate to="/login" />
   }
 
   // Show loading spinner while data is being loaded
@@ -36,32 +32,14 @@ function MemberLayout() {
   }, [messages, alert])
 
   // Memoize the Timer component to prevent unnecessary re-renders
-  const memoizedTimer = useMemo(() => <Timer />, [])
 
   // Memoize Details component to prevent unnecessary re-renders
   const MemoizedDetails = useMemo(() => React.memo(Details), [])
-
-  return loading ? (
-    <Loading />
-  ) : (
+  const MemoizedNavigation = useMemo(() => React.memo(Navigation), [])
+  
+  return (
     <>
-      <header className="draggable">
-        <div className="px-3 py-2 text-bg-dark">
-          <div className="container-fluid px-0">
-            <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg-start">
-              <NavLink
-                to="/"
-                className="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none"
-              >
-                <i className="bi bi-bootstrap me-3" style={{ fontSize: '2rem' }}></i>
-                GameCentral Menu
-              </NavLink>
-              {memoizedTimer}
-              <Navigation />
-            </div>
-          </div>
-        </div>
-      </header>
+      <MemoizedNavigation />
       <div className="game-app">
         <main className="no-scrollbar">
           <div className="w-100">

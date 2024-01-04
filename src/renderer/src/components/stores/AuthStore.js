@@ -165,24 +165,8 @@ export const createAuthSlice =
         set({ messages: err.data.message, loading: false, alert: 'danger' })
       }
     },
-    logout: async (cost_per_hour) => {
-      const total_time = (Date.now() - get().start_time) / 1000 //in seconds
-      const usage_details = {
-        session_id: get().session.id,
-        total_time: total_time,
-        sessionType: get().sessionType,
-        session_cost: ((total_time / (60 * 60)) * cost_per_hour).toFixed(2)
-      }
-      const logout = await submitData('/members/logout', get().token, usage_details)
-      if (logout) {
-        localStorage.removeItem('token')
-        localStorage.removeItem('member')
-        localStorage.removeItem('session')
-        localStorage.removeItem('start_time')
-        localStorage.removeItem('sessionType')
-        set({ member: null, session: null, sessionType: null, start_time: null, token: null })
-        set({ messages: 'You have successfully logged out', alert: 'success' })
-      }
+    reset: () => {
+      set({ member: null, session: null, sessionType: null, start_time: null, token: null, sessions: null, favoriteGames: null })
     },
     checkSession: () => {
       if (localStorage.getItem('token')) {
@@ -199,6 +183,7 @@ export const createAuthSlice =
         set({ session: JSON.parse(localStorage.getItem('session')) })
       if (localStorage.getItem('sessionType'))
         set({ sessionType: JSON.parse(localStorage.getItem('sessionType')) })
+
     },
     checkSystemInfo: async () => {
       if (localStorage.getItem('systemInfo')) {
@@ -217,9 +202,16 @@ export const createAuthSlice =
       }
     },
     checkCenterID: () => {
-      if (localStorage.getItem('center_id')) {
+      if (localStorage.getItem('center_id'))
         set({ center_id: JSON.parse(localStorage.getItem('center_id')) })
+
+      if (localStorage.getItem('center_name'))
+        set({ center_name: JSON.parse(localStorage.getItem('center_name')) })
+
+      if (get().center_id && get().center_name) {
+        return true
       }
+      return false
     },
     setSystemInfo: async (info) => {
       set({

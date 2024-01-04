@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useBoundStore } from '../../components/stores/BoundStore'
 import Grid from '../../components/ui/Grid'
 import Header from '../../components/ui/Header'
-import categories from '../../data/GameTypes.json'
+import GameTypes from '../../data/GameTypes.js'
 
 function Games() {
   const token = useBoundStore((state) => state.token)
@@ -15,6 +15,7 @@ function Games() {
   const setType = useBoundStore((state) => state.setType)
   const getGame = useBoundStore((state) => state.getGame)
   const setCount = useBoundStore((state) => state.setCount)
+  const setTitle = useBoundStore((state) => state.setTitle)
 
   useEffect(() => {
     if (!games.length > 0) {
@@ -22,6 +23,7 @@ function Games() {
     }
     setFilter('')
     setType('')
+    setTitle('All Games')
   }, [])
 
   const filteredGames = games?.filter((item) => {
@@ -36,11 +38,11 @@ function Games() {
 
   useEffect(() => {
     setCount(filteredGames.length)
-  }, [games, filter, type])
+  }, [filter, type])
 
   return (
     <>
-      <Header categories={categories} page_title={'All Games'} />
+      <Header categories={GameTypes} />
       <div className="games" id="favorite-games-container">
         <Grid games={filteredGames} getData={getGame} />
       </div>

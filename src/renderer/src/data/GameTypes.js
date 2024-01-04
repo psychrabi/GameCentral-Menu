@@ -1,4 +1,4 @@
-[
+const GameTypes =[
   {
     "id": 1,
     "category": "steam",
@@ -40,3 +40,5 @@
     "description": "Gameloop Games"
   }
 ]
+
+export default GameTypes

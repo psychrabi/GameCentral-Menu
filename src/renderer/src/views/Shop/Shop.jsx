@@ -4,7 +4,7 @@ const Header = lazy(() => import('../../components/ui/Header'))
 const Cart = lazy(() => import('./Cart'))
 const Products = lazy(() => import('./Products'))
 
-import categories from '../../data/ProductTypes.json'
+import ProductTypes from '../../data/ProductTypes.js'
 
 export default function Shop() {
   const token = useBoundStore((state) => state.token)
@@ -17,6 +17,7 @@ export default function Shop() {
   const setFilter = useBoundStore((state) => state.setFilter)
   const cart = useBoundStore((state) => state.cart)
   const setType = useBoundStore((state) => state.setType)
+  const setTitle = useBoundStore((state) => state.setTitle)
 
   useEffect(() => {
     if (!products.length > 0) {
@@ -24,6 +25,7 @@ export default function Shop() {
     }
     setFilter('')
     setType('')
+    setTitle('All Products')
   }, [])
 
   const filteredProducts = products?.filter((item) => {
@@ -44,7 +46,7 @@ export default function Shop() {
     <>
       <div className="d-flex">
         <div className={cart.length > 0 ? 'w-75 pe-3' : 'w-100'}>
-          <Header categories={categories} page_title={'All Products'} />
+          <Header categories={ProductTypes} page_title={'All Products'} />
           <Products products={filteredProducts} />
         </div>
         {cart.length > 0 ? <Cart cart={cart} /> : ''}

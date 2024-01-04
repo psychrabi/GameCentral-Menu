@@ -1,4 +1,4 @@
-[
+const PaymentModes = [
   {
     "id": 1,
     "category": "credit-card",
@@ -40,3 +40,6 @@
     "default": false
   }
 ]
+
+
+export default PaymentModes

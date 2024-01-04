@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useBoundStore } from '../../components/stores/BoundStore'
 import Grid from '../../components/ui/Grid'
 import Header from '../../components/ui/Header'
-import categories from '../../data/AppTypes.json'
+import AppTypes from '../../data/AppTypes.js'
 
 function Applications() {
   const token = useBoundStore((state) => state.token)
@@ -15,6 +15,7 @@ function Applications() {
   const setType = useBoundStore((state) => state.setType)
   const getApplication = useBoundStore((state) => state.getApplication)
   const setCount = useBoundStore((state) => state.setCount)
+  const setTitle = useBoundStore((state) => state.setTitle)
 
   useEffect(() => {
     if (!applications.length > 0) {
@@ -22,6 +23,7 @@ function Applications() {
     }
     setFilter('')
     setType('')
+    setTitle('All Applications')
   }, [])
 
   const filteredApps = applications?.filter((item) => {
@@ -40,7 +42,7 @@ function Applications() {
 
   return (
     <>
-      <Header categories={categories} page_title={'All Applications'} />
+      <Header categories={AppTypes} />
       <div className="games" id="favorite-games-container">
         <Grid games={filteredApps} getData={getApplication} />
       </div>

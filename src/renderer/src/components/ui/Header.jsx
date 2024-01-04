@@ -1,22 +1,11 @@
 import PropTypes from 'prop-types'
-import { useCallback, useState } from 'react'
-import Filter from '../form/Search.jsx'
+import { useCallback } from 'react'
+import Filter from '../form/Filter.jsx'
 import { useBoundStore } from '../stores/BoundStore.js'
 
-const Header = ({ categories, page_title }) => {
-  const setType = useBoundStore((state) => state.setType)
-  const setFilter = useBoundStore((state) => state.setFilter)
+const Header = ({ categories }) => {
   const count = useBoundStore((state) => state.count)
-  const [title, setTitle] = useState(page_title)
-
-  const handleCategoriesChange = useCallback((event) => {
-    let index = event.target.selectedIndex
-    setTitle(event.target[index].text)
-    if (event.target.value) {
-      setFilter('')
-    }
-    setType(event.target.value)
-  }, [])
+  const title = useBoundStore((state) => state.title)
 
   return (
     <div className="d-flex flex-wrap justify-content-between border-bottom mb-2 py-2">
@@ -24,7 +13,7 @@ const Header = ({ categories, page_title }) => {
         {title} ({count})
       </h2>
       <div className="d-flex">
-        <Filter categories={categories} handleCategoriesChange={handleCategoriesChange} />
+        <Filter categories={categories} />
       </div>
     </div>
   )

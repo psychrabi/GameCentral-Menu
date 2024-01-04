@@ -1,3 +1,4 @@
+const AppTypes =
 [
   {
     "id": 1,
@@ -20,3 +21,6 @@
     "description": "Windows Settings"
   }
 ]
+
+
+export default AppTypes

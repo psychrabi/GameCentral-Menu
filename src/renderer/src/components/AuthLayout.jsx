@@ -3,7 +3,7 @@ import logo from '../public/logo.png'
 import { useBoundStore } from './stores/BoundStore'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 // import { SystemInfo } from './ui/SystemInfo'
-import { lazy, useContext, useEffect, useState } from 'react'
+import { lazy, useContext, useEffect } from 'react'
 import notificationContext from '../context/notificationContext'
 
 const ImageBackground = lazy(() => import('./ui/ImageBackground'))
@@ -11,6 +11,8 @@ const VideoBackground = lazy(() => import('./ui/VideoBackground'))
 
 export default function AuthLayout() {
   const token = useBoundStore((state) => state.token)
+  const center_id = useBoundStore((state) => state.center_id)
+  const center_name = useBoundStore((state) => state.center_name)
   const messages = useBoundStore((state) => state.messages)
   const alert = useBoundStore((state) => state.alert)
   const checkSession = useBoundStore((state) => state.checkSession)
@@ -32,7 +34,7 @@ export default function AuthLayout() {
   }, [])
 
   // if (!center_id) {
-  //   return <Navigate to="/" />
+  //   return <Navigate to="/admin" />
   // }
 
   return (
@@ -44,7 +46,7 @@ export default function AuthLayout() {
           <div className="form-signin position-relative">
             <div autoComplete="off" className={'mb-3 px-5 mx-4 text-secondary'}>
               <div>
-                <img src={logo} alt="" style={{ width: '8rem', height: '8rem' }} />
+                <img src={logo} alt={center_name}/>
               </div>
               {!token ? <Outlet /> : <Navigate to="/" />}
             </div>
