@@ -1,70 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useBoundStore } from '../../components/stores/BoundStore'
+import defaultAvatar from '../../public/default-avatar.png'
+import { useForm } from 'react-hook-form'
 
 export default function Profile() {
   const member = useBoundStore((state) => state.member)
-  const loading = useBoundStore((state) => state.loading)
   const updateMember = useBoundStore((state) => state.updateMember)
-  const [payload, setPayload] = useState()
 
-  const firstNameInputRef = useRef(null)
-  const lastNameInputRef = useRef(null)
-  const emailInputRef = useRef(null)
-  const birthdayInputRef = useRef(null)
-  const phoneInputRef = useRef(null)
+  const { register, handleSubmit, formState } = useForm({ defaultValues: member })
 
-  const onSubmit = async (ev) => {
-    ev.preventDefault()
-    updateMember(member.id, payload)
+  const { errors, isSubmitting } = formState
+  const onSubmit = (data) => {
+    updateMember(member.id, data)
+    console.log(errors)
   }
-
-  const handleFirstNameChange = useCallback(() => {
-    setPayload((prev) => ({
-      ...prev,
-      first_name: firstNameInputRef.current.value
-    }))
-  })
-  const handleLastNameChange = useCallback(() => {
-    setPayload((prev) => ({
-      ...prev,
-      last_name: lastNameInputRef.current.value
-    }))
-  })
-  const handleEmailChange = useCallback(() => {
-    setPayload((prev) => ({
-      ...prev,
-      email: emailInputRef.current.value
-    }))
-  })
-  const handleBirthdayChange = useCallback(() => {
-    setPayload((prev) => ({
-      ...prev,
-      birthday: birthdayInputRef.current.value
-    }))
-  })
-  const handlePhoneChange = useCallback(() => {
-    setPayload((prev) => ({
-      ...prev,
-      phone: phoneInputRef.current.value
-    }))
-  })
-
-  useEffect(() => {
-    setPayload((prev) => ({
-      ...prev,
-      first_name: member?.first_name,
-      last_name: member?.last_name,
-      birthday: member?.birthday,
-      phone: member?.phone,
-      email: member?.email
-    }))
-
-    firstNameInputRef.current.value = member?.first_name
-    lastNameInputRef.current.value = member?.last_name || ''
-    emailInputRef.current.value = member?.email || ''
-    birthdayInputRef.current.value = member?.birthday || '1990-01-01'
-    phoneInputRef.current.value = member?.phone || '9800000000'
-  }, [])
 
   return (
     <div className="row">
@@ -72,11 +21,7 @@ export default function Profile() {
         <div className="card mb-4 mb-xl-0">
           <div className="card-header">Profile Picture</div>
           <div className="card-body text-center">
-            <img
-              className="img-account-profile rounded-circle mb-2"
-              src="http://bootdey.com/img/Content/avatar/avatar1.png"
-              alt=""
-            />
+            <img className="img-account-profile rounded-circle mb-2" src={defaultAvatar} alt="" />
             <div className="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
             <button className="btn btn-primary" type="button">
               Upload new image
@@ -91,48 +36,56 @@ export default function Profile() {
             {member.username}
           </div>
           <div className="card-body">
-            <form onSubmit={onSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)} className="needs-validation" novalidate>
               <div className="row gx-3 mb-3">
                 <div className="col-md-6">
                   <label className="small mb-1" htmlFor="inputFirstName">
                     First name
                   </label>
                   <input
-                    className="form-control"
-                    id="inputFirstName"
+                    className={`form-control ${errors.first_name ? 'is-invalid' : 'is-valid'}`}
                     type="text"
-                    placeholder="Enter your first name"
-                    ref={firstNameInputRef}
-                    onChange={handleFirstNameChange}
+                    placeholder="First name"
+                    {...register('first_name', {
+                      required: {
+                        value: true,
+                        message: 'First name is required'
+                      },
+                      maxLength: 80
+                    })}
                   />
+                  <div class="invalid-feedback">{errors.first_name?.message}</div>
                 </div>
                 <div className="col-md-6">
                   <label className="small mb-1" htmlFor="inputLastName">
                     Last name
                   </label>
                   <input
-                    className="form-control"
-                    id="inputLastName"
+                    className={`form-control ${errors.last_name ? 'is-invalid' : 'is-valid'}`}
                     type="text"
-                    placeholder="Enter your last name"
-                    ref={lastNameInputRef}
-                    onChange={handleLastNameChange}
+                    placeholder="Last name"
+                    {...register('last_name', {
+                      required: {
+                        value: true,
+                        message: 'last name is required'
+                      },
+                      maxLength: 20
+                    })}
                   />
+                  <div class="invalid-feedback">{errors.last_name?.message}</div>
                 </div>
               </div>
-
               <div className="mb-3">
                 <label className="small mb-1" htmlFor="inputEmailAddress">
                   Email address
                 </label>
                 <input
-                  className="form-control"
-                  id="inputEmailAddress"
-                  type="email"
+                  className={`form-control ${errors.email ? 'is-invalid' : 'is-valid'}`}
+                  type="text"
                   placeholder="Enter your email address"
-                  ref={emailInputRef}
-                  onChange={handleEmailChange}
+                  {...register('email', { required: true, pattern: /^\S+@\S+$/i })}
                 />
+                <div class="invalid-feedback">{errors.email?.message}</div>
               </div>
               <div className="row gx-3 mb-3">
                 <div className="col-md-6">
@@ -140,32 +93,28 @@ export default function Profile() {
                     Phone number
                   </label>
                   <input
-                    className="form-control"
-                    id="inputPhone"
+                    className={`form-control ${errors.phone ? 'is-invalid' : 'is-valid'}`}
                     type="tel"
-                    pattern="[0-9]{10}"
                     placeholder="Enter your phone number"
-                    ref={phoneInputRef}
-                    onChange={handlePhoneChange}
+                    {...register('phone', { required: true, pattern: '/[0-9]{10}/i' })}
                   />
+                  <div class="invalid-feedback">{errors.phone?.message}</div>
                 </div>
                 <div className="col-md-6">
                   <label className="small mb-1" htmlFor="inputBirthday">
                     Birthday
                   </label>
                   <input
-                    className="form-control"
-                    id="inputBirthday"
                     type="date"
-                    name="birthday"
-                    placeholder="Enter your birthday"
-                    ref={birthdayInputRef}
-                    onChange={handleBirthdayChange}
+                    placeholder="Birthday"
+                    {...register('birthday', { required: true })}
+                    className={`form-control ${errors.birthday ? 'is-invalid' : 'is-valid'}`}
                   />
+                  <div class="invalid-feedback">{errors.birthday?.message}</div>
                 </div>
               </div>
-              <button className="btn btn-primary" type="submit" disabled={loading}>
-                {loading ? 'Saving Changes...' : 'Save Changes'}
+              <button className="btn btn-primary" type="submit">
+                {isSubmitting ? 'Saving Changes...' : 'Save Changes'}
               </button>
             </form>
           </div>

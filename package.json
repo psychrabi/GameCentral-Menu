@@ -38,6 +38,7 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.2",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.49.2",
     "react-lazy-load-image-component": "^1.6.0",
     "react-router-dom": "^6.21.1",
     "systeminformation": "^5.21.22",
