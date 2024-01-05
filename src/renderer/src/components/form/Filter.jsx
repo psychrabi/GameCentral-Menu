@@ -28,32 +28,30 @@ const Filter = ({ categories }) => {
       <Form role="search" onSubmit={(ev) => ev.preventDefault()}>
         <Row className="g-2">
           <Col md>
-            <FloatingLabel controlId="search" label="Search..">
-              <Form.Control
-                type="email"
-                placeholder="name@example.com"
-                value={filter}
-                onInput={(event) => handleFilterUpdate(event.target.value)}
-              />
-            </FloatingLabel>
+            <Form.Control
+              size="sm"
+              type="text"
+              placeholder="Search..."
+              value={filter}
+              onInput={(event) => handleFilterUpdate(event.target.value)}
+            />
           </Col>
           <Col md>
-            <FloatingLabel controlId="floatingSelectGrid" label="Categories">
-              <Form.Select
-                aria-label="Select a game type"
-                onChange={(ev) => handleCategoriesChange(ev)}
-                value={type || ''}
-              >
-                <option value="">All </option>
-                {categories
-                  ?.sort((a, b) => a.description.localeCompare(b.description))
-                  .map(({ category, description, id }) => (
-                    <option value={category} key={id}>
-                      {description}
-                    </option>
-                  ))}
-              </Form.Select>
-            </FloatingLabel>
+            <Form.Select
+              size="sm"
+              aria-label="Select a game type"
+              onChange={(ev) => handleCategoriesChange(ev)}
+              value={type || ''}
+            >
+              <option value="">All </option>
+              {categories
+                ?.sort((a, b) => a.description.localeCompare(b.description))
+                .map(({ category, description, id }) => (
+                  <option value={category} key={id}>
+                    {description}
+                  </option>
+                ))}
+            </Form.Select>
           </Col>
         </Row>
       </Form>
@@ -62,6 +60,6 @@ const Filter = ({ categories }) => {
 }
 
 Filter.propTypes = {
-  categories: PropTypes.array,
+  categories: PropTypes.array
 }
 export default Filter

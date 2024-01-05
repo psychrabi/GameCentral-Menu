@@ -6,22 +6,29 @@ export default function ProfileLayout() {
   return (
     <>
       <div className="card mt-2">
-        <div className="container-fluid p-2">
-          <nav className="nav nav-borders">
-            <NavLink className="nav-link ms-0" to="/profile/details">
-              Profile
-            </NavLink>
-            <NavLink className="nav-link" to="/profile/sessions">
-              Sessions
-            </NavLink>
-            <NavLink className="nav-link" to="/profile/security">
-              Security
-            </NavLink>
+        <div className="card-header">
+          <nav className="nav nav-tabs card-header-tabs nav-fill">
+            <li className="nav-item">
+              <NavLink className="nav-link ms-0" to="/profile/details">
+                Profile
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/profile/sessions">
+                Sessions
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/profile/security">
+                Security
+              </NavLink>
+            </li>
             {/* <NavLink className="nav-link" to="/profile/notification">
                   Notifications
               </NavLink> */}
           </nav>
-          <hr className="mt-0 mb-2" />
+        </div>
+        <div className="card-body p-2">
           <Outlet />
         </div>
       </div>

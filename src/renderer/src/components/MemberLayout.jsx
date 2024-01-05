@@ -36,16 +36,16 @@ function MemberLayout() {
   // Memoize Details component to prevent unnecessary re-renders
   const MemoizedDetails = useMemo(() => React.memo(Details), [])
   const MemoizedNavigation = useMemo(() => React.memo(Navigation), [])
-  
+
   return (
     <>
       <MemoizedNavigation />
       <div className="game-app">
         <main className="no-scrollbar">
-          <div className="w-100">
-            {/* Render nested routes */}
-            <Outlet />
-          </div>
+          {/* <div className="w-100"> */}
+          {/* Render nested routes */}
+          <Outlet />
+          {/* </div> */}
         </main>
         {/* Conditional rendering of Details and Notifications components */}
         {show && <MemoizedDetails />}

@@ -51,24 +51,19 @@ export default function Billing() {
 
   return (
     <>
-      <div className="card mb-2">
-        <div className="card-header">Session History</div>
-        <div className="card-body p-0">
-          <div style={{ height: 'auto', width: '100%' }}>
-            <DataGrid
-              rows={sessions ?? []}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 7
-                  }
-                }
-              }}
-              pageSizeOptions={[7]}
-            />
-          </div>
-        </div>
+      <div style={{ height: 'auto', width: '100%' }}>
+        <DataGrid
+          rows={sessions ?? []}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 8
+              }
+            }
+          }}
+          pageSizeOptions={[8]}
+        />
       </div>
     </>
   )

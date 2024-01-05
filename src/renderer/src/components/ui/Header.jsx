@@ -8,13 +8,12 @@ const Header = ({ categories }) => {
   const title = useBoundStore((state) => state.title)
 
   return (
-    <div className="d-flex flex-wrap justify-content-between border-bottom mb-2 py-2">
-      <h2 className="h3 mb-2 mb-lg-0">
+    <div className="d-flex flex-wrap justify-content-between border-bottom mb-2 py-2 align-items-center">
+      <h3 className="fs-5 mb-2 mb-lg-0">
         {title} ({count})
-      </h2>
-      <div className="d-flex">
-        <Filter categories={categories} />
-      </div>
+      </h3>
+
+      <Filter categories={categories} />
     </div>
   )
 }

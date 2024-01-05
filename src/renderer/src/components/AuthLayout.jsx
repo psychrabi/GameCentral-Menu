@@ -46,7 +46,7 @@ export default function AuthLayout() {
           <div className="form-signin position-relative">
             <div autoComplete="off" className={'mb-3 px-5 mx-4 text-secondary'}>
               <div>
-                <img src={logo} alt={center_name}/>
+                <img src={logo} alt={center_name} />
               </div>
               {!token ? <Outlet /> : <Navigate to="/" />}
             </div>
