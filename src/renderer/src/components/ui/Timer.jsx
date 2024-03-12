@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useBoundStore } from '../stores/BoundStore'
-import { formatTime } from '../../utils/formatTIme'
+import { formatTime } from '../../utils/formatTime'
 // eslint-disable-next-line react/prop-types
 const Timer = () => {
   const member = useBoundStore((state) => state.member)

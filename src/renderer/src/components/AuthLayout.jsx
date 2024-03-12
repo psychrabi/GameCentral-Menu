@@ -4,7 +4,7 @@ import { useBoundStore } from './stores/BoundStore'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 // import { SystemInfo } from './ui/SystemInfo'
 import { lazy, useContext, useEffect } from 'react'
-import notificationContext from '../context/notificationContext'
+import notificationContext from '../context/NotificationContext'
 
 const ImageBackground = lazy(() => import('./ui/ImageBackground'))
 const VideoBackground = lazy(() => import('./ui/VideoBackground'))

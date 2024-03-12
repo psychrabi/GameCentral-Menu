@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import backgrounds from '../../data/backgrounds'
+import backgrounds from '../../data/Backgrounds'
 
 const ImageBackground = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NotificationProvider } from './notificationContext'
+import { NotificationProvider } from './NotificationContext'
 import PropTypes from 'prop-types'
 import { useBoundStore } from '../components/stores/BoundStore'
 

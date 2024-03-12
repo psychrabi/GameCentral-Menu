@@ -1,5 +1,5 @@
 import { useBoundStore } from '../../components/stores/BoundStore'
-import { formatTime } from '../../utils/formatTIme'
+import { formatTime } from '../../utils/formatTime'
 import { formatCurrency } from '../../utils/formatCurrency'
 import { useEffect } from 'react'
 import { DataGrid } from '@mui/x-data-grid'
