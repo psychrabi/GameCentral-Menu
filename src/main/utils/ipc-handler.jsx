@@ -17,29 +17,32 @@ ipcMain.handle('request-system-info', async () => {
   return info
 })
 
-let processRunning = false
-let processRef
-ipcMain.handle('launch:executable', (event, gamePath) => {
-  const process = spawn(gamePath)
-  if (process) processRunning = true
+let gameRunning = false
+let game
+ipcMain.handle('launch:executable', (event, gamePath, parameters) => {
+   game = spawn(gamePath, [parameters])
+  if (game) {
+    gameRunning = true
+  }
 
-  processRef.on('exit', (code, signal) => {
-    console.log(`Process exited with code ${code} and signal ${signal}`)
-    processRunning = false
-    event.sender.send('process-exited', processRunning)
+
+  game.on('exit', (code, signal) => {
+    console.log(`Game exited with code ${code} and signal ${signal}`)
+    gameRunning = false
+    event.sender.send('process-exited', gameRunning)
   })
 
-  return processRunning
+  return ({game_running: true})
 })
 
 ipcMain.handle('check:executable', async (event, gamePath) => {
-  console.log(gamePath)
+  // console.log(gamePath)
   return new Promise((resolve) => {
     fs.access(gamePath, fs.constants.F_OK, (err) => {
       if (!err) {
-        resolve({ status: 'file-exists', processRunning })
+        resolve({ status: 'file-exists' })
       } else {
-        resolve({ status: 'file-does-not-exist', processRunning })
+        resolve({ status: 'file-does-not-exist' })
       }
     })
   })

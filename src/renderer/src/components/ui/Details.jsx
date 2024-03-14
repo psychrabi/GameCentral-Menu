@@ -3,7 +3,7 @@ import Carousel from 'react-bootstrap/Carousel'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
 // import axiosClient from '../../lib/axios-client.js'
-import notificationContext from '../../context/notificationContext.js'
+import notificationContext from '../../context/NotificationContext.js'
 import { Button } from 'react-bootstrap'
 import { useBoundStore } from '../stores/BoundStore.js'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
@@ -16,7 +16,7 @@ const Details = () => {
   const messages = useBoundStore((state) => state.messages)
   const alert = useBoundStore((state) => state.alert)
 
-  const [running, setRunning] = useState(false)
+  const [running, setRunning] = useBoundStore((state) => state.running)
 
   const token = useBoundStore((state) => state.token)
   const member = useBoundStore((state) => state.member)

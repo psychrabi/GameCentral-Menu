@@ -86,15 +86,22 @@ export const createDataSlice =
     runExecutable: async () => {
       try {
         window.api.checkExecutable(get().game.executable).then((response) => {
-          console.log(response)
+          // console.log(response)
           if (response.status === 'file-exists') {
             window.api
-              .launchExecutable(get().game.executable)
-              .then((response) => console.log(response))
+              .launchExecutable(get().game.executable, get().game.parameters)
+              .then((response) => {
+                if (response.game_running === true) {
+                  set({ running: get().game.id })
+                }
+                console.log(response)
+              })
           }
 
           if (response.status === 'file-does-not-exist') {
             set({ messages: 'Game executable missing', alert: 'danger' })
+         
+
           }
           // console.log(response)
         })

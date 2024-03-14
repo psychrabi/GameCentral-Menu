@@ -5,7 +5,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
   getSystemInfo: () => ipcRenderer.invoke('request-system-info'),
   checkExecutable: async (gamePath) => ipcRenderer.invoke('check:executable', gamePath),
-  launchExecutable: (gamePath) => ipcRenderer.invoke('launch:executable', gamePath),
+  launchExecutable: (gamePath, parameters) => ipcRenderer.invoke('launch:executable', gamePath, parameters),
   selectExecutable: () => ipcRenderer.invoke('dialog:openDirectory'),
   executableExited: () => ipcRenderer.on('process-exited')
 }
