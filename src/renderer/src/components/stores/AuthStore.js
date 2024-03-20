@@ -29,48 +29,37 @@ export const createAuthSlice =
       try {
 
         if (status === 200) {
-          const { member, session, token, settings } = data
-
-          set({ messages: 'You have successfully logged in.', alert: 'success' })
+          const { member, session, token } = data
 
           setTimeout(() => {
-            set({
-              loading: false,
-              member,
-              session,
-              start_time: Date.parse(session.start_time),
-              token,
-              settings,
-              sessions
-            })
-
-            const balance = get().member.balance
-            const bonus_balance = get().member.bonus_balance
-            const sessionType = balance > 0 || bonus_balance > 0 ? 'balance' : 'credit'
-            set({ sessionType })
-
+            const sessionType = member.balance > 0 || member.bonus_balance > 0 ? 'balance' : 'credit'
             if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
               set({ messages: 'Not enough balance. Please top up your account.', alert: 'danger' })
               return
             }
-            const credit = get().member.credit
-            if (credit > 30) {
+            if (member.credit > 30) {
               set({
-                messages: `You have ${credit} credit to be paid. Please pay it first.`,
+                messages: `You have ${member.credit} credit to be paid. Please pay it first.`,
                 alert: 'info',
                 loading: false
               })
               return
             }
-            
+            set({
+              loading: false,
+              member,
+              session,
+              token,
+              start_time: Date.parse(session.start_time),
+              messages: 'You have successfully logged in.', alert: 'success',
+              sessionType
+            })
             const localStorageItems = {
               token: token,
               member: member,
               session: session,
               start_time: Date.parse(session.start_time),
-              settings: settings,
               sessionType: sessionType,
-              sessions: sessions
             }
             Object.entries(localStorageItems).forEach(([key, value]) => {
               localStorage.setItem(key, JSON.stringify(value))
