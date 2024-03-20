@@ -21,14 +21,15 @@ export const createAuthSlice =
     sessions: [],
     authenticate: async (username, password) => {
       set({ loading: true })
+      const payload = {
+        username: username,
+        password: password
+      }
+      const { data, status } = await axiosClient.post('/members/login', payload)
       try {
-        const payload = {
-          username: username,
-          password: password
-        }
-        const { data, status } = await axiosClient.post('/members/login', payload)
+
         if (status === 200) {
-          const { member, session, token, settings, sessions } = data
+          const { member, session, token, settings } = data
 
           set({ messages: 'You have successfully logged in.', alert: 'success' })
 
@@ -37,7 +38,7 @@ export const createAuthSlice =
               loading: false,
               member,
               session,
-              start_time: Date.now(),
+              start_time: Date.parse(session.start_time),
               token,
               settings,
               sessions
@@ -61,11 +62,12 @@ export const createAuthSlice =
               })
               return
             }
+            
             const localStorageItems = {
               token: token,
               member: member,
               session: session,
-              start_time: Date.now(),
+              start_time: Date.parse(session.start_time),
               settings: settings,
               sessionType: sessionType,
               sessions: sessions
@@ -74,7 +76,7 @@ export const createAuthSlice =
               localStorage.setItem(key, JSON.stringify(value))
             })
 
-          }, 3000);
+          }, 2000);
         }
       } catch (err) {
         set({
