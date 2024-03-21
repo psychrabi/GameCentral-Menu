@@ -35,7 +35,7 @@ const PaymentModes = [
     "id": 5,
     "category": "google-pay",
     "description": "Google Pay",
-    "active": true,
+    "active": false,
     "icon": "bi bi-google",
     "default": false
   }

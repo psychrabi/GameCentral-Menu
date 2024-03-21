@@ -1,15 +1,32 @@
 import { useState, useEffect } from 'react'
 
 const getApiKey = async (clientId, clientSecret) => {
+  if (getApiKey.cachedToken && getApiKey.cachedExpiry > Date.now()) {
+    return getApiKey.cachedToken;
+  }
+
+  const params = new URLSearchParams({
+    client_id: clientId,
+    client_secret: clientSecret,
+    grant_type: 'client_credentials'
+  });
+
   const response = await fetch('https://id.twitch.tv/oauth2/token', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: `client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`
-  })
-  const data = await response.json()
-  return data.token
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to get API key: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  getApiKey.cachedToken = data.access_token;
+  // Assuming the token expires in data.expires_in seconds, setting a buffer of 1 minute (60000 ms) before expiration
+  getApiKey.cachedExpiry = Date.now() + (data.expires_in - 60) * 1000;
+
+  return data.access_token;
 }
 
 const GameDetail = (props) => {

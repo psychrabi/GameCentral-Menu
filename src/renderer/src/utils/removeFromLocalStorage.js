@@ -1,3 +1,3 @@
-export const removeFromLocalStorage = (store) => {
-  localStorage.removeItem(store)
+export const removeFromLocalStorage = (...keys) => {
+  keys.forEach(key => localStorage.removeItem(key));
 }

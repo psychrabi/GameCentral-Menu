@@ -1,41 +1,51 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useBoundStore } from '../../components/stores/BoundStore'
-// import { ImageBackground } from '../../components/ui/ImageBackground'
 export default function AdminLogin() {
-  const center_id = useBoundStore((state) => state.center_id)
-  const authenticateAdmin = useBoundStore((state) => state.authenticateAdmin)
-  const loading = useBoundStore((state) => state.loading)
-  const token = useBoundStore((state) => state.token)
-  const checkSession = useBoundStore((state) => state.checkSession)
-  const checkCenterID = useBoundStore((state) => state.checkCenterID)
-  const error = useBoundStore((state) => state.error)
+  const {
+    center_id,
+    authenticateAdmin,
+    loading,
+    token,
+    checkSession,
+    checkCenterID,
+    error,
+  } = useBoundStore((state) => ({
+    center_id: state.center_id,
+    authenticateAdmin: state.authenticateAdmin,
+    loading: state.loading,
+    token: state.token,
+    checkSession: state.checkSession,
+    checkCenterID: state.checkCenterID,
+    error: state.error,
+  }));
 
-  const licenseRef = useRef()
-  const usernameRef = useRef()
-  const passwordRef = useRef()
+  const licenseRef = useRef();
+  const usernameRef = useRef();
+  const passwordRef = useRef();
 
-  function onSubmit(ev) {
-    ev.preventDefault()
+  const onSubmit = useCallback((ev) => {
+    ev.preventDefault();
     authenticateAdmin(
       licenseRef.current.value,
       usernameRef.current.value,
       passwordRef.current.value
-    )
-  }
-  if (error) {
-    console.log(error)
-  }
+    );
+  }, [authenticateAdmin]);
 
   useEffect(() => {
-    checkSession()
-    checkCenterID()
-  }, [])
+    checkSession();
+    checkCenterID();
+  }, [checkSession, checkCenterID]);
+
   if (center_id) {
-    return <Navigate to="/login" />
-  } else if (!token) {
+    return <Navigate to="/login" />;
+  }
+
+  if (!token) {
     return (
-      <form onSubmit={onSubmit} autoComplete="off" className={'mb-3'}>
+      <form onSubmit={onSubmit} autoComplete="off" className="mb-3">
+        {/* Form content */}
         <h4 className="h4 mb-3 fw-normal text-light">Please sign in</h4>
         <div className="form-floating">
           <input
@@ -82,8 +92,8 @@ export default function AdminLogin() {
           )}
         </button>
       </form>
-    )
-  } else {
-    return <Navigate to="/" />
+    );
   }
+
+  return <Navigate to="/" />;
 }

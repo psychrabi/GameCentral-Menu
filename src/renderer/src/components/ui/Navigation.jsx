@@ -10,42 +10,38 @@ import Timer from './Timer'
 import { useMemo } from 'react'
 
 const Navigation = () => {
-  const navigate = useNavigate()
-  const member = useBoundStore((state) => state.member)
-  const token = useBoundStore((state) => state.token)
-  const setMessages = useBoundStore((state) => state.setMessages)
-  const setAlert = useBoundStore((state) => state.setAlert)
-  const sessionType = useBoundStore((state) => state.sessionType)
-  const session = useBoundStore((state) => state.session)
-  const reset = useBoundStore((state) => state.reset)
-  const start_time = useBoundStore((state) => state.start_time)
-  const COST_PER_HOUR = 60
-  const memoizedTimer = useMemo(() => <Timer />, [])
+  const navigate = useNavigate();
+  const { member, token, setMessages, setAlert, sessionType, session, reset, start_time } = useBoundStore(state => ({
+    member: state.member,
+    token: state.token,
+    setMessages: state.setMessages,
+    setAlert: state.setAlert,
+    sessionType: state.sessionType,
+    session: state.session,
+    reset: state.reset,
+    start_time: state.start_time
+  }));
+  const COST_PER_HOUR = 60;
+  const memoizedTimer = useMemo(() => <Timer />, []);
 
   const handleLogout = async () => {
-    const total_time = (Date.now() - start_time) / 1000 //in seconds
+    const total_time = (Date.now() - start_time) / 1000; //in seconds
     const usage_details = {
       session_id: session.id,
       total_time: total_time,
       sessionType: sessionType,
       session_cost: ((total_time / (60 * 60)) * COST_PER_HOUR).toFixed(2)
-    }
+    };
 
-    const logout = await submitData('/members/logout', token, usage_details)
+    const logout = await submitData('/members/logout', token, usage_details);
     if (logout) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('member')
-      localStorage.removeItem('session')
-      localStorage.removeItem('start_time')
-      localStorage.removeItem('sessionType')
-      localStorage.removeItem('sessions')
-      localStorage.removeItem('settings')
+      ['token', 'member', 'session', 'start_time', 'sessionType', 'sessions', 'settings'].forEach(key => localStorage.removeItem(key));
 
-      reset()
+      reset();
 
-      setMessages('You have successfully logged out')
-      setAlert('success')
-      navigate('/login')
+      setMessages('You have successfully logged out');
+      setAlert('success');
+      navigate('/login');
     }
   }
   return (
@@ -84,9 +80,8 @@ const Navigation = () => {
                       alt="mdo"
                       width="36"
                       height="36"
-                      className={`rounded-circle ms-3 me-2 border border-3 ${
-                        sessionType === 'balance' ? 'border-success' : 'border-danger'
-                      }`}
+                      className={`rounded-circle ms-3 me-2 border border-3 ${sessionType === 'balance' ? 'border-success' : 'border-danger'
+                        }`}
                       loading="lazy"
                     />
                     <span>

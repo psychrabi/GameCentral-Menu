@@ -1,24 +1,25 @@
 import 'bootstrap-icons/font/bootstrap-icons.css'
-import { useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Form, Spinner } from 'react-bootstrap'
 import { useBoundStore } from '../../components/stores/BoundStore'
 
 export default function MemberLogin() {
-  const authenticate = useBoundStore((state) => state.authenticate)
-  const loading = useBoundStore((state) => state.loading)
-  const center_name = useBoundStore((state) => state.center_name)
+  const { authenticate, loading, center_name } = useBoundStore(state => ({
+    authenticate: state.authenticate,
+    loading: state.loading,
+    center_name: state.center_name,
+  }));
 
-  const loginRef = useRef()
-  const passwordRef = useRef()
+  const loginRef = useRef();
+  const passwordRef = useRef();
 
- 
-  function onSubmit(ev) {
-    ev.preventDefault()
+  const onSubmit = useCallback((ev) => {
+    ev.preventDefault();
     loginRef.current.value = 'psychrabi'
     passwordRef.current.value = 'Rabi#123'
-    authenticate(loginRef.current.value, passwordRef.current.value)
-  }
+    authenticate(loginRef.current.value, passwordRef.current.value);
+  }, [authenticate]);
 
   return (
     <form autoComplete="off" onSubmit={onSubmit}>
@@ -67,5 +68,5 @@ export default function MemberLogin() {
         </Link>
       </p>
     </form>
-  )
+  );
 }

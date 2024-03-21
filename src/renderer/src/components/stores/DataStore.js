@@ -1,139 +1,115 @@
 import { fetchData, submitData } from '../../utils/fetchData'
 
-export const createDataSlice =
-  (set, get) => ({
-    alert: null,
-    applications: [],
-    count: 0,
-    favoriteGames: null,
-    filter: '',
-    game: [],
-    games: [],
-    loading: false,
-    messages: null,
-    products: [],
-    show: false,
-    type: '',
-    running: '',
-    filter: '',
-    alert: '',
-    title: 'Favorite Games',
-    fetchGames: async (center_id, token) => {
-      set({ loading: true })
-      try {
-        const data = await fetchData(`/clientGames/${center_id}`, token)
-        set({ games: data, loading: false })
-      } catch (err) {
-        console.error(err)
-        set({ messages: err.message, loading: false, alert: 'danger' })
+export const createDataSlice = (set, get) => ({
+  alert: null,
+  applications: [],
+  count: 0,
+  favoriteGames: null,
+  filter: '',
+  game: null, // Standardized to null when no game is selected
+  games: [],
+  loading: false,
+  messages: null,
+  products: [],
+  show: false,
+  type: '',
+  running: '',
+  title: 'Favorite Games',
+  fetchGames: async (centerId, token) => { // CamelCased parameters
+    set({ loading: true });
+    try {
+      const games = await fetchData(`/clientGames/${centerId}`, token);
+      set({ games, loading: false });
+    } catch (error) { // Renamed 'err' to 'error' for consistency
+      set({ messages: error.message, loading: false, alert: 'danger' });
+    }
+  },
+  fetchFavoriteGames: async (memberId, token) => {
+    set({ loading: true });
+    try {
+      const favoriteGames = await fetchData(`/favoriteGames/${memberId}`, token);
+      set({ favoriteGames, loading: false });
+    } catch (error) {
+      set({ messages: error.message, loading: false, alert: 'danger' });
+    }
+  },
+  fetchApplications: async (centerId, token) => {
+    set({ loading: true });
+    try {
+      const applications = await fetchData(`/clientApps/${centerId}`, token);
+      set({ applications, loading: false });
+    } catch (error) {
+      set({ messages: error.message, loading: false, alert: 'danger' });
+    }
+  },
+  fetchProducts: async (centerId, token) => {
+    set({ loading: true });
+    try {
+      const products = await fetchData(`/clientProducts/${centerId}`, token);
+      set({ products, loading: false });
+    } catch (error) {
+      set({ messages: error.message, loading: false, alert: 'danger' });
+    }
+  },
+  toggleFavoriteGame: async (centerId, memberId, gameId, token) => {
+    const payload = { centerId, memberId, gameId };
+    try {
+      const response = await submitData('/favoriteGame', token, payload);
+      set({
+        messages: `${get().game.name}: ${response.message}`,
+        alert: 'success',
+        show: !get().show
+      });
+      get().fetchFavoriteGames(memberId, token);
+    } catch (error) {
+      set({ messages: error.message, loading: false, alert: 'danger' });
+    }
+  },
+  runExecutable: async () => {
+    try {
+      const { executable, parameters } = get().game;
+      const response = await window.api.checkExecutable(executable);
+      if (response.status === 'file-exists') {
+        await window.api.launchExecutable(executable, parameters);
+      } else {
+        set({ messages: 'Game executable missing', alert: 'danger' });
       }
-    },
-    fetchFavoriteGames: async (member_id, token) => {
-      set({ loading: true })
-      try {
-        const data = await fetchData(`/favoriteGames/${member_id}`, token)
-        if (data) {
-          set({ favoriteGames: data, loading: false })
-
-        } else {
-          console.log('no favorite games')
-          set({ loading: false })
-        }
-      } catch (err) {
-        console.error(err)
-        set({ messages: err.message, loading: false, alert: 'danger' })
-      }
-    },
-    fetchApplications: async (center_id, token) => {
-      set({ loading: true })
-      try {
-        const data = await fetchData(`/clientApps/${center_id}`, token)
-        set({ applications: data, loading: false })
-      } catch (err) {
-        console.error(err)
-        set({ messages: err.message, loading: false, alert: 'danger' })
-      }
-    },
-    fetchProducts: async (center_id, token) => {
-      set({ loading: true })
-      try {
-        const data = await fetchData(`/clientProducts/${center_id}`, token)
-        set({ products: data, loading: false })
-      } catch (err) {
-        console.error(err)
-        set({ messages: err.message, loading: false, alert: 'danger' })
-      }
-    },
-    toggleFavoriteGame: async (center_id, member_id, game_id, token) => {
-      console.log('toggle favorite game')
-      const payload = {
-        center_id,
-        member_id,
-        game_id
-      }
-      try {
-        const response = await submitData('/favoriteGame', token, payload)
-        set({
-          messages: get().game.name + ' : ' + response.message,
-          alert: 'success',
-          show: !get().show
-        })
-        get().fetchFavoriteGames(member_id, token)
-      } catch (err) {
-        console.error(err)
-        set({ messages: err.message, loading: false, alert: 'danger' })
-      }
-    },
-    runExecutable: async () => {
-      try {
-        const response = await window.api.checkExecutable(get().game.executable);
-        if (response.status === 'file-exists') {
-          await window.api.launchExecutable(get().game.executable, get().game.parameters);
-        } else if (response.status === 'file-does-not-exist') {
-          set({ messages: 'Game executable missing', alert: 'danger' });
-        }
-      } catch (err) {
-        console.error(err);
-        set({ messages: err.message, alert: 'danger' });
-      } finally {
-        set({ loading: false });
-      }
-    },
-    getGame: async (id) => {
-      // console.log(id)
-      try {
-        const data = await get().games.filter((game) => game.id === id)
-        // console.log(data)
-        set({ game: data[0] })
-      } catch (err) {
-        console.error(err)
-        set({ messages: err.message, alert: 'danger' })
-      }
-    },
-    getFavoriteGame: async (id) => {
-      try {
-        const data = await get().favoriteGames.filter((game) => game.id === id)
-        set({ game: data[0] })
-      } catch (err) {
-        console.error(err)
-        set({ messages: err.message, alert: 'danger' })
-      }
-    },
-    getApplication: async (id) => {
-      try {
-        const data = await get().applications.filter((app) => app.id === id)
-        set({ game: data[0] })
-      } catch (err) {
-        console.error(err)
-        set({ messages: err.message, alert: 'danger' })
-      }
-    },
-    setCount: (count) => set({ count }),
-    setFilter: (filter) => set({ filter }),
-    setShow: () => set((state) => ({ show: !state.show })),
-    setType: (type) => set({ type }),
-    setMessages: (messages) => set({ messages }),
-    setAlert: (alert) => set({ alert }),
-    setTitle: (title) => set({ title }),
-    setRunning: (running) => set({ running })
-  })
+    } catch (error) {
+      set({ messages: error.message, alert: 'danger' });
+    } finally {
+      set({ loading: false });
+    }
+  },
+  getGame: async (id) => {
+    try {
+      const game = get().games.find((game) => game.id === id);
+      set({ game });
+    } catch (error) {
+      set({ messages: error.message, alert: 'danger' });
+    }
+  },
+  getFavoriteGame: async (id) => {
+    try {
+      const game = get().favoriteGames.find((game) => game.id === id);
+      set({ game });
+    } catch (error) {
+      set({ messages: error.message, alert: 'danger' });
+    }
+  },
+  getApplication: async (id) => {
+    try {
+      const game = get().applications.find((app) => app.id === id);
+      set({ game });
+    } catch (error) {
+      set({ messages: error.message, alert: 'danger' });
+    }
+  },
+  setCount: (count) => set({ count }),
+  setFilter: (filter) => set({ filter }),
+  setShow: () => set((state) => ({ show: !state.show })),
+  setType: (type) => set({ type }),
+  setMessages: (messages) => set({ messages }),
+  setAlert: (alert) => set({ alert }),
+  setTitle: (title) => set({ title }),
+  setRunning: (running) => set({ running })
+});

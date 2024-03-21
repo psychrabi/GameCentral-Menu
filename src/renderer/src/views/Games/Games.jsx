@@ -1,44 +1,44 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useBoundStore } from '../../components/stores/BoundStore'
 import Grid from '../../components/ui/Grid'
 import Header from '../../components/ui/Header'
 import GameTypes from '../../data/GameTypes.js'
 
 function Games() {
-  const token = useBoundStore((state) => state.token)
-  const member = useBoundStore((state) => state.member)
-  const fetchGames = useBoundStore((state) => state.fetchGames)
-  const games = useBoundStore((state) => state.games)
-  const filter = useBoundStore((state) => state.filter)
-  const setFilter = useBoundStore((state) => state.setFilter)
-  const type = useBoundStore((state) => state.type)
-  const setType = useBoundStore((state) => state.setType)
-  const getGame = useBoundStore((state) => state.getGame)
-  const setCount = useBoundStore((state) => state.setCount)
-  const setTitle = useBoundStore((state) => state.setTitle)
+  const { token, member, fetchGames, games, filter, setFilter, type, setType, getGame, setCount, setTitle } = useBoundStore(state => ({
+    token: state.token,
+    member: state.member,
+    fetchGames: state.fetchGames,
+    games: state.games,
+    filter: state.filter,
+    setFilter: state.setFilter,
+    type: state.type,
+    setType: state.setType,
+    getGame: state.getGame,
+    setCount: state.setCount,
+    setTitle: state.setTitle
+  }));
 
   useEffect(() => {
-    if (!games.length > 0) {
-      fetchGames(member.center_id, token)
+    if (games.length === 0) {
+      fetchGames(member.center_id, token);
     }
-    setFilter('')
-    setType('')
-    setTitle('All Games')
-  }, [])
+    setFilter('');
+    setType('');
+    setTitle('All Games');
+  }, [fetchGames, member.center_id, token]);
 
-  const filteredGames = games?.filter((item) => {
-    if (filter) {
-      return item.name.toLowerCase().includes(filter.toLowerCase())
-    } else if (type) {
-      return item.game_type === type
-    } else {
-      return true
-    }
-  })
+  const filteredGames = useMemo(() => {
+    return games.filter(game => {
+      const gameNameLower = game.name.toLowerCase();
+      const filterLower = filter.toLowerCase();
+      return filter ? gameNameLower.includes(filterLower) : type ? game.game_type === type : true;
+    });
+  }, [games, filter, type]);
 
   useEffect(() => {
-    setCount(filteredGames.length)
-  }, [filter, type])
+    setCount(filteredGames.length);
+  }, [filteredGames.length]);
 
   return (
     <>
@@ -47,7 +47,7 @@ function Games() {
         <Grid games={filteredGames} getData={getGame} />
       </div>
     </>
-  )
+  );
 }
 
 export default Games

@@ -1,4 +1,4 @@
-const GameTypes =[
+const GameTypes = [
   {
     "id": 1,
     "category": "steam",

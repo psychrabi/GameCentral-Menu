@@ -1,31 +1,21 @@
 import axiosClient from '../lib/axios-client'
 
-export const fetchData = async (endpoint, token) => {
+const handleRequest = async (method, endpoint, token, payload = null) => {
   try {
-    axiosClient.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    const { data } = await axiosClient.get(endpoint)
-    return data
+    const response = await axiosClient({
+      method: method,
+      url: endpoint,
+      headers: { Authorization: `Bearer ${token}` },
+      data: payload
+    });
+    return response.data;
   } catch (error) {
-    console.log(error)
+    console.error(error);
+    throw error;
   }
-}
+};
 
-export const submitData = async (endpoint, token, payload) => {
-  try {
-    axiosClient.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    const { data } = await axiosClient.post(endpoint, payload)
-    return data
-  } catch (error) {
-    console.log(error)
-  }
-}
+export const fetchData = (endpoint, token) => handleRequest('get', endpoint, token);
+export const submitData = (endpoint, token, payload) => handleRequest('post', endpoint, token, payload);
+export const updateData = (endpoint, token, payload) => handleRequest('put', endpoint, token, payload);
 
-export const updateData = async (endpoint, token, payload) => {
-  try {
-    axiosClient.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    const { data } = await axiosClient.put(endpoint, payload)
-    return data
-  } catch (error) {
-    console.log(error)
-  }
-}

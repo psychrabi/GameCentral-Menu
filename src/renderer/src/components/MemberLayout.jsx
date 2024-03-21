@@ -8,51 +8,42 @@ const Navigation = lazy(() => import('./ui/Navigation'))
 const Details = lazy(() => import('./ui/Details'))
 
 function MemberLayout() {
-  const token = useBoundStore((state) => state.token)
-  const loading = useBoundStore((state) => state.loading)
-  const center_id = useBoundStore((state) => state.center_id)
-  const show = useBoundStore((state) => state.show)
-  const messages = useBoundStore((state) => state.messages)
-  const alert = useBoundStore((state) => state.alert)
-  const { showAlert } = useContext(notificationContext)
+  const { token, loading, center_id, show, messages, alert } = useBoundStore(state => ({
+    token: state.token,
+    loading: state.loading,
+    center_id: state.center_id,
+    show: state.show,
+    messages: state.messages,
+    alert: state.alert
+  }));
+  const { showAlert } = useContext(notificationContext);
 
-  // Redirect if the user is not logged in or has no center_id
-  if (!center_id) {
-    // console.log('no center id')
-    return <Navigate to="/admin" />
+    if (!center_id) {
+    return <Navigate to="/admin" />;
   }
 
-  // Show loading spinner while data is being loaded
 
   useEffect(() => {
     if (messages && alert) {
-      // console.log(messages)
-      showAlert(messages, alert)
+      showAlert(messages, alert);
     }
-  }, [messages, alert])
+  }, [messages, alert, showAlert]);
 
-  // Memoize the Timer component to prevent unnecessary re-renders
 
-  // Memoize Details component to prevent unnecessary re-renders
-  const MemoizedDetails = useMemo(() => React.memo(Details), [])
-  const MemoizedNavigation = useMemo(() => React.memo(Navigation), [])
+  const MemoizedDetails = useMemo(() => React.memo(Details), []);
+  const MemoizedNavigation = useMemo(() => React.memo(Navigation), []);
 
   return (
     <>
       <MemoizedNavigation />
       <div className="game-app">
         <main className="no-scrollbar">
-          {/* <div className="w-100"> */}
-          {/* Render nested routes */}
           <Outlet />
-          {/* </div> */}
         </main>
-        {/* Conditional rendering of Details and Notifications components */}
         {show && <MemoizedDetails />}
-        {/* {messages && <Notifications messages={messages} alert={alert} />} */}
       </div>
     </>
-  )
+  );
 }
 
 export default MemberLayout

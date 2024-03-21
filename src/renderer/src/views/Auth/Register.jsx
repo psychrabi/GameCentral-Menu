@@ -1,43 +1,56 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useBoundStore } from '../../components/stores/BoundStore'
 import { Link } from 'react-router-dom'
 
 export default function Register() {
-  const registerMember = useBoundStore((state) => state.registerMember)
-  const center_name = useBoundStore((state) => state.center_name)
-  const loading = useBoundStore((state) => state.loading)
-  const token = useBoundStore((state) => state.token)
-  const checkSession = useBoundStore((state) => state.checkSession)
-  const checkCenterID = useBoundStore((state) => state.checkCenterID)
-  const error = useBoundStore((state) => state.error)
-  const setMessages = useBoundStore((state) => state.setMessages)
-  const setType = useBoundStore((state) => state.setType)
+  const {
+    registerMember,
+    center_name,
+    loading,
+    token,
+    checkSession,
+    checkCenterID,
+    error,
+    setMessages,
+    setType
+  } = useBoundStore(state => ({
+    registerMember: state.registerMember,
+    center_name: state.center_name,
+    loading: state.loading,
+    token: state.token,
+    checkSession: state.checkSession,
+    checkCenterID: state.checkCenterID,
+    error: state.error,
+    setMessages: state.setMessages,
+    setType: state.setType,
+  }));
 
-  const emailRef = useRef()
-  const usernameRef = useRef()
-  const passwordRef = useRef()
-  const confirm_passwordRef = useRef()
+  const emailRef = useRef();
+  const usernameRef = useRef();
+  const passwordRef = useRef();
+  const confirm_passwordRef = useRef();
 
-  function onSubmit(ev) {
-    ev.preventDefault()
+  const onSubmit = useCallback((ev) => {
+    ev.preventDefault();
     registerMember(
       usernameRef.current.value,
       passwordRef.current.value,
       confirm_passwordRef.current.value,
       emailRef.current.value
-    )
-  }
-  if (error) {
-    console.log(error)
-  }
+    );
+  }, [registerMember]);
 
   useEffect(() => {
-    setMessages('')
-    setType('')
-    checkSession()
-    checkCenterID()
-  }, [])
+    setMessages('');
+    setType('');
+    checkSession();
+    checkCenterID();
+  }, [setMessages, setType, checkSession, checkCenterID]);
+
+  if (error) {
+    console.error(error);
+  }
 
   if (!token) {
     return (
@@ -108,8 +121,8 @@ export default function Register() {
           </p>
         </form>
       </>
-    )
+    );
   } else {
-    return <Navigate to="/" />
+    return <Navigate to="/" />;
   }
 }
