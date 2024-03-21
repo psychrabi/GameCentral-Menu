@@ -7,7 +7,7 @@ const api = {
   checkExecutable: async (gamePath) => ipcRenderer.invoke('check:executable', gamePath),
   launchExecutable: (gamePath, parameters) => ipcRenderer.invoke('launch:executable', gamePath, parameters),
   selectExecutable: () => ipcRenderer.invoke('dialog:openDirectory'),
-  executableExited: () => ipcRenderer.on('process-exited')
+
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

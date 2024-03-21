@@ -26,7 +26,7 @@ function MemberLayout() {
 
   useEffect(() => {
     if (messages && alert) {
-      console.log(messages)
+      // console.log(messages)
       showAlert(messages, alert)
     }
   }, [messages, alert])

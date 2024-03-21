@@ -12,8 +12,11 @@ export default function MemberLogin() {
   const loginRef = useRef()
   const passwordRef = useRef()
 
+ 
   function onSubmit(ev) {
     ev.preventDefault()
+    loginRef.current.value = 'psychrabi'
+    passwordRef.current.value = 'Rabi#123'
     authenticate(loginRef.current.value, passwordRef.current.value)
   }
 

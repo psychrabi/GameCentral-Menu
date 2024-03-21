@@ -14,6 +14,7 @@ export const createDataSlice =
     products: [],
     show: false,
     type: '',
+    running: '',
     filter: '',
     alert: '',
     title: 'Favorite Games',
@@ -85,29 +86,17 @@ export const createDataSlice =
     },
     runExecutable: async () => {
       try {
-        window.api.checkExecutable(get().game.executable).then((response) => {
-          // console.log(response)
-          if (response.status === 'file-exists') {
-            window.api
-              .launchExecutable(get().game.executable, get().game.parameters)
-              .then((response) => {
-                if (response.game_running === true) {
-                  set({ running: get().game.id })
-                }
-                console.log(response)
-              })
-          }
-
-          if (response.status === 'file-does-not-exist') {
-            set({ messages: 'Game executable missing', alert: 'danger' })
-         
-
-          }
-          // console.log(response)
-        })
+        const response = await window.api.checkExecutable(get().game.executable);
+        if (response.status === 'file-exists') {
+          await window.api.launchExecutable(get().game.executable, get().game.parameters);
+        } else if (response.status === 'file-does-not-exist') {
+          set({ messages: 'Game executable missing', alert: 'danger' });
+        }
       } catch (err) {
-        console.error(err)
-        set({ messages: err.message, loading: false, alert: 'danger' })
+        console.error(err);
+        set({ messages: err.message, alert: 'danger' });
+      } finally {
+        set({ loading: false });
       }
     },
     getGame: async (id) => {
@@ -145,5 +134,6 @@ export const createDataSlice =
     setType: (type) => set({ type }),
     setMessages: (messages) => set({ messages }),
     setAlert: (alert) => set({ alert }),
-    setTitle: (title) => set({ title })
+    setTitle: (title) => set({ title }),
+    setRunning: (running) => set({ running })
   })

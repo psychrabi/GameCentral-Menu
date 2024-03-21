@@ -19,11 +19,11 @@ export default function AuthLayout() {
   // const checkSystemInfo = useBoundStore((state) => state.checkSystemInfo)
   // const systeminfo = useBoundStore((state) => state.systeminfo)
   const { showAlert } = useContext(notificationContext)
-  const videoBackground = false
+  const videoBackground = true
 
   useEffect(() => {
     if (messages && alert) {
-      console.log(messages)
+      // console.log(messages)
       showAlert(messages, alert)
     }
   }, [messages, alert])

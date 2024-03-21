@@ -17,23 +17,24 @@ ipcMain.handle('request-system-info', async () => {
   return info
 })
 
-let gameRunning = false
-let game
-ipcMain.handle('launch:executable', (event, gamePath, parameters) => {
-   game = spawn(gamePath, [parameters])
-  if (game) {
-    gameRunning = true
-  }
+ipcMain.handle('launch:executable', async (event, gamePath, parameters) => {
+  const child = spawn(gamePath, parameters.split(' '));
+
+  child.on('spawn', () => {
+    console.log(`Game started with PID: ${child.pid}`);
+    event.sender.send('game-process-started', { pid: child.pid, status: 'game-running' });
+  });
+
+  child.on('close', (code) => {
+    console.log(`Child process exited with code ${code}`);
+    event.sender.send('game-process-exited', { pid: child.pid, status: 'game-exited', exitCode: code });
+  });
+
+  return child.pid;
+});
 
 
-  game.on('exit', (code, signal) => {
-    console.log(`Game exited with code ${code} and signal ${signal}`)
-    gameRunning = false
-    event.sender.send('process-exited', gameRunning)
-  })
 
-  return ({game_running: true})
-})
 
 ipcMain.handle('check:executable', async (event, gamePath) => {
   // console.log(gamePath)

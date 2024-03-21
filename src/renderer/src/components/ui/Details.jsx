@@ -15,8 +15,8 @@ const Details = () => {
   const runExecutable = useBoundStore((state) => state.runExecutable)
   const messages = useBoundStore((state) => state.messages)
   const alert = useBoundStore((state) => state.alert)
-
-  const [running, setRunning] = useBoundStore((state) => state.running)
+  const running = useBoundStore((state) => state.running)
+  const setRunning = useBoundStore((state) => state.setRunning)
 
   const token = useBoundStore((state) => state.token)
   const member = useBoundStore((state) => state.member)
@@ -27,11 +27,25 @@ const Details = () => {
     setShow(false)
   }, [])
 
-  // useEffect(() => {
-  //   if (messages && alert) {
-  //     showAlert(messages, alert)
-  //   }
-  // }, [messages, alert])
+  useEffect(() => {
+    const handleGameProcessStarted = (_, data) => {
+      console.log('Game process started:', data);
+      setRunning(game.id);
+    };
+
+    const handleGameProcessExited = (_, data) => {
+      console.log('Game process exited:', data);
+      setRunning('');
+    };
+
+    window.electron.ipcRenderer.on('game-process-started', handleGameProcessStarted);
+    window.electron.ipcRenderer.on('game-process-exited', handleGameProcessExited);
+
+    // return () => {
+    //   window.electron.ipcRenderer.removeListener('game-process-started', handleGameProcessStarted);
+    //   window.electron.ipcRenderer.removeListener('game-process-exited', handleGameProcessExited);
+    // };
+  }, [running]);
 
   return (
     <Offcanvas
@@ -56,10 +70,12 @@ const Details = () => {
         <Offcanvas.Body className="text-light d-flex flex-column">
           <div className="top mx-5 sticky">
             <div className="d-grid gap-3 ">
+              {/* Poster div */}
               <div
                 className="cover position-relative"
                 style={{ backgroundImage: `url(${game?.poster})`, backgroundColor: '#ccc' }}
               >
+
                 <Button variant="outline-danger" className="position-absolute top-0 end-0 m-3">
                   <i
                     className={game?.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'}
@@ -69,12 +85,13 @@ const Details = () => {
                 </Button>
               </div>
               <Button
-                variant="primary"
+                variant={running === game.id ? 'secondary' : 'success'}
                 className="p-0 fs-2 d-flex justify-content-center align-items-center"
                 id="play-button"
-                onClick={() => runExecutable()}
+                onClick={runExecutable}
+                disabled={running === game.id}
               >
-                {running ? (
+                {running == game.id ? (
                   <>
                     <span
                       className="spinner-border spinner-border-sm me-2"
@@ -89,15 +106,18 @@ const Details = () => {
                   </>
                 )}
               </Button>
-              <Button
-                variant="secondary"
-                className="p-0 fs-5 d-flex justify-content-center align-items-center"
-                id="play-button"
-                onClick={() => runExecutable()}
-              >
-                <i className="bi bi-play-fill" style={{ fontSize: '2.5rem' }}></i> With Center
-                account
-              </Button>
+              {game?.game_accounts?.length > 0 ? (
+                <Button
+                  variant="secondary"
+                  className="p-0 fs-5 d-flex justify-content-center align-items-center"
+                  id="play-button"
+                  onClick={() => runExecutable()}
+                >
+                  <i className="bi bi-play-fill" style={{ fontSize: '2.5rem' }}></i> With Center
+                  account
+                </Button>
+              ) : ''}
+
             </div>
             <div className="ms-5">
               <div className="d-flex flex-column justify-content-between">

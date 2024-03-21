@@ -1,91 +1,81 @@
 import { useEffect, useState } from 'react'
 import { useBoundStore } from '../stores/BoundStore'
 import { formatTime } from '../../utils/formatTime'
-// eslint-disable-next-line react/prop-types
 const Timer = () => {
-  const member = useBoundStore((state) => state.member)
-  const start_time = useBoundStore((state) => state.start_time)
-  const logout = useBoundStore((state) => state.logout)
-  const setNotification = useBoundStore((state) => state.member)
+  const member = useBoundStore((state) => state.member);
+  const startTime = useBoundStore((state) => state.start_time);
+  const logout = useBoundStore((state) => state.logout);
+  const setNotification = useBoundStore((state) => state.setNotification);
 
-  const [durationString, setDurationString] = useState('00:00:00')
-  // const [sessionDuration, setSessionDuration] = useState(0)
-  const [cost, setCost] = useState('0.00')
+  const [duration, setDuration] = useState('00:00:00');
+  const [cost, setCost] = useState('0.00');
 
-  const COST_PER_HOUR = 60
-  const UPDATE_DURATION_INTERVAL = 5000
-  const UPDATE_COST_INTERVAL = 15000
-  const NOTIFICATION_INTERVAL = 60000
+  const COST_PER_HOUR = 60;
+  const UPDATE_INTERVAL = 5000;
+  const NOTIFICATION_THRESHOLD = 30;
 
-  const startTimeString = new Date(parseInt(start_time)).toLocaleTimeString()
+  const startTimeFormatted = new Date(parseInt(startTime)).toLocaleTimeString();
 
-  const calculateDurationInSeconds = () => {
-    return (Date.now() - start_time) / 1000
-  }
+  const calculateDuration = () => {
+    const secondsElapsed = (Date.now() - startTime) / 1000;
+    return new Date(secondsElapsed * 1000).toISOString().substr(11, 8);
+  };
 
-  const calculateCost = (durationInSeconds) => {
-    const durationInHours = durationInSeconds / (60 * 60)
-    return (durationInHours * COST_PER_HOUR).toFixed(2)
-  }
+  const calculateSessionCost = (secondsElapsed) => {
+    const hoursElapsed = secondsElapsed / 3600;
+    return (hoursElapsed * COST_PER_HOUR).toFixed(2);
+  };
 
-  const updateDuration = () => {
-    const durationInSeconds = calculateDurationInSeconds()
-    const string = formatTime(durationInSeconds.toFixed(0))
-    setDurationString(string)
-
-    setTimeout(updateDuration, UPDATE_DURATION_INTERVAL)
-  }
-
-  const updateCost = () => {
-    const durationInSeconds = calculateDurationInSeconds()
-    const newCost = calculateCost(durationInSeconds)
-    setCost(newCost)
-
-    setTimeout(updateCost, UPDATE_COST_INTERVAL)
-  }
+  const updateTimer = () => {
+    const secondsElapsed = (Date.now() - startTime) / 1000;
+    setDuration(calculateDuration(secondsElapsed));
+    setCost(calculateSessionCost(secondsElapsed));
+  };
 
   const checkCostAndNotify = () => {
     if (cost > member.balance + member.bonus_balance) {
       setNotification(
-        'Your session cost is higher than balance. Difference will be added to credit'
-      )
+        'Your session cost is higher than your balance. The difference will be added to your credit.'
+      );
     }
-    if (cost > member.balance + member.bonus_balance + 30) {
+    if (cost > member.balance + member.bonus_balance + NOTIFICATION_THRESHOLD) {
       setNotification(
-        'Your credit is more than 30. You will be logged out shortly and will not be able to log in before clearing your credit.'
-      )
-      logout(COST_PER_HOUR)
+        'Your credit is over $30. You will be logged out shortly and will not be able to log in until your credit is cleared.'
+      );
+      logout();
     }
-
-    setTimeout(checkCostAndNotify, NOTIFICATION_INTERVAL)
   }
 
   useEffect(() => {
-    updateDuration()
-    updateCost()
-    checkCostAndNotify()
+    const durationInterval = setInterval(updateTimer, UPDATE_INTERVAL);
+    const costNotificationInterval = setInterval(checkCostAndNotify, UPDATE_INTERVAL);
 
-    // Clear the interval when the component unmounts
-    return () => {
-      clearInterval(updateDuration)
-      clearInterval(updateCost)
-      clearInterval(checkCostAndNotify)
+    if ((Date.now() - startTime) > 3000) {
+      const secondsElapsed = (Date.now() - startTime) / 1000;
+      setDuration(calculateDuration(secondsElapsed));
+      setCost(calculateSessionCost(secondsElapsed));
+      // console.log('running once')
     }
-  }, [])
+
+    return () => {
+      clearInterval(durationInterval);
+      clearInterval(costNotificationInterval);
+    };
+  }, []);
 
   return (
     <ul className="nav col-8 col-md-8 col-lg-auto me-lg-auto mb-2 mb-md-0 justify-content-md-end">
       <li className="me-3">
-        <span className="fw-bold">Start at :</span> {startTimeString}
+        <span className="fw-bold">Start Time:</span> {startTimeFormatted}
       </li>
       <li className="me-3">
-        <span className="fw-bold">Duration : </span> {durationString}
+        <span className="fw-bold">Duration:</span> {duration}
       </li>
       <li>
-        <span className="fw-bold">Session Cost: </span> $ {cost}
+        <span className="fw-bold">Session Cost:</span> $ {cost}
       </li>
     </ul>
-  )
-}
+  );
+};
 
 export default Timer

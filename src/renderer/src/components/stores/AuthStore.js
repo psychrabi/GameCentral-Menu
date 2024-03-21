@@ -29,7 +29,7 @@ export const createAuthSlice =
       try {
 
         if (status === 200) {
-          const { member, session, token } = data
+          const { member, session, token, sessions } = data
 
           setTimeout(() => {
             const sessionType = member.balance > 0 || member.bonus_balance > 0 ? 'balance' : 'credit'
@@ -52,7 +52,8 @@ export const createAuthSlice =
               token,
               start_time: Date.parse(session.start_time),
               messages: 'You have successfully logged in.', alert: 'success',
-              sessionType
+              sessionType,
+              sessions
             })
             const localStorageItems = {
               token: token,
@@ -60,6 +61,7 @@ export const createAuthSlice =
               session: session,
               start_time: Date.parse(session.start_time),
               sessionType: sessionType,
+              sessions: sessions
             }
             Object.entries(localStorageItems).forEach(([key, value]) => {
               localStorage.setItem(key, JSON.stringify(value))
