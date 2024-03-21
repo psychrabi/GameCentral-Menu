@@ -1,27 +1,31 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import videos from '../../data/videos'
 
 const VideoBackground = () => {
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
-  const videoRef = useRef(null)
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(1);
+  const videoRef = useRef(null);
 
-  const selectRandomVideo = () => {
-    const videoUrl = `../src/public/videos/${videos[currentVideoIndex]}`
-    // console.log(videoUrl)
-    return <source type="video/mp4" src={videoUrl} id="url-video" />
-  }
+  useEffect(() => {
+    const handleVideoEnd = () => {
+      const nextVideoIndex = Math.floor(Math.random() * videos.length);
+      if (videoRef.current) {
+        videoRef.current.src = `../src/public/videos/${videos[nextVideoIndex]}`;
+        videoRef.current.play();
+      }
+      setCurrentVideoIndex(nextVideoIndex);
+    };
 
-  const handleVideoEnd = () => {
-    // Choose the next video index
-    setCurrentVideoIndex(Math.floor(Math.random() * videos.length))
-    // console.log('video ended')
-
-    // Reset currentTime to 0 and load the new video
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0
-      videoRef.current.load()
+    const videoElement = videoRef.current;
+    if (videoElement) {
+      videoElement.addEventListener('ended', handleVideoEnd);
     }
-  }
+
+    return () => {
+      if (videoElement) {
+        videoElement.removeEventListener('ended', handleVideoEnd);
+      }
+    };
+  }, []);
 
   return (
     <video
@@ -30,11 +34,10 @@ const VideoBackground = () => {
       muted
       playsInline
       ref={videoRef}
-      onEnded={handleVideoEnd}
     >
-      {selectRandomVideo()}
+      <source type="video/mp4" src={`../src/public/videos/${videos[currentVideoIndex]}`} id="url-video" />
     </video>
-  )
-}
+  );
+};
 
 export default VideoBackground
