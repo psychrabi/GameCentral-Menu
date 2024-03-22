@@ -6,41 +6,56 @@ const Products = lazy(() => import('./Products'))
 
 import ProductTypes from '../../data/ProductTypes.js'
 
+import { useMemo } from 'react';
+
 export default function Shop() {
-  const token = useBoundStore((state) => state.token)
-  const member = useBoundStore((state) => state.member)
-  const filter = useBoundStore((state) => state.filter)
-  const type = useBoundStore((state) => state.type)
-  const setCount = useBoundStore((state) => state.setCount)
-  const fetchProducts = useBoundStore((state) => state.fetchProducts)
-  const products = useBoundStore((state) => state.products)
-  const setFilter = useBoundStore((state) => state.setFilter)
-  const cart = useBoundStore((state) => state.cart)
-  const setType = useBoundStore((state) => state.setType)
-  const setTitle = useBoundStore((state) => state.setTitle)
+  const {
+    token,
+    member,
+    filter,
+    type,
+    setCount,
+    fetchProducts,
+    products,
+    setFilter,
+    setType,
+    setTitle,
+    cart,
+  } = useBoundStore(state => ({
+    token: state.token,
+    member: state.member,
+    filter: state.filter,
+    type: state.type,
+    setCount: state.setCount,
+    fetchProducts: state.fetchProducts,
+    products: state.products,
+    setFilter: state.setFilter,
+    setType: state.setType,
+    setTitle: state.setTitle,
+    cart: state.cart,
+  }));
 
   useEffect(() => {
-    if (!products.length > 0) {
-      fetchProducts(member.center_id, token)
+    if (products.length === 0) {
+      fetchProducts(member.center_id, token);
     }
-    setFilter('')
-    setType('')
-    setTitle('All Products')
-  }, [])
+    setFilter('');
+    setType('');
+    setTitle('All Products');
+  }, [member.center_id, token, products.length, fetchProducts, setFilter, setType, setTitle]);
 
-  const filteredProducts = products?.filter((item) => {
-    if (filter) {
-      return item.name.toLowerCase().includes(filter.toLowerCase())
-    } else if (type) {
-      return item.product_type === type
-    } else {
-      return true
-    }
-  })
+  const filteredProducts = useMemo(() => 
+    products.filter(product => {
+      const productNameLower = product.name.toLowerCase();
+      const filterLower = filter.toLowerCase();
+      return filter ? productNameLower.includes(filterLower) : type ? product.product_type === type : true;
+    }),
+    [products, filter, type]
+  );
 
   useEffect(() => {
-    setCount(filteredProducts.length)
-  }, [filter, type])
+    setCount(filteredProducts.length);
+  }, [filteredProducts.length, setCount]);
 
   return (
     <>
@@ -49,8 +64,8 @@ export default function Shop() {
           <Header categories={ProductTypes} page_title={'All Products'} />
           <Products products={filteredProducts} />
         </div>
-        {cart.length > 0 ? <Cart cart={cart} /> : ''}
+        {cart.length > 0 && <Cart cart={cart} />}
       </div>
     </>
-  )
+  );
 }

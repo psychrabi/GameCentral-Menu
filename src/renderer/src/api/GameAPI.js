@@ -1,90 +1,57 @@
 class GameAPI {
   constructor(token) {
-    this.baseUrl = 'http://gamecentralmenu.test/api/games'
-    this.token = token
+    this.baseUrl = 'http://gamecentralmenu.test/api/games';
+    this.token = token;
+  }
+
+  async request(endpoint, options) {
+    const url = endpoint ? `${this.baseUrl}/${endpoint}` : this.baseUrl;
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${this.token}`,
+        ...options.headers,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Request failed: ${response.statusText}`);
+    }
+    return response.json();
   }
 
   async getGames() {
-    const response = await fetch(this.baseUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${this.token}`
-      }
-    })
-    if (response.ok) {
-      const data = await response.json()
-      return data.map((game) => this.deserializeGame(game))
-    } else {
-      throw new Error(`Failed to get games: ${response.statusText}`)
-    }
+    const games = await this.request('', { method: 'GET' });
+    return games.map(this.deserializeGame);
   }
 
   async addGame(game) {
-    const response = await fetch(this.baseUrl, {
+    return this.request('', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${this.token}`
-      },
-      body: JSON.stringify(game)
-    })
-    if (response.ok) {
-      const data = await response.json()
-      return data
-    } else {
-      throw new Error(`Failed to add game: ${response.statusText}`)
-    }
+      body: JSON.stringify(game),
+    });
   }
 
   async editGame(game) {
-    const url = `${this.baseUrl}/${game.id}`
-    const response = await fetch(url, {
+    return this.request(game.id, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${this.token}`
-      },
-      body: JSON.stringify(this.serializeGame(game))
-    })
-    if (response.ok) {
-      const data = await response.json()
-      return this.deserializeGame(data)
-    } else {
-      throw new Error(`Failed to edit game: ${response.statusText}`)
-    }
+      body: JSON.stringify(this.serializeGame(game)),
+    }).then(this.deserializeGame);
   }
 
   async deleteGame(game) {
-    const url = `${this.baseUrl}/${game.id}`
-    const response = await fetch(url, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${this.token}`
-      }
-    })
-    if (!response.ok) {
-      throw new Error(`Failed to delete game: ${response.statusText}`)
-    }
+    await this.request(game.id, { method: 'DELETE' });
   }
 
   serializeGame(game) {
-    return {
-      id: game.id,
-      title: game.title,
-      description: game.description,
-      releaseDate: game.releaseDate
-    }
+    const { id, title, description, releaseDate } = game;
+    return { id, title, description, releaseDate };
   }
 
   deserializeGame(data) {
-    return {
-      id: data.id,
-      title: data.title,
-      description: data.description,
-      releaseDate: new Date(data.releaseDate)
-    }
+    const { id, title, description, releaseDate } = data;
+    return { id, title, description, releaseDate: new Date(releaseDate) };
   }
 }
 

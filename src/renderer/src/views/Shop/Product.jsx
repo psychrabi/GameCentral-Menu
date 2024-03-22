@@ -2,9 +2,12 @@ import PropTypes from 'prop-types'
 import { useBoundStore } from '../../components/stores/BoundStore'
 import { formatCurrency } from '../../utils/formatCurrency'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
+import React from 'react';
 
-const Product = ({ product }) => {
-  const addToCart = useBoundStore((state) => state.addToCart)
+const Product = React.memo(({ product }) => {
+  const addToCart = useBoundStore((state) => state.addToCart);
+
+  const handleAddToCart = (id) => addToCart(id);
 
   return (
     <div className="product card">
@@ -17,19 +20,19 @@ const Product = ({ product }) => {
       <div className="card-body d-flex flex-col justify-between">
         <h5 className="card-title">{product.name}</h5>
         <p className="card-text price">{formatCurrency(product.sales_price)}</p>
-        {product.stock > 0 && (
-          <button className="btn btn-primary add-to-cart" onClick={() => addToCart(product.id)}>
+        {product.stock > 0 ? (
+          <button className="btn btn-primary add-to-cart" onClick={() => handleAddToCart(product.id)}>
             <i className="bi bi-cart-plus text-lg"></i>
           </button>
-        )}
-
-        {product.stock == 0 && (
-          <button className="btn btn-secondary add-to-cart">Not in Stock</button>
+        ) : (
+          <button className="btn btn-secondary add-to-cart" disabled>
+            Not in Stock
+          </button>
         )}
       </div>
     </div>
-  )
-}
+  );
+});
 
 Product.propTypes = {
   product: PropTypes.shape({

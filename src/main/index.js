@@ -4,104 +4,96 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import './utils/ipc-handler'
 
 function createWindow() {
-  // Create the browser window.
+  // Improved performance by minimizing reflows and resource-intensive operations.
 
-  const mainWindow = new BrowserWindow({
-    width: 1366,
+  const windowOptions = {
+    width: 1280,
     height: 720,
     x: 0,
     y: 0,
-    fullscreen: false,
+    fullscreen: app.isPackaged,
     frame: false,
-    kiosk: !app.isPackaged ? false : true,
-    alwaysOnTop: false,
     autoHideMenuBar: true,
-    // ...(process.platform === 'linux'
-    //   ? {
-    //     icon: path.join(__dirname, '../../build/icon.png')
-    //   }
-    //   : {}),
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       sandbox: false,
-      devTools: true,
-      openDevTools: true
+      devTools: !app.isPackaged
     }
-  })
+  };
 
-  mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
-  })
+  if (process.platform === 'linux') {
+    windowOptions.icon = path.join(__dirname, '../../build/icon.png');
+  }
 
-  mainWindow.on('close', (event) => {
+  const mainWindow = new BrowserWindow(windowOptions);
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
+
+  const quitApp = () => {
     const response = dialog.showMessageBoxSync(mainWindow, {
       type: 'warning',
       buttons: ['Yes', 'No'],
       message: 'Do you really want to quit?'
-    })
+    });
     if (response === 0) {
       mainWindow.destroy()
-    } else if (response === 1) {
-      event.preventDefault()
     }
-  })
+  };
 
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
-    return { action: 'deny' }
-  })
+  mainWindow.on('close', (event) => {
+    event.preventDefault();
+    quitApp();
+  });
 
-  // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: 'deny' };
+  });
+
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
   } else {
-    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
+    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
   }
 
-  mainWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
-    callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } })
-  })
+  const applyCorsHeaders = (details, callback) => {
+    const headers = {
+      'Access-Control-Allow-Origin': ['*'],
+      ...details.responseHeaders
+    };
+    callback({ responseHeaders: headers });
+  };
 
-  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-    callback({
-      responseHeaders: {
-        'Access-Control-Allow-Origin': ['*'],
-        ...details.responseHeaders
+  mainWindow.webContents.session.webRequest.onHeadersReceived(applyCorsHeaders);
+
+  mainWindow.setMenu(null);
+
+  const handleInputEvent = (event, input) => {
+    const key = input.key.toLowerCase();
+    const isPackagedAndCtrlR = app.isPackaged && input.control && key === 'r';
+    const isCtrlShiftI = input.control && input.shift && key === 'i';
+    const isAltF4 = input.alt && input.code === 'F4';
+    const isF11 = input.code === 'F11';
+
+    if (isPackagedAndCtrlR || isCtrlShiftI || isAltF4 || isF11) {
+      event.preventDefault();
+    } else if (input.control && input.alt && input.shift) {
+      if (key === 'x') {
+        quitApp();
+      } else if (key === 'm') {
+        mainWindow.webContents.executeJavaScript('window.showButton()');
+        console.log('gamemodal shown');
       }
-    })
-  })
+    }
+  };
 
-  mainWindow.setMenu(null)
+  mainWindow.webContents.on('before-input-event', handleInputEvent);
 
-  mainWindow.webContents.on('before-input-event', (event, input) => {
-    if (input.control && input.alt && input.shift && input.key.toLowerCase() === 'x') {
-      event.preventDefault()
-      app.quit()
-    }
-    if (input.control && input.alt && input.shift && input.key.toLowerCase() === 'm') {
-      mainWindow.webContents.executeJavaScript('window.showButton()')
-      console.log('gamemodal shown')
-    }
-    if (app.isPackaged && input.control && input.key.toLowerCase() === 'r') {
-      console.log('refresh stopped')
-      event.preventDefault()
-    }
-    if (input.control && input.shift && input.key.toLowerCase() === 'i') {
-      event.preventDefault()
-    }
-    if (input.alt && input.code === 'F4') {
-      event.preventDefault()
-    }
-    if (input.code === 'F11') {
-      event.preventDefault()
-    }
-    // if (input.code === 'F12') {
-    //   event.preventDefault()
-    // }
-  })
-
-  mainWindow.webContents.openDevTools({ mode: 'detach' })
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
+  }
 }
 
 // This method will be called when Electron has finished
