@@ -1,8 +1,7 @@
-import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { useEffect } from 'react'
-import { useBoundStore } from '../stores/BoundStore'
+import React, { useCallback, useEffect } from 'react'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
+import { useBoundStore } from '../stores/BoundStore'
 
 const Grid = React.memo(({ games, getData }) => {
   const setCount = useBoundStore((state) => state.setCount)

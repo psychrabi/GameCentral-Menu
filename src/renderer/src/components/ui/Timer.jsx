@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useBoundStore } from '../stores/BoundStore'
-import { formatTime } from '../../utils/formatTime'
+import { useEffect, useState } from 'react';
+import { useBoundStore } from '../stores/BoundStore';
 const Timer = () => {
   const member = useBoundStore((state) => state.member);
   const startTime = useBoundStore((state) => state.start_time);

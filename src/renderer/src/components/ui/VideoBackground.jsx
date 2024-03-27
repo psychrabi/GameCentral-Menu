@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import videos from '../../data/videos'
+import { useEffect, useRef, useState } from 'react';
+import videos from '../../data/videos';
 
 const VideoBackground = () => {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(1);

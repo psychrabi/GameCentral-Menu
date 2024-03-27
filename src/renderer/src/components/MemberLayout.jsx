@@ -1,7 +1,7 @@
-import React, { lazy, useMemo, useEffect, useContext } from 'react'
+import React, { lazy, useContext, useEffect, useMemo } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
-import { useBoundStore } from './stores/BoundStore'
 import notificationContext from '../context/NotificationContext'
+import { useBoundStore } from './stores/BoundStore'
 
 const Timer = lazy(() => import('./ui/Timer'))
 const Navigation = lazy(() => import('./ui/Navigation'))

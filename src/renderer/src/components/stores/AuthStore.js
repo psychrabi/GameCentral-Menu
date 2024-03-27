@@ -3,12 +3,12 @@ import { updateData, submitData } from '../../utils/fetchData'
 
 export const createAuthSlice =
   (set, get) => ({
-    alert: null,
+    alert: '',
     center_id: null,
     center_name: null,
     loading: false,
     member: null,
-    messages: null,
+    messages: '',
     session: null,
     sessionType: null,
     settings: null,

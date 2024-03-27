@@ -1,6 +1,5 @@
-import { Suspense, lazy } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
-import '../assets/css/Profile.css'
+import { NavLink, Outlet } from 'react-router-dom';
+import '../assets/css/Profile.css';
 
 export default function ProfileLayout() {
   const navItems = [

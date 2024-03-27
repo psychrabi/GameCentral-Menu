@@ -1,11 +1,20 @@
 import PropTypes from 'prop-types'
-import { useMemo } from 'react';
+import React from 'react';
 
-export const SystemInfo = ({ stats }) => {
-  const systemInfoContent = useMemo(() => {
-    if (!stats) return null;
 
+export const SystemInfo = React.memo(({ stats }) => {
+  if (!stats) {
     return (
+      <footer className="position-absolute bottom-0 mb-4 me-4 end-0 text-light client-stats">
+        <div className="spinner-border" role="status" style={{ width: '3rem', height: '3rem' }}>
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </footer>
+    );
+  }
+
+  return (
+    <footer className="position-absolute bottom-0 mb-4 me-4 end-0 text-light client-stats">
       <dl className="text-start row">
         {Object.entries(stats).map(([key, value]) => (
           <React.Fragment key={key}>
@@ -14,19 +23,9 @@ export const SystemInfo = ({ stats }) => {
           </React.Fragment>
         ))}
       </dl>
-    );
-  }, [stats]);
-
-  return (
-    <footer className="position-absolute bottom-0 mb-4 me-4 end-0 text-light client-stats">
-      {!stats ? (
-        <div className="spinner-border" role="status" style={{ width: '3rem', height: '3rem' }}>
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      ) : systemInfoContent}
     </footer>
   );
-};
+});
 SystemInfo.propTypes = {
   stats: PropTypes.object
 }

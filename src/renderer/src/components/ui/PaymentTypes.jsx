@@ -1,12 +1,19 @@
-import PaymentModes from '../../data/PaymentModes.js'
-import { useBoundStore } from '../stores/BoundStore'
+import React, { useMemo } from 'react';
+import PaymentModes from '../../data/PaymentModes.js';
+import { useBoundStore } from '../stores/BoundStore';
 
-export const PaymentTypes = () => {
+export const PaymentTypes = React.memo(() => {
   const setPaymentMode = useBoundStore((state) => state.setPaymentMode)
 
+  const handlePaymentModeChange = (event) => {
+    setPaymentMode(event.target.value);
+  };
+
+  const activePaymentModes = useMemo(() => PaymentModes.filter((mode) => mode.active), []);
+
   return (
-    <>
-      {PaymentModes.filter((mode) => mode.active).map((mode) => (
+    <div>
+      {activePaymentModes.map((mode) => (
         <div className="d-flex flex-row pb-1" key={mode.id}>
           <div className="d-flex align-items-center px-2">
             <input
@@ -16,7 +23,7 @@ export const PaymentTypes = () => {
               id={`radioNoLabel${mode.id}`}
               value={mode.category}
               aria-label="..."
-              onChange={(ev) => setPaymentMode(ev.target.value)}
+              onChange={handlePaymentModeChange}
               defaultChecked={mode.default}
             />
           </div>
@@ -31,6 +38,6 @@ export const PaymentTypes = () => {
           </div>
         </div>
       ))}
-    </>
+    </div>
   )
-}
+})

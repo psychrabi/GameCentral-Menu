@@ -1,7 +1,7 @@
-import { fetchData, submitData } from '../../utils/fetchData'
+import { fetchData, submitData } from '../../utils/fetchData';
 
 export const createDataSlice = (set, get) => ({
-  alert: null,
+  alert: '',
   applications: [],
   count: 0,
   favoriteGames: null,
@@ -9,7 +9,7 @@ export const createDataSlice = (set, get) => ({
   game: null, // Standardized to null when no game is selected
   games: [],
   loading: false,
-  messages: null,
+  messages: '',
   products: [],
   show: false,
   type: '',

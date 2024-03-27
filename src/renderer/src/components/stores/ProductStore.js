@@ -44,7 +44,7 @@ export const createProductSlice = (set, get) => ({
     }
     console.log(payload)
   },
-  subTotal: () => 
+  subTotal: () =>
     get().cart.reduce((total, item) => total + item.sales_price * item.quantity, 0),
   tax: () => {
     const { subTotal, taxRate } = get();
@@ -59,17 +59,13 @@ export const createProductSlice = (set, get) => ({
     const productToAdd = products.find((product) => product.id === id);
     if (!productToAdd) return;
 
-    const cartItemIndex = cart.findIndex((item) => item.id === id);
-    if (cartItemIndex > -1) {
-      const item = cart[cartItemIndex];
-      if (item.quantity < productToAdd.stock) {
-        cart[cartItemIndex].quantity += 1;
-        set({ cart: [...cart] });
-      } else {
-        set({ messages: 'Product quantity exceed', alert: 'danger' });
-      }
+    const cartItem = cart.find((item) => item.id === id);
+    if (cartItem) {
+      cartItem.quantity += 1;
+      set({ cart: [...cart] });
+
     } else {
-      set((state) => ({ cart: [...state.cart, { ...productToAdd, quantity: 1 }] }));
+      set({ cart: [...cart, { ...productToAdd, quantity: 1 }] });
     }
   },
   removeFromCart: (id) => {

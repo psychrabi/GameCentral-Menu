@@ -5,9 +5,14 @@ import { LazyLoadImage } from 'react-lazy-load-image-component'
 import React from 'react';
 
 const Product = React.memo(({ product }) => {
-  const addToCart = useBoundStore((state) => state.addToCart);
+  const { addToCart, cart } = useBoundStore((state) => ({
+    addToCart: state.addToCart,
+    cart: state.cart,
+  }));
 
   const handleAddToCart = (id) => addToCart(id);
+
+  const isProductInCart = cart.some((item) => item.id === product.id && item.quantity >= product.stock);
 
   return (
     <div className="product card">
@@ -20,13 +25,13 @@ const Product = React.memo(({ product }) => {
       <div className="card-body d-flex flex-col justify-between">
         <h5 className="card-title">{product.name}</h5>
         <p className="card-text price">{formatCurrency(product.sales_price)}</p>
-        {product.stock > 0 ? (
-          <button className="btn btn-primary add-to-cart" onClick={() => handleAddToCart(product.id)}>
+        {product.stock > 0 && !isProductInCart ? (
+          <button className="btn btn-primary rounded-circle p-3 lh-1" onClick={() => handleAddToCart(product.id)}>
             <i className="bi bi-cart-plus text-lg"></i>
           </button>
         ) : (
-          <button className="btn btn-secondary add-to-cart" disabled>
-            Not in Stock
+          <button className="btn btn-secondary rounded-circle p-3 lh-1" disabled>
+            {isProductInCart ? (<i className="bi bi-cart-x"></i>) : 'Not in Stock'}
           </button>
         )}
       </div>
@@ -45,3 +50,4 @@ Product.propTypes = {
 }
 
 export default Product
+
