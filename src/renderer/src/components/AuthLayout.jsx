@@ -3,7 +3,7 @@ import logo from '../public/logo.png'
 import { useBoundStore } from './stores/BoundStore'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 // import { SystemInfo } from './ui/SystemInfo'
-import { lazy, useContext, useEffect } from 'react'
+import { lazy, useContext, useEffect, useMemo } from 'react'
 import notificationContext from '../context/NotificationContext'
 
 const ImageBackground = lazy(() => import('./ui/ImageBackground'))
@@ -30,12 +30,15 @@ export default function AuthLayout() {
 
   useEffect(() => {
     checkSession();
-    // checkSystemInfo();
   }, [checkSession]);
+
+  const backgroundComponent = useMemo(() => {
+    return videoBackground ? <VideoBackground /> : <ImageBackground />;
+  }, [videoBackground]);
 
   return (
     <>
-      {videoBackground ? <VideoBackground /> : <ImageBackground />}
+      {backgroundComponent}
       <div className="login">
         <main className="px-4">
           <div className="form-signin position-relative">
@@ -51,7 +54,7 @@ export default function AuthLayout() {
           </div>
         </main>
       </div>
-      {/* {systeminfo && <SystemInfo stats={systeminfo} />} */}
+      {systeminfo && <SystemInfo stats={systeminfo} />}
     </>
   );
 }

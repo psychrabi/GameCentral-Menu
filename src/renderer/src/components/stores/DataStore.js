@@ -66,8 +66,12 @@ export const createDataSlice = (set, get) => ({
     }
   },
   runExecutable: async () => {
+    const { loading, game } = get();
+    if (loading || !game) return;
+
+    set({ loading: true });
+    const { executable, parameters } = game;
     try {
-      const { executable, parameters } = get().game;
       const response = await window.api.checkExecutable(executable);
       if (response.status === 'file-exists') {
         await window.api.launchExecutable(executable, parameters);
@@ -80,29 +84,17 @@ export const createDataSlice = (set, get) => ({
       set({ loading: false });
     }
   },
-  getGame: async (id) => {
-    try {
-      const game = get().games.find((game) => game.id === id);
-      set({ game });
-    } catch (error) {
-      set({ messages: error.message, alert: 'danger' });
-    }
+  getGame: (id) => {
+    const game = get().games.find((game) => game.id === id);
+    set({ game: game || null });
   },
-  getFavoriteGame: async (id) => {
-    try {
-      const game = get().favoriteGames.find((game) => game.id === id);
-      set({ game });
-    } catch (error) {
-      set({ messages: error.message, alert: 'danger' });
-    }
+  getFavoriteGame: (id) => {
+    const game = get().favoriteGames.find((game) => game.id === id);
+    set({ game: game || null });
   },
-  getApplication: async (id) => {
-    try {
-      const game = get().applications.find((app) => app.id === id);
-      set({ game });
-    } catch (error) {
-      set({ messages: error.message, alert: 'danger' });
-    }
+  getApplication: (id) => {
+    const application = get().applications.find((app) => app.id === id);
+    set({ game: application || null });
   },
   setCount: (count) => set({ count }),
   setFilter: (filter) => set({ filter }),
@@ -112,4 +104,5 @@ export const createDataSlice = (set, get) => ({
   setAlert: (alert) => set({ alert }),
   setTitle: (title) => set({ title }),
   setRunning: (running) => set({ running })
+  // ... (remaining properties and methods)
 });

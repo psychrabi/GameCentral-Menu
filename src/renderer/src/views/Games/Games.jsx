@@ -29,16 +29,14 @@ function Games() {
   }, [fetchGames, member.center_id, token]);
 
   const filteredGames = useMemo(() => {
-    return games.filter(game => {
-      const gameNameLower = game.name.toLowerCase();
-      const filterLower = filter.toLowerCase();
-      return filter ? gameNameLower.includes(filterLower) : type ? game.game_type === type : true;
-    });
+    return games.reduce((acc, item) => {
+      const itemNameLower = item.name.toLowerCase();
+      if ((filter && itemNameLower.includes(filter.toLowerCase())) || (type && item.game_type === type) || (!filter && !type)) {
+        acc.push(item);
+      }
+      return acc;
+    }, []);
   }, [games, filter, type]);
-
-  useEffect(() => {
-    setCount(filteredGames.length);
-  }, [filteredGames.length]);
 
   return (
     <>

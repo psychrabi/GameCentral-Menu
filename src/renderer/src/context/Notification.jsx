@@ -13,22 +13,19 @@ const Notification = ({ children }) => {
   const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
-    let timeoutId;
     if (showAlert) {
-      timeoutId = setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         setShowAlert(false);
-        setMessages(null);
-        setAlert(null);
       }, 3000);
+      return () => clearTimeout(timeoutId);
     }
-    return () => clearTimeout(timeoutId);
-  }, [showAlert, setMessages, setAlert]);
+  }, [showAlert]);
 
-  const displayAlert = useCallback(() => {
+  const displayAlert = useCallback((newMessages, newAlert) => {
+    setMessages(newMessages);
+    setAlert(newAlert);
     setShowAlert(true);
-    setMessages(messages);
-    setAlert(alert);
-  }, [messages, alert, setMessages, setAlert, setShowAlert]);
+  }, [setMessages, setAlert, setShowAlert]);
 
   return (
     <NotificationProvider value={{ showAlert: displayAlert }}>

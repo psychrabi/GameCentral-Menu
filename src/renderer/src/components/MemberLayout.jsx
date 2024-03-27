@@ -22,13 +22,11 @@ function MemberLayout() {
     return <Navigate to="/admin" />;
   }
 
-
   useEffect(() => {
     if (messages && alert) {
       showAlert(messages, alert);
     }
   }, [messages, alert, showAlert]);
-
 
   const MemoizedDetails = useMemo(() => React.memo(Details), []);
   const MemoizedNavigation = useMemo(() => React.memo(Navigation), []);

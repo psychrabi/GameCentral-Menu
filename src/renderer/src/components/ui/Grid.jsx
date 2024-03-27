@@ -14,9 +14,9 @@ const Grid = React.memo(({ games, getData }) => {
   }, [games])
 
   const handleSelect = useCallback((id) => {
-    getData(id).then(() => {
-      setShow(true)
-    })
+    getData(id)
+    setShow(true)
+
   }, [getData, setShow])
 
   return (

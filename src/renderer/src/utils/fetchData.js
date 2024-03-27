@@ -1,14 +1,16 @@
 import axiosClient from '../lib/axios-client'
 
 const handleRequest = async (method, endpoint, token, payload = null) => {
+  const config = {
+    method,
+    url: endpoint,
+    headers: { Authorization: `Bearer ${token}` }
+  };
+  if (payload) config.data = payload;
+
   try {
-    const response = await axiosClient({
-      method: method,
-      url: endpoint,
-      headers: { Authorization: `Bearer ${token}` },
-      data: payload
-    });
-    return response.data;
+    const { data } = await axiosClient(config);
+    return data;
   } catch (error) {
     console.error(error);
     throw error;

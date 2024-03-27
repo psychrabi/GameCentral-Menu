@@ -21,89 +21,71 @@ export const createAuthSlice =
     sessions: [],
     authenticate: async (username, password) => {
       set({ loading: true })
-      const payload = {
-        username: username,
-        password: password
-      }
-      const { data, status } = await axiosClient.post('/members/login', payload)
       try {
+        const payload = { username, password }
+        const { data, status } = await axiosClient.post('/members/login', payload)
 
         if (status === 200) {
           const { member, session, token, sessions } = data
-
-          setTimeout(() => {
-            const sessionType = member.balance > 0 || member.bonus_balance > 0 ? 'balance' : 'credit'
-            if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
-              set({ messages: 'Not enough balance. Please top up your account.', alert: 'danger' })
-              return
-            }
-            if (member.credit > 30) {
-              set({
-                messages: `You have ${member.credit} credit to be paid. Please pay it first.`,
-                alert: 'info',
-                loading: false
-              })
-              return
-            }
+          const sessionType = member.balance > 0 || member.bonus_balance > 0 ? 'balance' : 'credit'
+          if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
+            set({ messages: 'Not enough balance. Please top up your account.', alert: 'danger', loading: false })
+            return
+          }
+          if (member.credit > 30) {
             set({
-              loading: false,
-              member,
-              session,
-              token,
-              start_time: Date.parse(session.start_time),
-              messages: 'You have successfully logged in.', alert: 'success',
-              sessionType,
-              sessions
+              messages: `You have ${member.credit} credit to be paid. Please pay it first.`,
+              alert: 'info',
+              loading: false
             })
-            const localStorageItems = {
-              token: token,
-              member: member,
-              session: session,
-              start_time: Date.parse(session.start_time),
-              sessionType: sessionType,
-              sessions: sessions
-            }
-            Object.entries(localStorageItems).forEach(([key, value]) => {
-              localStorage.setItem(key, JSON.stringify(value))
-            })
+            return
+          }
+          set({
+            loading: false,
+            member,
+            session,
+            token,
+            start_time: Date.parse(session.start_time),
+            messages: 'You have successfully logged in.', alert: 'success',
+            sessionType,
+            sessions
+          })
 
-          }, 2000);
+          const localStorageItems = {
+            token,
+            member,
+            session,
+            start_time: Date.parse(session.start_time),
+            sessionType,
+            sessions
+          }
+
+          Object.entries(localStorageItems).forEach(([key, value]) => {
+            localStorage.setItem(key, JSON.stringify(value))
+          })
         }
       } catch (err) {
-        set({
-          messages: 'Provided username or password is incorrect',
-          loading: false,
-          alert: 'danger'
-        })
+        set({ messages: 'Provided username or password is incorrect', loading: false, alert: 'danger' });
       }
     },
     authenticateAdmin: async (license, username, password) => {
       set({ loading: true })
       try {
-        const payload = { license, username, password }
-        const { data } = await axiosClient.post('/login', payload)
-        const localStorageItems = {
-          center_id: data.user.id,
-          center_name: data.user.center_name,
-          settings: data.settings,
-          subscription: data.expire_date
-        }
+        const { data } = await axiosClient.post('/login', { license, username, password });
+        const { id, center_name } = data.user;
 
         set({
           alert: 'success',
-          center_id: data.user.id,
-          center_name: data.user.center_name,
+          center_id: id,
+          center_name,
           loading: false,
           messages: 'Center Account set successfully.',
-          settings: data.settings ?? [''],
-          subscription: data.expire_date
-        })
+        });
 
-        Object.entries(localStorageItems).forEach(([key, value]) => {
-          localStorage.setItem(key, JSON.stringify(value))
-        })
+        localStorage.setItem('center_id', JSON.stringify(id));
+        localStorage.setItem('center_name', JSON.stringify(center_name));
       } catch (err) {
-        set({ messages: 'Failed to login', loading: false, alert: 'danger' })
+        set({ messages: 'Failed to login', loading: false, alert: 'danger' });
       }
     },
     registerMember: async (username, password, password_confirmation, email) => {
@@ -142,81 +124,58 @@ export const createAuthSlice =
       }
     },
     updateMember: async (id, payload) => {
-      set({ loading: true })
+      set({ loading: true });
       try {
-        // console.log(payload)
-        const data = await updateData(`/members/${id}`, get().token, payload)
-        // console.log(data)
-        set({
-          loading: false,
-          messages: 'Your profile is successfully updated.',
-          member: data,
-          alert: 'success'
-        })
-        localStorage.setItem('member', JSON.stringify(get().member))
+        const { data } = await updateData(`/members/${id}`, get().token, payload);
+        set({ member: data });
+        localStorage.setItem('member', JSON.stringify(data));
+        set({ loading: false, messages: 'Your profile is successfully updated.', alert: 'success' });
       } catch (err) {
-        set({ messages: err.data.message, loading: false, alert: 'danger' })
+        set({ messages: err.response.data.message, loading: false, alert: 'danger' });
       }
     },
     reset: () => {
       set({ member: null, session: null, sessionType: null, start_time: null, token: null, sessions: null, favoriteGames: null })
     },
     checkSession: () => {
-      if (localStorage.getItem('token')) {
-        set({ token: JSON.parse(localStorage.getItem('token')).token })
-      }
-      // if (localStorage.getItem('center_name')) {
-      //   set({ center_name: JSON.parse(localStorage.getItem('center_name')) })
-      // }
-      if (localStorage.getItem('member'))
-        set({ member: JSON.parse(localStorage.getItem('member')) })
-      if (localStorage.getItem('start_time'))
-        set({ start_time: JSON.parse(localStorage.getItem('start_time')) })
-      if (localStorage.getItem('session'))
-        set({ session: JSON.parse(localStorage.getItem('session')) })
-      if (localStorage.getItem('sessionType'))
-        set({ sessionType: JSON.parse(localStorage.getItem('sessionType')) })
-
+      ['token', 'member', 'start_time', 'session', 'sessionType'].forEach(key => {
+        const item = localStorage.getItem(key);
+        if (item) {
+          set({ [key]: key === 'token' ? JSON.parse(item).token : JSON.parse(item) });
+        }
+      });
     },
     checkSystemInfo: async () => {
-      if (localStorage.getItem('systemInfo')) {
-        set({ systeminfo: JSON.parse(localStorage.getItem('systemInfo')) })
-        // console.log(get().systeminfo)
+      let systeminfo = localStorage.getItem('systemInfo');
+      if (systeminfo) {
+        systeminfo = JSON.parse(systeminfo);
       } else {
-        // console.log('getting systeminfo')
         try {
-          let info = await window.api.getSystemInfo()
-          get().setSystemInfo(info)
-          localStorage.setItem('systemInfo', JSON.stringify(get().systeminfo))
+          const info = await window.api.getSystemInfo();
+          systeminfo = {
+            cpu: info.cpu.manufacturer + ' ' + info.cpu.brand,
+            graphics: info.graphics.controllers.find((controller) => controller.vram > 0).model,
+            ram: (info.mem.total / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
+            os: info.osInfo.distro + ' build ' + info.osInfo.build,
+            ip4: info.networkInterfaces[0].ip4
+          };
+          localStorage.setItem('systemInfo', JSON.stringify(systeminfo));
         } catch (error) {
-          console.log(error)
-          set({ message: error, alert: 'danger ' })
+          console.log(error);
+          set({ message: error, alert: 'danger ' });
+          return;
         }
       }
+      set({ systeminfo });
     },
     checkCenterID: () => {
-      if (localStorage.getItem('center_id'))
-        set({ center_id: JSON.parse(localStorage.getItem('center_id')) })
+      const centerId = localStorage.getItem('center_id');
+      const centerName = localStorage.getItem('center_name');
 
-      if (localStorage.getItem('center_name'))
-        set({ center_name: JSON.parse(localStorage.getItem('center_name')) })
+      if (centerId) set({ center_id: JSON.parse(centerId) });
+      if (centerName) set({ center_name: JSON.parse(centerName) });
 
-      if (get().center_id && get().center_name) {
-        return true
-      }
-      return false
-    },
-    setSystemInfo: async (info) => {
-      set({
-        systeminfo: {
-          cpu: info.cpu.manufacturer + ' ' + info.cpu.brand,
-          graphics: info.graphics.controllers.filter((controller) => controller.vram > 0)[0]
-            .model,
-          ram: (info.mem.total / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
-          os: info.osInfo.distro + ' build ' + info.osInfo.build,
-          ip4: info.networkInterfaces[0].ip4
-        }
-      })
+      return !!(centerId && centerName);
     },
     setMessages: (messages) => set({ messages }),
     setType: (type) => set({ type })

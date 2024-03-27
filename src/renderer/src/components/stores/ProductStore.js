@@ -15,83 +15,77 @@ export const createProductSlice = (set, get) => ({
   messages: '',
   alert: '',
   fetchProducts: async (centerId, token) => {
-    set({ loading: true });
+    set({ loading: true, error: null });
     try {
       const products = await fetchData(`/clientProducts/${centerId}`, token);
-      set({ error: null, products, loading: false });
+      set({ products, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
     }
   },
   fetchSingleProduct: async (id, token) => {
-    set({ loading: true });
+    set({ loading: true, error: null });
     try {
       const response = await fetchData(`/products/${id}`, token);
-      set({
-        singleProduct: response.data,
-        loading: false
-      });
+      set({ singleProduct: response.data, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
     }
   },
   checkOut: async (member_id, subTotal, tax, total) => {
+    const { cart, paymentMode } = get();
     const payload = {
-      member_id: member_id,
-      items: get().cart,
-      subTotal: subTotal,
-      tax: tax,
-      total: total,
-      paymentMode: get().paymentMode
+      member_id,
+      items: cart,
+      subTotal,
+      tax,
+      total,
+      paymentMode
     }
     console.log(payload)
   },
-  subTotal: () =>
+  subTotal: () => 
     get().cart.reduce((total, item) => total + item.sales_price * item.quantity, 0),
-  tax: () => get().subTotal() * get().taxRate,
-  total: () => get().subTotal() + get().tax(),
+  tax: () => {
+    const { subTotal, taxRate } = get();
+    return subTotal() * taxRate;
+  },
+  total: () => {
+    const { subTotal, tax } = get();
+    return subTotal() + tax();
+  },
   addToCart: (id) => {
     const { products, cart } = get();
-    const itemIndex = products.findIndex((product) => product.id === id);
-    const cartItemIndex = cart.findIndex((item) => item.id === id);
+    const productToAdd = products.find((product) => product.id === id);
+    if (!productToAdd) return;
 
+    const cartItemIndex = cart.findIndex((item) => item.id === id);
     if (cartItemIndex > -1) {
       const item = cart[cartItemIndex];
-      if (item.quantity < products[itemIndex].stock) {
-        set((state) => {
-          state.cart[cartItemIndex].quantity += 1;
-          return { cart: [...state.cart] };
-        });
+      if (item.quantity < productToAdd.stock) {
+        cart[cartItemIndex].quantity += 1;
+        set({ cart: [...cart] });
       } else {
         set({ messages: 'Product quantity exceed', alert: 'danger' });
       }
     } else {
-      const newItem = { ...products[itemIndex], quantity: 1 };
-      set((state) => ({ cart: [...state.cart, newItem] }));
+      set((state) => ({ cart: [...state.cart, { ...productToAdd, quantity: 1 }] }));
     }
   },
   removeFromCart: (id) => {
     const { cart } = get();
     const itemIndex = cart.findIndex((item) => item.id === id);
+    if (itemIndex === -1) return;
 
-    if (itemIndex > -1) {
-      const item = cart[itemIndex];
-      if (item.quantity > 1) {
-        set((state) => {
-          state.cart[itemIndex].quantity -= 1;
-          return { cart: [...state.cart] };
-        });
-      } else {
-        set((state) => ({
-          cart: state.cart.filter((item) => item.id !== id)
-        }));
-      }
+    const item = cart[itemIndex];
+    if (item.quantity > 1) {
+      cart[itemIndex].quantity -= 1;
+      set({ cart: [...cart] });
+    } else {
+      set({ cart: cart.filter((item) => item.id !== id) });
     }
   },
-  clearCart: () => {
-    set({ cart: [] })
-  },
-
+  clearCart: () => set({ cart: [] }),
   setPaymentMode: (paymentMode) => set({ paymentMode }),
   setFilter: (filter) => set({ filter }),
   setType: (type) => set({ type })

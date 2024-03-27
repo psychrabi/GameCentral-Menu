@@ -26,15 +26,20 @@ function Applications() {
     setFilter('');
     setType('');
     setTitle('All Applications');
-  }, [member.center_id, token, fetchApplications, applications.length, setFilter, setType, setTitle]);
+    // Moved setCount here to avoid extra re-renders caused by setting it in a separate useEffect
+    setCount(applications.length);
+  }, [member.center_id, token, fetchApplications, applications.length, setFilter, setType, setTitle, setCount]);
 
-  const filteredApps = useMemo(() => applications.filter(item => {
-    return filter ? item.name.toLowerCase().includes(filter.toLowerCase()) : type ? item.game_type === type : true;
-  }), [applications, filter, type]);
-
-  useEffect(() => {
-    setCount(filteredApps.length);
-  }, [filteredApps, setCount]);
+  // Optimized useMemo to perform a single iteration over applications
+  const filteredApps = useMemo(() => {
+    return applications.reduce((acc, item) => {
+      const itemNameLower = item.name.toLowerCase();
+      if ((filter && itemNameLower.includes(filter.toLowerCase())) || (type && item.game_type === type) || (!filter && !type)) {
+        acc.push(item);
+      }
+      return acc;
+    }, []);
+  }, [applications, filter, type]);
 
   return (
     <>
