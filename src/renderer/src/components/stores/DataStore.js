@@ -71,17 +71,13 @@ export const createDataSlice = (set, get) => ({
       set({ loading: false });
     }
   },
-  runExecutable: async () => {
-    const { loading, game } = get();
-    if (loading || !game) return;
-
+  runExecutable: async (executable, parameters) => {
     set({ loading: true });
-    const { executable, parameters } = game;
-
     window.api.checkExecutable(executable)
       .then(response => {
         if (response.status === 'file-exists') {
-          return window.api.launchExecutable(executable, parameters);
+          const { status } = window.api.launchExecutable(executable, parameters);
+          // console.log(status)
         } else {
           throw new Error('Game executable missing');
         }
@@ -115,6 +111,6 @@ export const createDataSlice = (set, get) => ({
   setMessages: (messages) => set({ messages }),
   setAlert: (alert) => set({ alert }),
   setTitle: (title) => set({ title }),
-  setRunning: (running) => set({ running })
+  // setRunning: (running) => set({ running })
   // ... (remaining properties and methods)
 });

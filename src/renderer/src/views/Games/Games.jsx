@@ -41,9 +41,8 @@ function Games() {
   return (
     <>
       <Header categories={GameTypes} />
-      <div className="games" id="favorite-games-container">
-        <Grid games={filteredGames} getData={getGame} />
-      </div>
+      <Grid games={filteredGames} getData={getGame} />
+
     </>
   );
 }

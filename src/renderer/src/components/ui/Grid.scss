@@ -1,0 +1,42 @@
+.grid {
+
+    --grid-layout-gap: 1rem;
+    --grid-column-count: 8;
+    --grid-item--min-width: 7.5rem;
+    --gap-count: calc(var(--grid-column-count) - 1);
+    --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
+    --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
+    display: grid;
+    grid-template-columns: repeat(auto-fill,
+            minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr));
+    grid-gap: var(--grid-layout-gap);
+
+
+
+    .game {
+        transition: transform 0.4s;
+
+        .overlay {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            transition: .4s ease;
+
+
+        }
+
+        &:hover {
+            cursor: pointer;
+            transform: scale(1.1);
+
+            .overlay {
+                opacity: 0.5;
+            }
+        }
+    }
+
+
+
+}
