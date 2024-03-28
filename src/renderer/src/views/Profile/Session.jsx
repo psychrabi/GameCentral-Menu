@@ -4,7 +4,7 @@ import { formatCurrency } from '../../utils/formatCurrency'
 import { DataGrid } from '@mui/x-data-grid'
 
 export default function Billing() {
-  const { sessions } = useBoundStore()
+  const member = useBoundStore((state) => state.member)
 
   const columns = [
     {
@@ -28,23 +28,13 @@ export default function Billing() {
       field: 'total_time',
       headerName: 'Usage',
       flex: true,
-      renderCell: (params) =>
-        params.value ? (
-          <span>{formatTime(params.value)}</span>
-        ) : (
-          <span className="badge text-bg-success">On going</span>
-        )
+      renderCell: (params) => <span>{params.value ? formatTime(params.value) : '---'}</span>
     },
     {
       field: 'session_cost',
       headerName: 'Paid',
       flex: true,
-      renderCell: (params) =>
-        params.value ? (
-          <span>{formatCurrency(params.value)}</span>
-        ) : (
-          <span className="badge text-bg-success">On going</span>
-        )
+      renderCell: (params) => <span>{params.value ? formatCurrency(params.value) : '---'}</span>
     }
   ]
 
@@ -52,7 +42,7 @@ export default function Billing() {
     <>
       <div style={{ height: 'auto', width: '100%' }}>
         <DataGrid
-          rows={sessions ?? []}
+          rows={member.sessions ?? []}
           columns={columns}
           initialState={{
             pagination: {

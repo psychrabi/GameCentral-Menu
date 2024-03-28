@@ -1,23 +1,48 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useBoundStore } from '../../components/stores/BoundStore'
-import defaultAvatar from '../../public/default-avatar.png'
+// import defaultAvatar from '../../public/default-avatar.png'
 import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+
+const schema = z.object({
+  first_name: z.string().min(3, { message: 'First name must be at least 3 characters' }),
+  last_name: z.string().min(3, { message: 'Last name must be at least 3 characters' }),
+  email: z.string().email({ message: 'Email is not valid' }),
+  birthday: z.string().min(2),
+  phone: z.string().min(8)
+})
 
 export default function Profile() {
   const member = useBoundStore((state) => state.member)
-  const updateMember = useBoundStore((state) => state.updateMember)
+  const memberUpdate = useBoundStore((state) => state.memberUpdate)
 
-  const { register, handleSubmit, formState } = useForm({ defaultValues: member })
 
-  const { errors, isSubmitting } = formState
-  const onSubmit = (data) => {
-    updateMember(member.id, data)
-    console.log(errors)
-  }
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting }
+  } = useForm({
+    defaultValues: member,
+    resolver: zodResolver(schema)
+  })
+
+  const onSubmit = useCallback(async (data) => {
+    try {
+      await memberUpdate(member.id, data)
+
+    } catch (error) {
+      setError('root', { message: error.message })
+    }
+  }, [memberUpdate, setError])
+
+
 
   return (
     <div className="row g-2">
-      <div className="col-xl-3">
+      {/* TODO: Add image upload */}
+      {/* <div className="col-xl-3">
         <div className="card">
           <div className="card-body text-center">
             <img className="img-account-profile rounded-circle mb-2" src={defaultAvatar} alt="" />
@@ -27,8 +52,8 @@ export default function Profile() {
             </button>
           </div>
         </div>
-      </div>
-      <div className="col-xl-9">
+      </div> */}
+      <div className="col-xl-9  mx-auto">
         <div className="card">
           <div className="card-header">
             Account Details: <i className="bi-person-fill-gear"></i>
