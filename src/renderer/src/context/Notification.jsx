@@ -16,7 +16,9 @@ const Notification = ({ children }) => {
     if (showAlert) {
       const timeoutId = setTimeout(() => {
         setShowAlert(false);
-      }, 3000);
+        setMessages('')
+        setAlert('');
+      }, 1500);
       return () => clearTimeout(timeoutId);
     }
   }, [showAlert]);
@@ -31,17 +33,13 @@ const Notification = ({ children }) => {
     <NotificationProvider value={{ showAlert: displayAlert }}>
       {children}
       {showAlert && (
-        <div className="toast-container bottom-0 start-0 p-3" style={{ zIndex: 5000 }}>
-          <div
-            className={`toast fade show ${alert === 'success' ? 'bg-success' : 'bg-danger'}`}
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-            data-bs-autohide="true"
-            data-bs-delay="1000"
-          >
-            <div className="toast-body text-light">
-              <span>{messages}</span>
+        <div className="toast-container bottom-0 start-0 p-3">
+          <div className={`toast fade show ${alert === 'success' ? 'text-bg-success' : 'text-bg-danger'}`} role="alert" aria-live="assertive" aria-atomic="true">
+            <div className="d-flex">
+              <div className="toast-body text-light">
+                <span>{messages}</span>
+              </div>
+              <button type="button" className="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
           </div>
         </div>
