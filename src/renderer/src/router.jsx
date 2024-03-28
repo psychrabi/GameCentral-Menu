@@ -6,7 +6,7 @@ import { createBrowserRouter } from 'react-router-dom';
 const MemberLogin = lazy(() => import('./views/Auth/MemberLogin'));
 const Register = lazy(() => import('./views/Auth/Register'));
 const AdminLogin = lazy(() => import('./views/Auth/AdminLogin'));
-const ResetPassword = lazy(() => import('./views/Auth/ResetPassword'));
+
 const MemberLayout = lazy(() => import('./components/MemberLayout'));
 const AuthLayout = lazy(() => import('./components/AuthLayout'));
 const ProfileLayout = lazy(() => import('./components/ProfileLayout'));
@@ -39,7 +39,6 @@ const authRoutes = [
   { path: 'admin', element: <AdminLogin /> },
   { path: 'login', element: <MemberLogin /> },
   { path: 'register', element: <Register /> },
-  { path: 'forgot-password', element: <ResetPassword /> }
 ];
 
 const router = createBrowserRouter([
