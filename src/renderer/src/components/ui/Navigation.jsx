@@ -80,8 +80,7 @@ const Navigation = () => {
                       alt="mdo"
                       width="36"
                       height="36"
-                      className={`rounded-circle ms-3 me-2 border border-3 ${sessionType === 'balance' ? 'border-success' : 'border-danger'
-                        }`}
+                      className={`rounded-circle ms-3 me-2 border border-3 border-success`}
                       loading="lazy"
                     />
                     <span>

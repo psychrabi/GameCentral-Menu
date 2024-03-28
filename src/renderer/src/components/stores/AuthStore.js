@@ -19,59 +19,11 @@ export const createAuthSlice =
     token: null,
     type: '',
     sessions: [],
-    authenticate: async (username, password) => {
+    centerLogin: async (payload) => {
       set({ loading: true })
       try {
-        const payload = { username, password }
-        const { data, status } = await axiosClient.post('/members/login', payload)
-
-        if (status === 200) {
-          const { member, session, token, sessions } = data
-          const sessionType = member.balance > 0 || member.bonus_balance > 0 ? 'balance' : 'credit'
-          if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
-            set({ messages: 'Not enough balance. Please top up your account.', alert: 'danger', loading: false })
-            return
-          }
-          if (member.credit > 30) {
-            set({
-              messages: `You have ${member.credit} credit to be paid. Please pay it first.`,
-              alert: 'info',
-              loading: false
-            })
-            return
-          }
-          set({
-            loading: false,
-            member,
-            session,
-            token,
-            start_time: Date.parse(session.start_time),
-            messages: 'You have successfully logged in.', alert: 'success',
-            sessionType,
-            sessions
-          })
-
-          const localStorageItems = {
-            token,
-            member,
-            session,
-            start_time: Date.parse(session.start_time),
-            sessionType,
-            sessions
-          }
-
-          Object.entries(localStorageItems).forEach(([key, value]) => {
-            localStorage.setItem(key, JSON.stringify(value))
-          })
-        }
-      } catch (err) {
-        set({ messages: 'Provided username or password is incorrect', loading: false, alert: 'danger' });
-      }
-    },
-    authenticateAdmin: async (license, username, password) => {
-      set({ loading: true })
-      try {
-        const { data } = await axiosClient.post('/login', { license, username, password });
+        const { data } = await axiosClient.post('/login', payload);
+        console.log(data)
         const { id, center_name } = data.user;
 
         set({
@@ -79,54 +31,93 @@ export const createAuthSlice =
           center_id: id,
           center_name,
           loading: false,
+          settings: data.settings,
           messages: 'Center Account set successfully.',
         });
 
         localStorage.setItem('center_id', JSON.stringify(id));
         localStorage.setItem('center_name', JSON.stringify(center_name));
+        localStorage.setItem('settings', JSON.stringify(data.settings));
       } catch (err) {
+        console.log(err)
         set({ messages: 'Failed to login', loading: false, alert: 'danger' });
       }
     },
-    registerMember: async (username, password, password_confirmation, email) => {
+    memberLogin: async (payload) => {
       set({ loading: true })
       try {
-        const payload = {
-          center_id: get().center_id,
-          email,
-          username,
-          password,
-          password_confirmation
-        }
-        const response = await axiosClient.post('/members/signup', payload)
-        const { user, token, settings } = response.data
-        const localStorageItems = {
-          token,
-          center_id: user.id,
-          center_name: user.center_name,
-          settings: settings
-        }
+        const { data } = await axiosClient.post('/members/login', payload)
 
+        const { member, session, token, sessions } = data
+        const sessionType = member.balance > 1
+
+        // TODO: Find a different way to handle credit session
+        // const sessionType = member.balance > 0 || member.bonus_balance > 0 ? 'balance' : 'credit'
+        // if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
+        //   set({ messages: 'Not enough balance. Please top up your account.', alert: 'danger', loading: false })
+        //   return
+        // }
+        // if (member.credit > 30) {
+        //   set({
+        //     messages: `You have ${member.credit} credit to be paid. Please pay it first.`,
+        //     alert: 'info',
+        //     loading: false
+        //   })
+        //   return
+        // }
         set({
           loading: false,
-          messages: 'Account registration successful',
-          alert: 'success',
-          center_id: user.id,
-          center_name: user.center_name,
-          settings: [settings]
+          member,
+          session,
+          token,
+          start_time: Date.parse(session.start_time),
+          messages: 'You have successfully logged in.', alert: 'success',
+          sessionType,
+          sessions
         })
+
+        const localStorageItems = {
+          token,
+          member,
+          session,
+          start_time: Date.parse(session.start_time),
+          sessionType,
+          sessions
+        }
 
         Object.entries(localStorageItems).forEach(([key, value]) => {
           localStorage.setItem(key, JSON.stringify(value))
         })
+
       } catch (err) {
-        set({ messages: 'Failed to login', loading: false, alert: 'danger' })
+        set({ messages: 'Provided username or password is incorrect', loading: false, alert: 'danger' });
       }
     },
-    updateMember: async (id, payload) => {
+
+    memberSignup: async (payload) => {
+      set({ loading: true })
+      try {
+        payload['center_id'] = get().center_id;
+
+        const response = await axiosClient.post('/members/signup', payload)
+        console.log(response)
+        set({
+          messages: response.data.message,
+          alert: 'success',
+        })
+      } catch (err) {
+        console.log(err)
+        set({ messages: err.response.data.message, alert: 'danger' })
+      } finally {
+        set({
+          loading: false
+        })
+      }
+    },
+    memberUpdate: async (id, payload) => {
       set({ loading: true });
       try {
-        const { data } = await updateData(`/members/${id}`, get().token, payload);
+        const data = await updateData(`/members/${id}`, get().token, payload);
         set({ member: data });
         localStorage.setItem('member', JSON.stringify(data));
         set({ loading: false, messages: 'Your profile is successfully updated.', alert: 'success' });
@@ -138,10 +129,10 @@ export const createAuthSlice =
       set({ member: null, session: null, sessionType: null, start_time: null, token: null, sessions: null, favoriteGames: null })
     },
     checkSession: () => {
-      ['token', 'member', 'start_time', 'session', 'sessionType'].forEach(key => {
+      ['token', 'member', 'start_time', 'session', 'sessionType', 'center_id', 'center_name', 'settings'].forEach(key => {
         const item = localStorage.getItem(key);
         if (item) {
-          set({ [key]: key === 'token' ? JSON.parse(item).token : JSON.parse(item) });
+          set({ [key]: JSON.parse(item) });
         }
       });
     },
@@ -178,20 +169,6 @@ export const createAuthSlice =
       return !!(centerId && centerName);
     },
     setMessages: (messages) => set({ messages }),
-    setType: (type) => set({ type })
-    // updatePassword: async (id, newPassword) => {
-    //   set({ loading: true })
-    //   try {
-    //     const data = await updateData(`/members/${id}`, newPassword)
-    //     console.log(data)
-    //     set({
-    //       loading: false,
-    //       error: null,
-    //       member: updatedMember
-    //     })
-    //     localStorage.setItem('member', JSON.stringify(get().member))
-    //   } catch (err) {
-    //     set({ error: err.response.data.message, loading: false })
-    //   }
-    // }
+    setType: (type) => set({ type }),
+
   })

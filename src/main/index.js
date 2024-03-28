@@ -8,8 +8,8 @@ function createWindow() {
 
   const windowOptions = {
     width: 1280,
-    height: 720,
-    x: 0,
+    height: 696,
+    x: 1281,
     y: 0,
     fullscreen: app.isPackaged,
     frame: false,

@@ -10,7 +10,7 @@ const ImageBackground = lazy(() => import('./ui/ImageBackground'))
 const VideoBackground = lazy(() => import('./ui/VideoBackground'))
 
 export default function AuthLayout() {
-  const { token, center_id, center_name, messages, alert, checkSession, systeminfo } = useBoundStore(state => ({
+  const { member, session, token, center_name, messages, alert, checkSession, systeminfo, } = useBoundStore(state => ({
     token: state.token,
     center_id: state.center_id,
     center_name: state.center_name,
@@ -18,9 +18,23 @@ export default function AuthLayout() {
     alert: state.alert,
     checkSession: state.checkSession,
     systeminfo: state.systeminfo,
+    session: state.session,
   }));
-  const { showAlert } = useContext(notificationContext);
+
+  if (member && token && session) {
+    <Navigate to="/home" />
+  }
+
+  if(!token){
+    <Navigate to="/login" />
+  }
+
   const videoBackground = true;
+  const backgroundComponent = useMemo(() => {
+    return videoBackground ? <VideoBackground /> : <ImageBackground />;
+  }, [videoBackground]);
+
+  const { showAlert } = useContext(notificationContext);
 
   useEffect(() => {
     if (messages && alert) {
@@ -30,11 +44,7 @@ export default function AuthLayout() {
 
   useEffect(() => {
     checkSession();
-  }, [checkSession]);
-
-  const backgroundComponent = useMemo(() => {
-    return videoBackground ? <VideoBackground /> : <ImageBackground />;
-  }, [videoBackground]);
+  }, []);
 
   return (
     <>
