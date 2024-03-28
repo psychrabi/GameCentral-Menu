@@ -53,16 +53,22 @@ export const createDataSlice = (set, get) => ({
   },
   toggleFavoriteGame: async (centerId, memberId, gameId, token) => {
     const payload = { centerId, memberId, gameId };
+    set({ loading: true })
     try {
       const response = await submitData('/favoriteGame', token, payload);
+      // console.log(response);
+      const gameName = get().game.name;
       set({
-        messages: `${get().game.name}: ${response.message}`,
+        messages: `${gameName}: ${response.message}`,
         alert: 'success',
         show: !get().show
       });
       get().fetchFavoriteGames(memberId, token);
+
     } catch (error) {
-      set({ messages: error.message, loading: false, alert: 'danger' });
+      set({ messages: error.message, alert: 'danger' });
+    } finally {
+      set({ loading: false });
     }
   },
   runExecutable: async () => {
@@ -71,18 +77,24 @@ export const createDataSlice = (set, get) => ({
 
     set({ loading: true });
     const { executable, parameters } = game;
-    try {
-      const response = await window.api.checkExecutable(executable);
-      if (response.status === 'file-exists') {
-        await window.api.launchExecutable(executable, parameters);
-      } else {
-        set({ messages: 'Game executable missing', alert: 'danger' });
-      }
-    } catch (error) {
-      set({ messages: error.message, alert: 'danger' });
-    } finally {
-      set({ loading: false });
-    }
+
+    window.api.checkExecutable(executable)
+      .then(response => {
+        if (response.status === 'file-exists') {
+          return window.api.launchExecutable(executable, parameters);
+        } else {
+          throw new Error('Game executable missing');
+        }
+      })
+      .then(() => {
+        set({ messages: 'Game launched successfully', alert: 'success' });
+      })
+      .catch(error => {
+        set({ messages: error.message, alert: 'danger' });
+      })
+      .finally(() => {
+        set({ loading: false });
+      });
   },
   getGame: (id) => {
     const game = get().games.find((game) => game.id === id);

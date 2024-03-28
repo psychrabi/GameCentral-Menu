@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from 'react'
+import { useCallback, useContext, useEffect, useMemo } from 'react'
 import Carousel from 'react-bootstrap/Carousel'
 import Offcanvas from 'react-bootstrap/Offcanvas'
 import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
@@ -13,6 +13,7 @@ const Details = () => {
     game,
     setShow,
     toggleFavoriteGame,
+    favoriteGames,
     runExecutable,
     running,
     setRunning,
@@ -24,6 +25,7 @@ const Details = () => {
     game: state.game,
     setShow: state.setShow,
     toggleFavoriteGame: state.toggleFavoriteGame,
+    favoriteGames: state.favoriteGames,
     runExecutable: state.runExecutable,
     messages: state.messages,
     alert: state.alert,
@@ -34,10 +36,17 @@ const Details = () => {
     center_id: state.center_id,
   }))
 
-  const { showAlert } = useContext(notificationContext)
+  const isFavorited = useMemo(() => favoriteGames && favoriteGames?.some((favoriteGame) => favoriteGame.id == game.id))
+
+
   const handleClose = useCallback(() => {
     setShow(false)
   }, [setShow])
+
+  const handleFavorite = useCallback(async () => {
+
+    toggleFavoriteGame(center_id, member.id, game.id, token)
+  }, [game, toggleFavoriteGame])
 
   useEffect(() => {
     const handleGameProcessStarted = (_, data) => {
@@ -90,9 +99,9 @@ const Details = () => {
 
                 <Button variant="outline-danger" className="position-absolute top-0 end-0 m-3">
                   <i
-                    className={game?.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'}
+                    className={isFavorited ? 'bi bi-heart-fill' : 'bi bi-heart'}
                     style={{ fontSize: '2rem' }}
-                    onClick={() => toggleFavoriteGame(center_id, member.id, game.id, token)}
+                    onClick={() => handleFavorite()}
                   ></i>
                 </Button>
               </div>
