@@ -44,9 +44,8 @@ function Applications() {
   return (
     <>
       <Header categories={AppTypes} />
-      <div className="games" id="favorite-games-container">
-        <Grid games={filteredApps} getData={getApplication} />
-      </div>
+      <Grid games={filteredApps} getData={getApplication} />
+
     </>
   );
 }

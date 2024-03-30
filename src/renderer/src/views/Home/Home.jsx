@@ -41,9 +41,8 @@ const Home = () => {
   return (
     <>
       <Header categories={GameTypes} page_title={'All Games'} />
-      <div className="games" id="favorite-games-container">
         <Grid games={filteredGames} getData={getFavoriteGame} />
-      </div>
+    
     </>
   );
 };
