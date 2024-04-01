@@ -1,24 +1,33 @@
 import { useEffect, useState } from 'react';
 import { useBoundStore } from '../stores/BoundStore';
+
+const formatTime = (d) => {
+  if (isNaN(d)) return '00:00:00';
+
+  const days = Math.floor(d / 86400);
+  const hours = Math.floor((d % 86400) / 3600).toString().padStart(2, '0');
+  const minutes = Math.floor((d % 3600) / 60).toString().padStart(2, '0');
+  const seconds = Math.floor(d % 60).toString().padStart(2, '0');
+
+  if (days > 0) {
+    return `${days}d ${hours}:${minutes}:${seconds}`;
+  } else {
+    return `${hours}:${minutes}:${seconds}`;
+  }
+};
+
 const Timer = () => {
   const member = useBoundStore((state) => state.member);
   const startTime = useBoundStore((state) => state.start_time);
   const logout = useBoundStore((state) => state.logout);
   const setNotification = useBoundStore((state) => state.setNotification);
-
   const [duration, setDuration] = useState('00:00:00');
   const [cost, setCost] = useState('0.00');
-
   const COST_PER_HOUR = 60;
   const UPDATE_INTERVAL = 5000;
   const NOTIFICATION_THRESHOLD = 30;
 
   const startTimeFormatted = new Date(parseInt(startTime)).toLocaleTimeString();
-
-  const calculateDuration = () => {
-    const secondsElapsed = (Date.now() - startTime) / 1000;
-    return new Date(secondsElapsed * 1000).toISOString().substr(11, 8);
-  };
 
   const calculateSessionCost = (secondsElapsed) => {
     const hoursElapsed = secondsElapsed / 3600;
@@ -27,7 +36,7 @@ const Timer = () => {
 
   const updateTimer = () => {
     const secondsElapsed = (Date.now() - startTime) / 1000;
-    setDuration(calculateDuration(secondsElapsed));
+    setDuration(formatTime(secondsElapsed));
     setCost(calculateSessionCost(secondsElapsed));
   };
 
@@ -43,7 +52,7 @@ const Timer = () => {
       );
       logout();
     }
-  }
+  };
 
   useEffect(() => {
     const durationInterval = setInterval(updateTimer, UPDATE_INTERVAL);
@@ -51,9 +60,8 @@ const Timer = () => {
 
     if ((Date.now() - startTime) > 3000) {
       const secondsElapsed = (Date.now() - startTime) / 1000;
-      setDuration(calculateDuration(secondsElapsed));
+      setDuration(formatTime(secondsElapsed));
       setCost(calculateSessionCost(secondsElapsed));
-      // console.log('running once')
     }
 
     return () => {
@@ -77,4 +85,4 @@ const Timer = () => {
   );
 };
 
-export default Timer
+export default Timer;

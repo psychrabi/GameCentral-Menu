@@ -14,6 +14,7 @@ export const createDataSlice = (set, get) => ({
   show: false,
   type: '',
   running: '',
+  gameTypes: [],
   title: 'Favorite Games',
   fetchGames: async (centerId, token) => { // CamelCased parameters
     set({ loading: true });
@@ -71,7 +72,8 @@ export const createDataSlice = (set, get) => ({
       set({ loading: false });
     }
   },
-  runExecutable: async (executable, parameters) => {
+  runExecutable: async () => {
+    const { executable, parameters } = get().game
     set({ loading: true });
     window.api.checkExecutable(executable)
       .then(response => {
@@ -111,6 +113,7 @@ export const createDataSlice = (set, get) => ({
   setMessages: (messages) => set({ messages }),
   setAlert: (alert) => set({ alert }),
   setTitle: (title) => set({ title }),
+  setGameTypes: (types) => set({ gameTypes: types }),
   // setRunning: (running) => set({ running })
   // ... (remaining properties and methods)
 });

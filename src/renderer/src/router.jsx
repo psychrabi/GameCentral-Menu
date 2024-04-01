@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
+import Cart from './views/Cart/Cart';
 
 
 // Lazy imports
@@ -31,6 +32,7 @@ const memberRoutes = [
   { path: 'games', element: <Games /> },
   { path: 'applications', element: <Applications /> },
   { path: 'shop', element: <Shop /> },
+  { path: 'cart', element: <Cart /> },
   { path: 'profile', element: <ProfileLayout />, children: memberProfileRoutes },
   { path: 'logout', element: undefined }
 ];

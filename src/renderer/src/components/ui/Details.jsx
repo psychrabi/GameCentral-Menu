@@ -109,7 +109,7 @@ const Details = () => {
                 variant={running === game.id ? 'secondary' : 'success'}
                 className="p-0 fs-2 d-flex justify-content-center align-items-center"
                 id="play-button"
-                onClick={runExecutable}
+                onClick={() => runExecutable()}
                 disabled={running === game.id}
               >
                 {running == game.id ? (

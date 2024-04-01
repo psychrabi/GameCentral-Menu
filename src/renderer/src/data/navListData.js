@@ -29,6 +29,13 @@ const navListData = [
   },
   {
     _id: 5,
+    link: '/cart',
+    name: `Cart`,
+    icon: 'bi-cart',
+    active: false
+  },
+  {
+    _id: 6,
     link: '/profile/details',
     name: `Profile`,
     icon: 'bi-person-square',

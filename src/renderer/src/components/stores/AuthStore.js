@@ -138,31 +138,30 @@ export const createAuthSlice =
     },
     checkSystemInfo: async () => {
       let systeminfo = localStorage.getItem('systemInfo');
-      if (systeminfo) {
-        systeminfo = JSON.parse(systeminfo);
-      } else {
+      if (!systeminfo) {
         try {
           const info = await window.api.getSystemInfo();
-          systeminfo = {
-            cpu: info.cpu.manufacturer + ' ' + info.cpu.brand,
+          systeminfo = JSON.stringify({
+            cpu: `${info.cpu.manufacturer} ${info.cpu.brand}`,
             graphics: info.graphics.controllers.find((controller) => controller.vram > 0).model,
-            ram: (info.mem.total / (1024 * 1024 * 1024)).toFixed(2) + 'GB',
-            os: info.osInfo.distro + ' build ' + info.osInfo.build,
+            ram: `${(info.mem.total / (1024 ** 3)).toFixed(2)}GB`,
+            os: `${info.osInfo.distro} build ${info.osInfo.build}`,
             ip4: info.networkInterfaces[0].ip4
-          };
-          localStorage.setItem('systemInfo', JSON.stringify(systeminfo));
+          });
+          localStorage.setItem('systemInfo', systeminfo);
         } catch (error) {
-          console.log(error);
-          set({ message: error, alert: 'danger ' });
+          console.error(error);
+          set({ message: error.message, alert: 'danger' });
           return;
         }
       }
-      set({ systeminfo });
+      set({ systeminfo: JSON.parse(systeminfo) });
     },
     checkCenterID: () => {
       const centerId = localStorage.getItem('center_id');
       const centerName = localStorage.getItem('center_name');
 
+      if (centerId) set({ center_id: JSON.parse(centerId) });
       if (centerId) set({ center_id: JSON.parse(centerId) });
       if (centerName) set({ center_name: JSON.parse(centerName) });
 

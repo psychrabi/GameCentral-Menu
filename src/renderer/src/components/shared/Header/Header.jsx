@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import Filter from '../form/Filter.jsx'
-import { useBoundStore } from '../stores/BoundStore.js'
+import Filter from '../../form/Filter.jsx'
+import { useBoundStore } from '../../stores/BoundStore.js'
 
 const Header = React.memo(({ categories }) => {
   const { count, title } = useBoundStore((state) => ({ count: state.count, title: state.title }))

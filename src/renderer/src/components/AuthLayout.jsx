@@ -2,51 +2,63 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import { Navigate, Outlet } from 'react-router-dom'
 import logo from '../public/logo.png'
 import { useBoundStore } from './stores/BoundStore'
-// import { SystemInfo } from './ui/SystemInfo'
-import { lazy, useContext, useEffect, useMemo } from 'react'
+import SystemInfo from './ui/SystemInfo'
+import { Suspense, lazy, useContext, useEffect, useMemo } from 'react'
 import notificationContext from '../context/NotificationContext'
+import Loading from './ui/Loading'
+// import io from 'socket.io-client'
 
 const ImageBackground = lazy(() => import('./ui/ImageBackground'))
 const VideoBackground = lazy(() => import('./ui/VideoBackground'))
 
 export default function AuthLayout() {
-  const { member, session, token, center_name, messages, alert, checkSession, systeminfo, } = useBoundStore(state => ({
-    token: state.token,
-    center_id: state.center_id,
-    center_name: state.center_name,
-    messages: state.messages,
-    alert: state.alert,
-    checkSession: state.checkSession,
-    systeminfo: state.systeminfo,
-    session: state.session,
-  }));
+  const { token, center_name, messages, alert, checkSession, checkSystemInfo, systeminfo } = useBoundStore(
+    (state) => ({
+      token: state.token,
+      center_id: state.center_id,
+      center_name: state.center_name,
+      messages: state.messages,
+      alert: state.alert,
+      checkSession: state.checkSession,
+      session: state.session,
+      checkSystemInfo: state.checkSystemInfo
+      // systeminfo: state.systeminfo
+    })
+  )
 
-  if (member && token && session) {
-    <Navigate to="/home" />
-  }
-
-  if(!token){
-    <Navigate to="/login" />
-  }
-
-  const videoBackground = true;
+  const videoBackground = true
   const backgroundComponent = useMemo(() => {
-    return videoBackground ? <VideoBackground /> : <ImageBackground />;
-  }, [videoBackground]);
+    return videoBackground ? <VideoBackground /> : <ImageBackground />
+  }, [videoBackground])
 
-  const { showAlert } = useContext(notificationContext);
+  const { showAlert } = useContext(notificationContext)
 
   useEffect(() => {
     if (messages && alert) {
-      showAlert(messages, alert);
+      showAlert(messages, alert)
     }
-  }, [messages, alert, showAlert]);
+  }, [messages, alert, showAlert])
 
   useEffect(() => {
-    checkSession();
-  }, []);
+    checkSession()
+    checkSystemInfo()
+  }, [checkSession])
 
-  return (
+  // useEffect(() => {
+  //   const socket = io('http://localhost:3000');
+
+  //      // Send system information to the server
+  //   socket.emit('systemInfo', systeminfo);
+
+  //   // Clean up the WebSocket connection when the component unmounts
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
+
+  return token ? (
+    <Navigate to={'/'} />
+  ) : (
     <>
       {backgroundComponent}
       <div className="login">
@@ -54,7 +66,7 @@ export default function AuthLayout() {
           <div className="form-signin position-relative">
             <div autoComplete="off" className="mb-3 px-5 mx-4 text-secondary">
               <img src={logo} alt={center_name} />
-              {!token ? <Outlet /> : <Navigate to="/" />}
+              <Outlet />
             </div>
             <div className="py-2 bg-dark text-light position-absolute bottom-0 start-0 end-0">
               <span className="fs-3">
@@ -64,7 +76,9 @@ export default function AuthLayout() {
           </div>
         </main>
       </div>
-      {systeminfo && <SystemInfo stats={systeminfo} />}
+      <Suspense fallback={<Loading />}>
+        <SystemInfo />
+      </Suspense>
     </>
-  );
+  )
 }

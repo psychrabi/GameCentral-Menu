@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react'
 import { useBoundStore } from '../../components/stores/BoundStore'
-import Grid from '../../components/ui/Grid'
-import Header from '../../components/ui/Header'
+import Grid from '../../components/shared/Grid/Grid'
+import Header from '../../components/shared/Header/Header'
 import AppTypes from '../../data/AppTypes.js'
 
 function Applications() {
-  const { token, member, fetchApplications, applications, filter, setFilter, type, setType, getApplication, setCount, setTitle } = useBoundStore(state => ({
+  const { token, member, fetchApplications, applications, filter, setFilter, type, setType, getApplication, setCount, setTitle, setGameTypes } = useBoundStore(state => ({
     token: state.token,
     member: state.member,
     fetchApplications: state.fetchApplications,
@@ -16,7 +16,8 @@ function Applications() {
     setType: state.setType,
     getApplication: state.getApplication,
     setCount: state.setCount,
-    setTitle: state.setTitle
+    setTitle: state.setTitle,
+    setGameTypes: state.setGameTypes
   }));
 
   useEffect(() => {
@@ -26,6 +27,7 @@ function Applications() {
     setFilter('');
     setType('');
     setTitle('All Applications');
+    setGameTypes(AppTypes)
     // Moved setCount here to avoid extra re-renders caused by setting it in a separate useEffect
     setCount(applications.length);
   }, [member.center_id, token, fetchApplications, applications.length, setFilter, setType, setTitle, setCount]);
@@ -43,7 +45,6 @@ function Applications() {
 
   return (
     <>
-      <Header categories={AppTypes} />
       <Grid games={filteredApps} getData={getApplication} />
 
     </>

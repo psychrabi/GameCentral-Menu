@@ -353,4 +353,5 @@ background {
   margin-right: 16px;
   right: 0;
   color: white;
+  min-height: 120px;
 }
