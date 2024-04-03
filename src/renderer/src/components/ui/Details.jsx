@@ -19,7 +19,7 @@ const Details = () => {
     setRunning,
     token,
     member,
-    center_id,
+    center_id
   } = useBoundStore((state) => ({
     show: state.show,
     game: state.game,
@@ -33,40 +33,40 @@ const Details = () => {
     setRunning: state.setRunning,
     token: state.token,
     member: state.member,
-    center_id: state.center_id,
+    center_id: state.center_id
   }))
 
-  const isFavorited = useMemo(() => favoriteGames && favoriteGames?.some((favoriteGame) => favoriteGame.id == game.id))
-
+  const isFavorited = useMemo(
+    () => favoriteGames && favoriteGames?.some((favoriteGame) => favoriteGame.id == game.id)
+  )
 
   const handleClose = useCallback(() => {
     setShow(false)
   }, [setShow])
 
   const handleFavorite = useCallback(async () => {
-
     toggleFavoriteGame(center_id, member.id, game.id, token)
   }, [game, toggleFavoriteGame])
 
   useEffect(() => {
     const handleGameProcessStarted = (_, data) => {
-      console.log('Game process started:', data);
-      setRunning(game.id);
-    };
+      console.log('Game process started:', data)
+      setRunning(game.id)
+    }
 
     const handleGameProcessExited = (_, data) => {
-      console.log('Game process exited:', data);
-      setRunning('');
-    };
+      console.log('Game process exited:', data)
+      setRunning('')
+    }
 
-    window.electron.ipcRenderer.on('game-process-started', handleGameProcessStarted);
-    window.electron.ipcRenderer.on('game-process-exited', handleGameProcessExited);
+    window.electron.ipcRenderer.on('game-process-started', handleGameProcessStarted)
+    window.electron.ipcRenderer.on('game-process-exited', handleGameProcessExited)
 
     return () => {
-      window.electron.ipcRenderer.removeListener('game-process-started', handleGameProcessStarted);
-      window.electron.ipcRenderer.removeListener('game-process-exited', handleGameProcessExited);
-    };
-  }, [running]);
+      window.electron.ipcRenderer.removeListener('game-process-started', handleGameProcessStarted)
+      window.electron.ipcRenderer.removeListener('game-process-exited', handleGameProcessExited)
+    }
+  }, [running])
 
   return (
     <Offcanvas
@@ -96,7 +96,6 @@ const Details = () => {
                 className="cover position-relative"
                 style={{ backgroundImage: `url(${game?.poster})`, backgroundColor: '#ccc' }}
               >
-
                 <Button variant="outline-danger" className="position-absolute top-0 end-0 m-3">
                   <i
                     className={isFavorited ? 'bi bi-heart-fill' : 'bi bi-heart'}
@@ -137,8 +136,9 @@ const Details = () => {
                   <i className="bi bi-play-fill" style={{ fontSize: '2.5rem' }}></i> With Center
                   account
                 </Button>
-              ) : ''}
-
+              ) : (
+                ''
+              )}
             </div>
             <div className="ms-5">
               <div className="d-flex flex-column justify-content-between">

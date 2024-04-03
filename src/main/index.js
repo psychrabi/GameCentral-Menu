@@ -19,80 +19,80 @@ function createWindow() {
       sandbox: false,
       devTools: !app.isPackaged
     }
-  };
-
-  if (process.platform === 'linux') {
-    windowOptions.icon = path.join(__dirname, '../../build/icon.png');
   }
 
-  const mainWindow = new BrowserWindow(windowOptions);
+  if (process.platform === 'linux') {
+    windowOptions.icon = path.join(__dirname, '../../build/icon.png')
+  }
+
+  const mainWindow = new BrowserWindow(windowOptions)
 
   mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
-  });
+    mainWindow.show()
+  })
 
   const quitApp = () => {
     const response = dialog.showMessageBoxSync(mainWindow, {
       type: 'warning',
       buttons: ['Yes', 'No'],
       message: 'Do you really want to quit?'
-    });
+    })
     if (response === 0) {
       mainWindow.destroy()
     }
-  };
+  }
 
   mainWindow.on('close', (event) => {
-    event.preventDefault();
-    quitApp();
-  });
+    event.preventDefault()
+    quitApp()
+  })
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url);
-    return { action: 'deny' };
-  });
+    shell.openExternal(url)
+    return { action: 'deny' }
+  })
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
+    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
-    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
   }
 
   const applyCorsHeaders = (details, callback) => {
     const headers = {
       'Access-Control-Allow-Origin': ['*'],
       ...details.responseHeaders
-    };
-    callback({ responseHeaders: headers });
-  };
+    }
+    callback({ responseHeaders: headers })
+  }
 
-  mainWindow.webContents.session.webRequest.onHeadersReceived(applyCorsHeaders);
+  mainWindow.webContents.session.webRequest.onHeadersReceived(applyCorsHeaders)
 
-  mainWindow.setMenu(null);
+  mainWindow.setMenu(null)
 
   const handleInputEvent = (event, input) => {
-    const key = input.key.toLowerCase();
-    const isPackagedAndCtrlR = app.isPackaged && input.control && key === 'r';
-    const isCtrlShiftI = input.control && input.shift && key === 'i';
-    const isAltF4 = input.alt && input.code === 'F4';
-    const isF11 = input.code === 'F11';
+    const key = input.key.toLowerCase()
+    const isPackagedAndCtrlR = app.isPackaged && input.control && key === 'r'
+    const isCtrlShiftI = input.control && input.shift && key === 'i'
+    const isAltF4 = input.alt && input.code === 'F4'
+    const isF11 = input.code === 'F11'
 
     if (isPackagedAndCtrlR || isCtrlShiftI || isAltF4 || isF11) {
-      event.preventDefault();
+      event.preventDefault()
     } else if (input.control && input.alt && input.shift) {
       if (key === 'x') {
-        quitApp();
+        quitApp()
       } else if (key === 'm') {
-        mainWindow.webContents.executeJavaScript('window.showButton()');
-        console.log('gamemodal shown');
+        mainWindow.webContents.executeJavaScript('window.showButton()')
+        console.log('gamemodal shown')
       }
     }
-  };
+  }
 
-  mainWindow.webContents.on('before-input-event', handleInputEvent);
+  mainWindow.webContents.on('before-input-event', handleInputEvent)
 
   if (!app.isPackaged) {
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
+    mainWindow.webContents.openDevTools({ mode: 'detach' })
   }
 }
 

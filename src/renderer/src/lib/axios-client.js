@@ -5,15 +5,15 @@ const axiosClient = axios.create({
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-  },
+    'Access-Control-Allow-Origin': '*'
+  }
 })
 
 axiosClient.interceptors.response.use(
-  response => response,
-  error => {
+  (response) => response,
+  (error) => {
     const { response } = error
-    if(response) {
+    if (response) {
       console.error('Response error:', response)
     } else {
       console.error('Error without response:', error)
@@ -23,4 +23,3 @@ axiosClient.interceptors.response.use(
 )
 
 export default axiosClient
-

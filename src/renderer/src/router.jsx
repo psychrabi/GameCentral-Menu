@@ -29,7 +29,7 @@ const memberProfileRoutes = [
 ]
 
 const memberRoutes = [
-  { index: true, element: <Home /> },
+  { path: 'home', element: <Home /> },
   { path: 'games', element: <Games /> },
   { path: 'applications', element: <Applications /> },
   { path: 'shop', element: <Shop /> },

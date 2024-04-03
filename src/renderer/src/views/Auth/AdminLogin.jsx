@@ -99,9 +99,7 @@ export default function AdminLogin() {
           Sign In
         </LoadingButton>
 
-        <Link to="/register">
-          Create an account for GameCentral Menu
-        </Link>
+        <Link to="/register">Create an account for GameCentral Menu</Link>
       </form>
     )
   }

@@ -9,44 +9,57 @@ const Notification = ({ children }) => {
     setMessages: state.setMessages,
     alert: state.alert,
     setAlert: state.setAlert
-  }));
-  const [showAlert, setShowAlert] = useState(false);
+  }))
+  const [showAlert, setShowAlert] = useState(false)
 
   useEffect(() => {
     if (showAlert) {
       const timeoutId = setTimeout(() => {
-        setShowAlert(false);
+        setShowAlert(false)
         setMessages('')
-        setAlert('');
-      }, 1500);
-      return () => clearTimeout(timeoutId);
+        setAlert('')
+      }, 1500)
+      return () => clearTimeout(timeoutId)
     }
-  }, [showAlert]);
+  }, [showAlert])
 
-  const displayAlert = useCallback((newMessages, newAlert) => {
-    setMessages(newMessages);
-    setAlert(newAlert);
-    setShowAlert(true);
-  }, [setMessages, setAlert, setShowAlert]);
+  const displayAlert = useCallback(
+    (newMessages, newAlert) => {
+      setMessages(newMessages)
+      setAlert(newAlert)
+      setShowAlert(true)
+    },
+    [setMessages, setAlert, setShowAlert]
+  )
 
   return (
     <NotificationProvider value={{ showAlert: displayAlert }}>
       {children}
       {showAlert && (
         <div className="toast-container bottom-0 start-0 p-3">
-          <div className={`toast fade show ${alert === 'success' ? 'text-bg-success' : 'text-bg-danger'}`} role="alert" aria-live="assertive" aria-atomic="true">
+          <div
+            className={`toast fade show ${alert === 'success' ? 'text-bg-success' : 'text-bg-danger'}`}
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+          >
             <div className="d-flex">
               <div className="toast-body text-light">
                 <span>{messages}</span>
               </div>
-              <button type="button" className="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+              <button
+                type="button"
+                className="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
             </div>
           </div>
         </div>
       )}
     </NotificationProvider>
-  );
-};
+  )
+}
 Notification.propTypes = {
   children: PropTypes.any
 }

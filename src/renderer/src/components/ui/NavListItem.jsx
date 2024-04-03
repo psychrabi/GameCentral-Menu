@@ -1,9 +1,9 @@
 import { NavLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import React from 'react';
+import React from 'react'
 
 const NavListItem = React.memo(({ nav }) => {
-  const { link, icon, name } = nav;
+  const { link, icon, name } = nav
   return (
     <li>
       <NavLink to={link} className="nav-link text-white">
@@ -12,7 +12,7 @@ const NavListItem = React.memo(({ nav }) => {
       </NavLink>
     </li>
   )
-});
+})
 
 NavListItem.propTypes = {
   nav: PropTypes.object

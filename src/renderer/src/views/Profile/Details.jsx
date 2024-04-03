@@ -17,7 +17,6 @@ export default function Profile() {
   const member = useBoundStore((state) => state.member)
   const memberUpdate = useBoundStore((state) => state.memberUpdate)
 
-
   const {
     register,
     handleSubmit,
@@ -28,16 +27,16 @@ export default function Profile() {
     resolver: zodResolver(schema)
   })
 
-  const onSubmit = useCallback(async (data) => {
-    try {
-      await memberUpdate(member.id, data)
-
-    } catch (error) {
-      setError('root', { message: error.message })
-    }
-  }, [memberUpdate, setError])
-
-
+  const onSubmit = useCallback(
+    async (data) => {
+      try {
+        await memberUpdate(member.id, data)
+      } catch (error) {
+        setError('root', { message: error.message })
+      }
+    },
+    [memberUpdate, setError]
+  )
 
   return (
     <div className="row g-2">

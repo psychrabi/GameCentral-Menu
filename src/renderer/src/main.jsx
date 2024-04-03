@@ -20,7 +20,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-
       <Notification>
         <Suspense fallback={<Loading />}>
           <RouterProvider router={router} />

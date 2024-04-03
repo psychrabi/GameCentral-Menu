@@ -15,25 +15,25 @@ export const createProductSlice = (set, get) => ({
   messages: '',
   alert: '',
   fetchProducts: async (centerId, token) => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null })
     try {
-      const products = await fetchData(`/clientProducts/${centerId}`, token);
-      set({ products, loading: false });
+      const products = await fetchData(`/clientProducts/${centerId}`, token)
+      set({ products, loading: false })
     } catch (error) {
-      set({ error: error.message, loading: false });
+      set({ error: error.message, loading: false })
     }
   },
   fetchSingleProduct: async (id, token) => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null })
     try {
-      const response = await fetchData(`/products/${id}`, token);
-      set({ singleProduct: response.data, loading: false });
+      const response = await fetchData(`/products/${id}`, token)
+      set({ singleProduct: response.data, loading: false })
     } catch (error) {
-      set({ error: error.message, loading: false });
+      set({ error: error.message, loading: false })
     }
   },
   checkOut: async (member_id, subTotal, tax, total) => {
-    const { cart, paymentMode } = get();
+    const { cart, paymentMode } = get()
     const payload = {
       member_id,
       items: cart,
@@ -44,41 +44,41 @@ export const createProductSlice = (set, get) => ({
     }
     console.log(payload)
   },
-  subTotal: () =>
-    get().cart.reduce((total, item) => total + item.sales_price * item.quantity, 0),
+  subTotal: () => get().cart.reduce((total, item) => total + item.sales_price * item.quantity, 0),
   tax: () => {
-    const { subTotal, taxRate } = get();
-    return subTotal() * taxRate;
+    const { subTotal, taxRate } = get()
+    return subTotal() * taxRate
   },
   total: () => {
-    const { subTotal, tax } = get();
-    return subTotal() + tax();
+    const { subTotal, tax } = get()
+    return subTotal() + tax()
   },
   addToCart: (id) => {
-    const { products, cart } = get();
-    const productToAdd = products.find((product) => product.id === id);
-    if (!productToAdd) return;
+    const { products, cart } = get()
+    const productToAdd = products.find((product) => product.id === id)
+    if (!productToAdd) return
 
-    const cartItem = cart.find((item) => item.id === id);
+    const cartItem = cart.find((item) => item.id === id)
     if (cartItem) {
-      cartItem.quantity += 1;
-      set({ cart: [...cart] });
-
+      cartItem.quantity += 1
+      set({ cart: [...cart] })
+      set({ messages: 'Cart updated successfully.', alert: 'success' })
     } else {
-      set({ cart: [...cart, { ...productToAdd, quantity: 1 }] });
+      set({ cart: [...cart, { ...productToAdd, quantity: 1 }] })
+      set({ messages: 'Added to cart successfully.', alert: 'success' })
     }
   },
   removeFromCart: (id) => {
-    const { cart } = get();
-    const itemIndex = cart.findIndex((item) => item.id === id);
-    if (itemIndex === -1) return;
+    const { cart } = get()
+    const itemIndex = cart.findIndex((item) => item.id === id)
+    if (itemIndex === -1) return
 
-    const item = cart[itemIndex];
+    const item = cart[itemIndex]
     if (item.quantity > 1) {
-      cart[itemIndex].quantity -= 1;
-      set({ cart: [...cart] });
+      cart[itemIndex].quantity -= 1
+      set({ cart: [...cart] })
     } else {
-      set({ cart: cart.filter((item) => item.id !== id) });
+      set({ cart: cart.filter((item) => item.id !== id) })
     }
   },
   clearCart: () => set({ cart: [] }),

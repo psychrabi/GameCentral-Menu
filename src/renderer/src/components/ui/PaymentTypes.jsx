@@ -1,15 +1,15 @@
-import React, { useMemo } from 'react';
-import PaymentModes from '../../data/PaymentModes.js';
-import { useBoundStore } from '../stores/BoundStore';
+import React, { useMemo } from 'react'
+import PaymentModes from '../../data/PaymentModes.js'
+import { useBoundStore } from '../stores/BoundStore'
 
 export const PaymentTypes = React.memo(() => {
   const setPaymentMode = useBoundStore((state) => state.setPaymentMode)
 
   const handlePaymentModeChange = (event) => {
-    setPaymentMode(event.target.value);
-  };
+    setPaymentMode(event.target.value)
+  }
 
-  const activePaymentModes = useMemo(() => PaymentModes.filter((mode) => mode.active), []);
+  const activePaymentModes = useMemo(() => PaymentModes.filter((mode) => mode.active), [])
 
   return (
     <div>
