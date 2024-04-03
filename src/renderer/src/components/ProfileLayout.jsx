@@ -1,13 +1,13 @@
-import { NavLink, Outlet } from 'react-router-dom';
-import '../assets/css/Profile.css';
+import { NavLink, Outlet } from 'react-router-dom'
+import '../assets/css/Profile.css'
 
 export default function ProfileLayout() {
   const navItems = [
-    { name: "Profile", path: "/profile/details" },
-    { name: "Sessions", path: "/profile/sessions" },
-    { name: "Security", path: "/profile/security" },
-    // { name: "Notifications", path: "/profile/notification" },
-  ];
+    { name: 'Profile', path: '/profile/details' },
+    { name: 'Sessions', path: '/profile/sessions' },
+    { name: 'Security', path: '/profile/security' },
+    { name: 'Notifications', path: '/profile/notifications' }
+  ]
 
   return (
     <>

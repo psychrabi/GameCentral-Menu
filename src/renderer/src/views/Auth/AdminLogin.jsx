@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form'
 
 import { z } from 'zod'
 import { Link } from 'react-router-dom'
+import { Checkbox, FormControlLabel, TextField } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
 
 const schema = z.object({
   license: z.string().min(10),
@@ -15,13 +17,9 @@ const schema = z.object({
 })
 
 export default function AdminLogin() {
-  const {
-    center_id,
-    centerLogin,
-    token,
-    checkSession,
-    checkCenterID,
-  } = useBoundStore((state) => state);
+  const { center_id, centerLogin, token, checkSession, checkCenterID } = useBoundStore(
+    (state) => state
+  )
 
   const {
     register,
@@ -37,94 +35,76 @@ export default function AdminLogin() {
     resolver: zodResolver(schema)
   })
 
-  const onSubmit = useCallback(async (data) => {
-    try {
-      await centerLogin(data)
-    } catch (error) {
-      setError('root', { message: error.message })
-    }
-  }, [centerLogin, setError])
+  const onSubmit = useCallback(
+    async (data) => {
+      try {
+        await centerLogin(data)
+      } catch (error) {
+        setError('root', { message: error.message })
+      }
+    },
+    [centerLogin, setError]
+  )
 
   useEffect(() => {
-    checkSession();
-    checkCenterID();
-  }, [checkSession, checkCenterID]);
+    checkSession()
+    checkCenterID()
+  }, [checkSession, checkCenterID])
 
   if (center_id) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" />
   }
 
   if (!token) {
     return (
       <form onSubmit={handleSubmit(onSubmit)}>
-
         <h4 className="h5  fw-normal text-light">Please sign in</h4>
-        <div className="form-floating">
-          <input
-            type="text"
-            {...register('license')}
-            className={`form-control ${errors.license ? 'is-invalid' : ''}`}
-            id="license"
-            placeholder="License"
-          />
-          <label htmlFor="license">License</label>
-        </div>
-        <div className="form-floating">
-          <input
-            type="text"
-            {...register('username')}
-            className={`form-control ${errors.username ? 'is-invalid' : ''}`}
-            id="email"
-            placeholder="Username or Email address"
-          />
-          <label htmlFor="email">Username or Email</label>
-        </div>
-        <div className="form-floating">
-          <input
-            type="password"
-            {...register('password')}
-            className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-            placeholder="Password"
-            id="password"
-          />
-          <label htmlFor="password">Password</label>
-        </div>
-        <div className="form-check form-check-inline text-lg text-light mb-2">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            {...register('remember')}
-            id="remember"
-            defaultChecked={true}
-          />
-          <label className="form-check-label" htmlFor="remember">
-            Remember me
-          </label>
-        </div>
-        <button
+
+        <TextField
+          fullWidth
+          variant="filled"
+          {...register('license')}
+          label="License"
+          error={errors.license}
+        />
+        <TextField
+          fullWidth
+          variant="filled"
+          {...register('username')}
+          label="Username"
+          error={errors.username}
+          margin="normal"
+        />
+        <TextField
+          fullWidth
+          variant="filled"
+          {...register('password')}
+          label="Password"
+          error={errors.password}
+          margin="normal"
+        />
+        <FormControlLabel
+          control={<Checkbox defaultChecked />}
+          label="Remember me"
+          {...register('remember')}
+        />
+
+        <LoadingButton
+          variant="contained"
           className="w-100 btn btn-lg btn-primary mb-2"
           type="submit"
-          disabled={isSubmitting}
+          loading={isSubmitting}
+          loadingIndicator="Signing In..."
         >
-          {isSubmitting ? (
-            <>
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-              Signing in...
-            </>
-          ) : (
-            'Sign in'
-          )}
-        </button>
-        <Link to="/register" className="text-light">
+          Sign In
+        </LoadingButton>
+
+        <Link to="/register">
           Create an account for GameCentral Menu
         </Link>
       </form>
-    );
+    )
   }
 
-  return <Navigate to="/" />;
+  return <Navigate to="/" />
 }

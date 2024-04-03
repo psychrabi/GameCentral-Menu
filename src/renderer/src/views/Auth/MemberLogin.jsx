@@ -5,17 +5,19 @@ import { useBoundStore } from '../../components/stores/BoundStore'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import Button from '@mui/material/Button'
+import { TextField } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
 
 const schema = z.object({
   username: z.string().min(3),
   password: z.string().min(8)
 })
 export default function MemberLogin() {
-
-  const { memberLogin, center_name } = useBoundStore(state => ({
+  const { memberLogin, center_name } = useBoundStore((state) => ({
     memberLogin: state.memberLogin,
-    center_name: state.center_name,
-  }));
+    center_name: state.center_name
+  }))
 
   const {
     register,
@@ -30,63 +32,49 @@ export default function MemberLogin() {
     resolver: zodResolver(schema)
   })
 
-  const onSubmit = useCallback(async (data) => {
-    try {
-      await memberLogin(data)
-    } catch (error) {
-      setError('root', { message: error.message })
-    }
-  }, [memberLogin, setError])
+  const onSubmit = useCallback(
+    async (data) => {
+      try {
+        await memberLogin(data)
+      } catch (error) {
+        setError('root', { message: error.message })
+      }
+    },
+    [memberLogin, setError]
+  )
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <p className="mt-4 text-light" id="cafe-name">
+      <p className="mt-4" id="cafe-name">
         {`Login with your ${center_name} account`}
       </p>
-      <div className="form-floating">
-        <input
-          type="text"
-          {...register('username')}
-          className={`form-control ${errors.username ? 'is-invalid' : ''}`}
-          id="email"
-          placeholder="Username or Email address"
-        />
-        <label htmlFor="email">Username or Email</label>
-      </div>
-      <div className="form-floating">
-        <input
-          type="password"
-          {...register('password')}
-          className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-          placeholder="Password"
-          id="password"
-        />
-        <label htmlFor="password">Password</label>
-      </div>
-
-      <button
+      <TextField
+        fullWidth
+        variant="filled"
+        {...register('username')}
+        label="Username"
+        error={errors.username}
+      />
+      <TextField
+        fullWidth
+        variant="filled"
+        {...register('password')}
+        label="Password"
+        error={errors.password}
+        margin="normal"
+      />
+      <LoadingButton
+        variant="contained"
         className="w-100 btn btn-lg btn-primary mb-2"
         type="submit"
-        disabled={isSubmitting}
+        loading={isSubmitting}
+        loadingIndicator="Signing In..."
       >
-        {isSubmitting ? (
-          <>
-            <span
-              className="spinner-border spinner-border-sm me-2"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            Signing in...
-          </>
-        ) : (
-          'Sign in'
-        )}
-      </button>
+        Sign In
+      </LoadingButton>
       <p>
         <span className="me-2">Don&apos;t have an account yet?</span>
-        <Link to="/register" className="text-decoration-none">
-          Create account
-        </Link>
+        <Link to="/register">Create account</Link>
       </p>
     </form>
   )
