@@ -1,12 +1,12 @@
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import { useCallback } from 'react'
-import { Link } from 'react-router-dom'
 import { useBoundStore } from '../../components/stores/BoundStore'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import Button from '@mui/material/Button'
-import { TextField } from '@mui/material'
+import { Link as RouterLink } from 'react-router-dom'
+import { TextField, Typography, Link } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 
 const schema = z.object({
@@ -45,19 +45,19 @@ export default function MemberLogin() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <p className="mt-4" id="cafe-name">
+      <Typography variant="body1" marginBottom={2} id="cafe-name">
         {`Login with your ${center_name} account`}
-      </p>
+      </Typography>
       <TextField
         fullWidth
-        variant="filled"
+        variant="outlined"
         {...register('username')}
         label="Username"
         error={errors.username}
       />
       <TextField
         fullWidth
-        variant="filled"
+        variant="outlined"
         {...register('password')}
         label="Password"
         error={errors.password}
@@ -65,17 +65,21 @@ export default function MemberLogin() {
       />
       <LoadingButton
         variant="contained"
-        className="w-100 btn btn-lg btn-primary mb-2"
+        fullWidth
+        size="large"
         type="submit"
         loading={isSubmitting}
         loadingIndicator="Signing In..."
+        sx={{ my: 1 }}
       >
         Sign In
       </LoadingButton>
-      <p>
+      <Typography variant="body2">
         <span className="me-2">Don&apos;t have an account yet?</span>
-        <Link to="/register">Create account</Link>
-      </p>
+        <Link component={RouterLink} to="/register" underline="none">
+          Create account
+        </Link>
+      </Typography>
     </form>
   )
 }

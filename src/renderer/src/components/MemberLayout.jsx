@@ -1,8 +1,9 @@
-import React, { lazy, useContext, useEffect, useMemo } from 'react'
+import React, { lazy, useContext, useEffect } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import notificationContext from '../context/NotificationContext'
 import { useBoundStore } from './stores/BoundStore'
 import Header from './shared/Header/Header'
+import { Box } from '@mui/material'
 
 const Timer = lazy(() => import('./ui/Timer'))
 const Navigation = lazy(() => import('./ui/Navigation'))
@@ -30,21 +31,16 @@ function MemberLayout() {
     }
   }, [messages, alert, showAlert])
 
-  const MemoizedDetails = useMemo(() => React.memo(Details), [])
-  const MemoizedNavigation = useMemo(() => React.memo(Navigation), [])
-
   return (
     <>
-      <MemoizedNavigation />
-
-      <div className="game-app">
-        <main className="no-scrollbar">
-          <Header categories={gameTypes} page_title={'All Products'} />
-
+      <Box height={'100vh'} display={'flex'} flexDirection={'column'}>
+        <Navigation />
+        <Header categories={gameTypes} page_title={'All Products'} />
+        <Box flex={1} overflow={'auto'} className="no-scrollbar">
           <Outlet />
-        </main>
-        {show && <MemoizedDetails />}
-      </div>
+        </Box>
+      </Box>
+      {show && <Details />}
     </>
   )
 }

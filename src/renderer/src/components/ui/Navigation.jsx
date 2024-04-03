@@ -1,112 +1,174 @@
-import { NavLink } from 'react-router-dom'
+import AccountCircle from '@mui/icons-material/AccountCircle'
+import MenuIcon from '@mui/icons-material/Menu'
+import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
 import 'bootstrap-icons/font/bootstrap-icons.css'
-import { useBoundStore } from '../stores/BoundStore'
-import navListData from '../../data/navListData'
-import NavListItem from './NavListItem'
-import { submitData } from '../../utils/fetchData'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import user from '../../public/user.png'
+import { submitData } from '../../utils/fetchData'
+import { useBoundStore } from '../stores/BoundStore'
 import Timer from './Timer'
-import { useMemo } from 'react'
+import AdbIcon from '@mui/icons-material/Adb'
+import DeleteIcon from '@mui/icons-material/Delete'
+import Tooltip from '@mui/material/Tooltip'
+import user from '../../public/user.png'
+import { formatCurrency } from '../../utils/formatCurrency'
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports'
+import AppsIcon from '@mui/icons-material/Apps'
+import HomeIcon from '@mui/icons-material/Home'
+import StoreIcon from '@mui/icons-material/Store'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import { Avatar } from '@mui/material'
+import { Link } from 'react-router-dom'
 
 const Navigation = () => {
-  const navigate = useNavigate();
-  const { member, token, setMessages, setAlert, sessionType, session, reset, start_time } = useBoundStore(state => ({
-    member: state.member,
-    token: state.token,
-    setMessages: state.setMessages,
-    setAlert: state.setAlert,
-    sessionType: state.sessionType,
-    session: state.session,
-    reset: state.reset,
-    start_time: state.start_time
-  }));
-  const COST_PER_HOUR = 60;
-  const memoizedTimer = useMemo(() => <Timer />, []);
+  const navigate = useNavigate()
+  const { member, token, setMessages, setAlert, sessionType, session, reset, start_time } =
+    useBoundStore((state) => ({
+      member: state.member,
+      token: state.token,
+      setMessages: state.setMessages,
+      setAlert: state.setAlert,
+      sessionType: state.sessionType,
+      session: state.session,
+      reset: state.reset,
+      start_time: state.start_time
+    }))
+  const COST_PER_HOUR = 60
+  const memoizedTimer = useMemo(() => <Timer />, [])
+  const [anchorEl, setAnchorEl] = useState()
 
   const handleLogout = async () => {
-    const total_time = (Date.now() - start_time) / 1000; //in seconds
+    const total_time = (Date.now() - start_time) / 1000 //in seconds
     const usage_details = {
       session_id: session.id,
       total_time: total_time,
       sessionType: sessionType,
       session_cost: ((total_time / (60 * 60)) * COST_PER_HOUR).toFixed(2)
-    };
-
-    const logout = await submitData('/members/logout', token, usage_details);
-    if (logout) {
-      ['token', 'member', 'session', 'start_time', 'sessionType', 'sessions', 'settings'].forEach(key => localStorage.removeItem(key));
-
-      reset();
-
-      setMessages('You have successfully logged out');
-      setAlert('success');
-      navigate('/login');
     }
+    try {
+      const logout = await submitData('/members/logout', token, usage_details)
+      if (logout) {
+        ;[
+          'token',
+          'member',
+          'session',
+          'start_time',
+          'sessionType',
+          'sessions',
+          'settings'
+        ].forEach((key) => localStorage.removeItem(key))
+
+        setMessages('You have successfully logged out')
+        setAlert('success')
+      }
+      reset()
+
+      navigate('/login')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleChange = (event) => {
+    setAuth(event.target.checked)
+  }
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleNavigate = (path) => {
+    handleClose()
+
+    navigate(path)
   }
   return (
     <>
-      <header className="draggable">
-        <div className="px-3 py-2 text-bg-dark">
-          <div className="container-fluid px-0">
-            <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg-start">
-              <NavLink
-                to="/"
-                className="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none"
-              >
-                <i className="bi bi-bootstrap me-3" style={{ fontSize: '2rem' }}></i>
-                GameCentral Menu
-              </NavLink>
-              {memoizedTimer}
-              <ul className="nav non-draggable col-6 col-lg-auto my-2 justify-content-lg-center my-md-0 text-small">
-                {navListData.map((nav) => (
-                  <NavListItem nav={nav} key={nav._id} />
-                ))}
-              </ul>
-              <div className="dropdown border-start non-draggable">
-                <NavLink
-                  to="/profile"
-                  className="link-light text-decoration-none"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  <div
-                    className={
-                      'd-flex align-items-center justify-content-between justify-content-lg-start dropdown-toggle'
-                    }
-                  >
-                    <img
-                      src={user}
-                      alt="mdo"
-                      width="36"
-                      height="36"
-                      className={`rounded-circle ms-3 me-2 border border-3 border-success`}
-                      loading="lazy"
-                    />
-                    <span>
-                      {member.first_name} {member.last_name}
-                      <br />
-                      <small>
-                        {sessionType === 'credit'
-                          ? 'On credit'
-                          : `${member.balance} (+${member.bonus_balance})`}
-                      </small>
-                    </span>
-                  </div>
-                </NavLink>
+      <Box className="draggable">
+        <AppBar position="static">
+          <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+            <Typography variant="h6" component="div">
+              GameCentral Menu
+            </Typography>
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', mt: 1 }}>
+              <Timer />
+            </Box>
 
-                <ul className="dropdown-menu" style={{ zIndex: 2000 }}>
-                  <li>
-                    <span className="dropdown-item" onClick={() => handleLogout()}>
-                      Sign out
-                    </span>
-                  </li>
-                </ul>
-              </div>{' '}
-            </div>
-          </div>
-        </div>
-      </header>
+            <Box className="non-draggable">
+              <Link to="/home">
+                <IconButton aria-label="home">
+                  <HomeIcon />
+                </IconButton>
+              </Link>
+              <Link to="/games">
+                <IconButton aria-label="games">
+                  <SportsEsportsIcon />
+                </IconButton>
+              </Link>
+              <Link to="/applications">
+                <IconButton aria-label="applications">
+                  <AppsIcon />
+                </IconButton>
+              </Link>
+              <Link to="/shop">
+                <IconButton aria-label="shop">
+                  <StoreIcon />
+                </IconButton>
+              </Link>
+              <Link to="/cart">
+                <IconButton aria-label="shop">
+                  <ShoppingCartIcon />
+                </IconButton>
+              </Link>
+            </Box>
+            <Box sx={{ flexGrow: 0, cursor: 'pointer' }} className="non-draggable">
+              <Tooltip title="Open settings" onClick={handleMenu}>
+                <Typography variant="body2" component="div" sx={{ flexGrow: 1 }}>
+                  <IconButton>
+                    <Avatar alt={member?.name} src={user} />
+                  </IconButton>
+                  {member.first_name + ' ' + member.last_name}
+                </Typography>
+              </Tooltip>
+
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={() => handleNavigate('/profile/details')}>Profile</MenuItem>
+                <MenuItem onClick={() => handleNavigate('/profile/sessions')}>Sessions</MenuItem>
+                <MenuItem onClick={() => handleNavigate('/profile/security')}>
+                  Change Password
+                </MenuItem>
+                <MenuItem onClick={() => handleLogout()}>Logout</MenuItem>
+              </Menu>
+            </Box>
+          </Toolbar>
+        </AppBar>
+      </Box>
     </>
   )
 }

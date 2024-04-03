@@ -2,18 +2,25 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import Filter from '../../form/Filter.jsx'
 import { useBoundStore } from '../../stores/BoundStore.js'
+import { Box, Typography } from '@mui/material'
 
 const Header = React.memo(({ categories }) => {
   const { count, title } = useBoundStore((state) => ({ count: state.count, title: state.title }))
 
   return (
-    <div className="d-flex flex-wrap justify-content-between border-bottom mb-2 py-2 align-items-center">
-      <h3 className="fs-5 mb-2 mb-lg-0">
+    <Box
+      display={'flex'}
+      justifyContent={'space-between'}
+      alignItems={'center'}
+      p={2}
+      backgroundColor={''}
+    >
+      <Typography variant="h6">
         {title} ({count})
-      </h3>
+      </Typography>
 
       <Filter categories={categories} />
-    </div>
+    </Box>
   )
 })
 

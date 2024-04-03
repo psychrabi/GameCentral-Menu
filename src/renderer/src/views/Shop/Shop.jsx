@@ -4,6 +4,7 @@ import ProductTypes from '../../data/ProductTypes.js'
 
 import { useMemo } from 'react'
 import Product from './Product.jsx'
+import { Box } from '@mui/material'
 
 export default function Shop() {
   const {
@@ -73,11 +74,11 @@ export default function Shop() {
 
   return (
     <>
-      <div className="products" id="installed-games-container">
+      <Box className="products" px={2}>
         {filteredProducts?.map((product) => (
           <Product key={product.id} product={product} />
         ))}
-      </div>
+      </Box>
     </>
   )
 }

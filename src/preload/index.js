@@ -5,9 +5,12 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
   getSystemInfo: () => ipcRenderer.invoke('request-system-info'),
   checkExecutable: async (gamePath) => ipcRenderer.invoke('check:executable', gamePath),
-  launchExecutable: (gamePath, parameters) => ipcRenderer.invoke('launch:executable', gamePath, parameters),
+  launchExecutable: (gamePath, parameters) =>
+    ipcRenderer.invoke('launch:executable', gamePath, parameters),
   selectExecutable: () => ipcRenderer.invoke('dialog:openDirectory'),
-
+  epicGamesPath: async () => ipcRenderer.invoke('getEpicGamesInstallPath'),
+  ubisoftGamesPath: async () => ipcRenderer.invoke('getUbisoftInstallPath'),
+  steamGamesPath: async () => ipcRenderer.invoke('getSteamInstallPath')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

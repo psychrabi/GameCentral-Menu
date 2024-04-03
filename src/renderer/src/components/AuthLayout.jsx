@@ -3,17 +3,17 @@ import { Navigate, Outlet } from 'react-router-dom'
 import logo from '../public/logo.png'
 import { useBoundStore } from './stores/BoundStore'
 import SystemInfo from './ui/SystemInfo'
-import { Suspense, lazy, useContext, useEffect, useMemo } from 'react'
+import { lazy, useContext, useEffect, useMemo } from 'react'
 import notificationContext from '../context/NotificationContext'
-import Loading from './ui/Loading'
+import { Box } from '@mui/material'
 // import io from 'socket.io-client'
 
 const ImageBackground = lazy(() => import('./ui/ImageBackground'))
 const VideoBackground = lazy(() => import('./ui/VideoBackground'))
 
 export default function AuthLayout() {
-  const { token, center_name, messages, alert, checkSession, checkSystemInfo, systeminfo } = useBoundStore(
-    (state) => ({
+  const { token, center_name, messages, alert, checkSession, checkSystemInfo, systeminfo } =
+    useBoundStore((state) => ({
       token: state.token,
       center_id: state.center_id,
       center_name: state.center_name,
@@ -23,8 +23,7 @@ export default function AuthLayout() {
       session: state.session,
       checkSystemInfo: state.checkSystemInfo
       // systeminfo: state.systeminfo
-    })
-  )
+    }))
 
   const videoBackground = true
   const backgroundComponent = useMemo(() => {
@@ -57,28 +56,46 @@ export default function AuthLayout() {
   // }, []);
 
   return token ? (
-    <Navigate to={'/'} />
+    <Navigate to={'/home'} />
   ) : (
     <>
       {backgroundComponent}
-      <div className="login">
-        <main className="px-4">
-          <div className="form-signin position-relative">
-            <div autoComplete="off" className="mb-3 px-5 mx-4 text-secondary">
-              <img src={logo} alt={center_name} />
-              <Outlet />
-            </div>
-            <div className="py-2 bg-dark text-light position-absolute bottom-0 start-0 end-0">
-              <span className="fs-3">
-                <i className="bi bi-pc-display me-2"></i>PC01
-              </span>
-            </div>
-          </div>
-        </main>
-      </div>
-      <Suspense fallback={<Loading />}>
-        <SystemInfo />
-      </Suspense>
+      <Box height={'100vh'} width={'100vw'} display={'flex'} justifyContent={'center'}>
+        <Box
+          position={'relative'}
+          width="450px"
+          height={'100vh'}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent="center"
+          sx={{ backgroundColor: 'rgba(0, 0, 0, 0.8)' }}
+          p={5}
+          textAlign={'center'}
+          minHeight={'100vh'}
+        >
+          <Box>
+            <img src={logo} alt={center_name} />
+            <Outlet />
+          </Box>
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              p: 2,
+              textAlign: 'center',
+              borderTop: 1
+            }}
+          >
+            <span className="fs-3">
+              <i className="bi bi-pc-display me-2"></i>PC01
+            </span>
+          </Box>
+        </Box>
+      </Box>
+
+      <SystemInfo />
     </>
   )
 }

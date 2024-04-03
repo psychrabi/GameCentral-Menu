@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import React, { useCallback, useEffect } from 'react'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 import { useBoundStore } from '../../stores/BoundStore'
+import { Box, Card, CardMedia, Container, Grid as LayoutGrid } from '@mui/material'
 import './Grid.scss'
 
 const Grid = React.memo(({ games, getData }) => {
@@ -49,20 +50,21 @@ const Grid = React.memo(({ games, getData }) => {
 
   return (
     <>
-      <div className="grid" id="favorite-games-container">
+      <Box className="grid" px={2}>
         {games?.map((game) => (
-          <div key={game.id} className="card game shadow-sm">
-            <LazyLoadImage
-              className="card-img"
-              src={game.poster}
-              alt={game.name}
+          <Card key={game.id} className="card game shadow-sm">
+            <CardMedia
               effect="blur"
-              style={{ objectFit: 'cover', aspectRatio: '3 / 4' }}
+              image={game.poster}
+              title={game.name}
+              sx={{ objectFit: 'cover', aspectRatio: '3 / 4' }}
               onClick={() => handleSelect(game.id)}
+              width={'100%'}
+              height={'auto'}
             />
-          </div>
+          </Card>
         ))}
-      </div>
+      </Box>
     </>
   )
 })

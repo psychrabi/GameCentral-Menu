@@ -1,43 +1,58 @@
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
+import ShareIcon from '@mui/icons-material/Share'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardHeader from '@mui/material/CardHeader'
+import CardMedia from '@mui/material/CardMedia'
+import IconButton from '@mui/material/IconButton'
+
 import PropTypes from 'prop-types'
+import * as React from 'react'
 import { useBoundStore } from '../../components/stores/BoundStore'
-import { formatCurrency } from '../../utils/formatCurrency'
-import { LazyLoadImage } from 'react-lazy-load-image-component'
-import React from 'react';
 
 const Product = React.memo(({ product }) => {
+  const [expanded, setExpanded] = React.useState(false)
+
   const { addToCart, cart } = useBoundStore((state) => ({
     addToCart: state.addToCart,
     cart: state.cart,
-  }));
+    setMessages: state.setMessages,
+    setAlert: state.setAlert
+  }))
+  const handleExpandClick = () => {
+    setExpanded(!expanded)
+  }
 
-  const handleAddToCart = (id) => addToCart(id);
+  const handleAddToCart = (id) => {
+    addToCart(id)
+  }
 
-  const isProductInCart = cart.some((item) => item.id === product.id && item.quantity >= product.stock);
+  const isProductInCart = cart.some(
+    (item) => item.id === product.id && item.quantity >= product.stock
+  )
 
   return (
-    <div className="product card">
-      <LazyLoadImage
-        src={product.product_image}
-        alt={product.name}
-        className="card-img-top"
-        loading="lazy"
-      />
-      <div className="card-body d-flex flex-col justify-between">
-        <h5 className="card-title">{product.name}</h5>
-        <p className="card-text price">{formatCurrency(product.sales_price)}</p>
-        {product.stock > 0 && !isProductInCart ? (
-          <button className="btn btn-primary rounded-circle p-3 lh-1" onClick={() => handleAddToCart(product.id)}>
-            <i className="bi bi-cart-plus text-lg"></i>
-          </button>
-        ) : (
-          <button className="btn btn-secondary rounded-circle p-3 lh-1" disabled>
-            {isProductInCart ? (<i className="bi bi-cart-x"></i>) : 'Not in Stock'}
-          </button>
-        )}
-      </div>
-    </div>
-  );
-});
+    <Card
+      sx={{
+        maxWidth: 345,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
+      }}
+    >
+      <CardHeader subheader={product.name} />
+      <CardMedia component="img" height="194" image={product.product_image} alt={product.name} />
+      <CardActions disableSpacing>
+        <IconButton aria-label="add to favorites" onClick={() => handleAddToCart(product.id)}>
+          <AddShoppingCartIcon />
+        </IconButton>
+        <IconButton aria-label="share">
+          <ShareIcon />
+        </IconButton>
+      </CardActions>
+    </Card>
+  )
+})
 
 Product.propTypes = {
   product: PropTypes.shape({
@@ -50,4 +65,3 @@ Product.propTypes = {
 }
 
 export default Product
-
