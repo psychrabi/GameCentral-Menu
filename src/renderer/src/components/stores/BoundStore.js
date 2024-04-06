@@ -1,8 +1,8 @@
 import { create } from 'zustand'
+import { createJSONStorage, persist } from 'zustand/middleware'
 import { createAuthSlice } from './AuthStore'
-import { createProductSlice } from './ProductStore'
 import { createDataSlice } from './DataStore'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { createProductSlice } from './ProductStore'
 
 export const useBoundStore = create(
   persist(

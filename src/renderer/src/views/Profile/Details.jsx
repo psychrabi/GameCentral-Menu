@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { useBoundStore } from '../../components/stores/BoundStore'
-// import defaultAvatar from '../../public/default-avatar.png'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { LoadingButton } from '@mui/lab'
+import { Box, Card, CardContent, CardHeader, TextField } from '@mui/material'
+import { useCallback } from 'react'
+import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { useBoundStore } from '../../components/stores/BoundStore'
 
 const schema = z.object({
   first_name: z.string().min(3, { message: 'First name must be at least 3 characters' }),
@@ -39,7 +40,7 @@ export default function Profile() {
   )
 
   return (
-    <div className="row g-2">
+    <Box>
       {/* TODO: Add image upload */}
       {/* <div className="col-xl-3">
         <div className="card">
@@ -52,102 +53,72 @@ export default function Profile() {
           </div>
         </div>
       </div> */}
-      <div className="col-xl-9  mx-auto">
-        <div className="card">
-          <div className="card-header">
-            Account Details: <i className="bi-person-fill-gear"></i>
-            {member.username}
-          </div>
-          <div className="card-body">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="row gx-3 mb-3">
-                <div className="col-md-6">
-                  <label className="small mb-1" htmlFor="inputFirstName">
-                    First name
-                  </label>
-                  <input
-                    className={`form-control ${errors.first_name ? 'is-invalid' : 'is-valid'}`}
-                    type="text"
-                    placeholder="First name"
-                    {...register('first_name', {
-                      required: {
-                        value: true,
-                        message: 'First name is required'
-                      },
-                      maxLength: 80
-                    })}
-                  />
-                  <div className="invalid-feedback">{errors.first_name?.message}</div>
-                </div>
-                <div className="col-md-6">
-                  <label className="small mb-1" htmlFor="inputLastName">
-                    Last name
-                  </label>
-                  <input
-                    className={`form-control ${errors.last_name ? 'is-invalid' : 'is-valid'}`}
-                    type="text"
-                    placeholder="Last name"
-                    {...register('last_name', {
-                      required: {
-                        value: true,
-                        message: 'last name is required'
-                      },
-                      maxLength: 20
-                    })}
-                  />
-                  <div className="invalid-feedback">{errors.last_name?.message}</div>
-                </div>
-              </div>
-              <div className="mb-3">
-                <label className="small mb-1" htmlFor="inputEmailAddress">
-                  Email address
-                </label>
-                <input
-                  className={`form-control ${errors.email ? 'is-invalid' : 'is-valid'}`}
-                  type="text"
-                  placeholder="Enter your email address"
-                  {...register('email', { required: true, pattern: /^\S+@\S+$/i })}
-                />
-                <div className="invalid-feedback">{errors.email?.message}</div>
-              </div>
-              <div className="row gx-3 mb-3">
-                <div className="col-md-6">
-                  <label className="small mb-1" htmlFor="inputPhone">
-                    Phone number
-                  </label>
-                  <input
-                    className={`form-control ${errors.phone ? 'is-invalid' : 'is-valid'}`}
-                    type="tel"
-                    placeholder="Enter your phone number"
-                    {...register('phone', {
-                      required: true,
-                      pattern: '/[0-9]{10}/i',
-                      maxLength: 10,
-                      minLength: 10
-                    })}
-                  />
-                  <div className="invalid-feedback">{errors.phone?.message}</div>
-                </div>
-                <div className="col-md-6">
-                  <label className="small mb-1" htmlFor="inputBirthday">
-                    Birthday
-                  </label>
-                  <input
-                    type="date"
-                    placeholder="Birthday"
-                    {...register('birthday', { required: true })}
-                    className={`form-control ${errors.birthday ? 'is-invalid' : 'is-valid'}`}
-                  />
-                  <div className="invalid-feedback">{errors.birthday?.message}</div>
-                </div>
-              </div>
-              <button className="btn btn-primary" type="submit">
-                {isSubmitting ? 'Saving Changes...' : 'Save Changes'}
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+      <Card>
+        <CardHeader title={`Account Details: ${member.username}`} sx={{ bgcolor: 'black' }} />
+
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Box sx={{ display: 'grid', gridAutoColumns: '2fr', gap: 1 }}>
+              <TextField
+                {...register('first_name', {
+                  required: {
+                    value: true,
+                    message: 'First name is required'
+                  },
+                  maxLength: 80
+                })}
+                label="First name"
+                error={errors.first_name}
+                margin="dense"
+              />
+              <TextField
+                {...register('last_name', {
+                  required: {
+                    value: true,
+                    message: 'last name is required'
+                  },
+                  maxLength: 20
+                })}
+                label="Last name"
+                error={errors.last_name}
+                margin="dense"
+              />
+              <TextField
+                {...register('email', { required: true, pattern: /^\S+@\S+$/i })}
+                label="Email address"
+                error={errors.email}
+                margin="dense"
+              />
+              <TextField
+                {...register('phone', {
+                  required: true,
+                  pattern: '/[0-9]{10}/i',
+                  maxLength: 10,
+                  minLength: 10
+                })}
+                label="Phone"
+                error={errors.phone}
+                margin="dense"
+              />
+              <TextField
+                {...register('birthday', { required: true })}
+                label="Birthday"
+                error={errors.birthday}
+                margin="dense"
+              />
+
+              <LoadingButton
+                loading={isSubmitting}
+                type="submit"
+                variant="contained"
+                loadingIndicator="Saving changes..."
+              >
+                Save Changes
+              </LoadingButton>
+            </Box>
+          </form>
+        </CardContent>
+      </Card>
+    </Box>
   )
 }

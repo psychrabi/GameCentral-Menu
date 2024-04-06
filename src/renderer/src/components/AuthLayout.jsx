@@ -1,29 +1,25 @@
-import 'bootstrap-icons/font/bootstrap-icons.css'
 import { Navigate, Outlet } from 'react-router-dom'
-import logo from '../public/logo.png'
+import logo from '/logo.png'
 import { useBoundStore } from './stores/BoundStore'
 import SystemInfo from './ui/SystemInfo'
 import { lazy, useContext, useEffect, useMemo } from 'react'
 import notificationContext from '../context/NotificationContext'
 import { Box } from '@mui/material'
-// import io from 'socket.io-client'
+import { invoke } from '@tauri-apps/api'
 
 const ImageBackground = lazy(() => import('./ui/ImageBackground'))
 const VideoBackground = lazy(() => import('./ui/VideoBackground'))
 
 export default function AuthLayout() {
-  const { token, center_name, messages, alert, checkSession, checkSystemInfo, systeminfo } =
-    useBoundStore((state) => ({
-      token: state.token,
-      center_id: state.center_id,
-      center_name: state.center_name,
-      messages: state.messages,
-      alert: state.alert,
-      checkSession: state.checkSession,
-      session: state.session,
-      checkSystemInfo: state.checkSystemInfo
-      // systeminfo: state.systeminfo
-    }))
+  const { token, center_name, messages, alert, checkSession } = useBoundStore((state) => ({
+    token: state.token,
+    center_id: state.center_id,
+    center_name: state.center_name,
+    messages: state.messages,
+    alert: state.alert,
+    checkSession: state.checkSession,
+    session: state.session
+  }))
 
   const videoBackground = true
   const backgroundComponent = useMemo(() => {
@@ -40,20 +36,7 @@ export default function AuthLayout() {
 
   useEffect(() => {
     checkSession()
-    checkSystemInfo()
   }, [checkSession])
-
-  // useEffect(() => {
-  //   const socket = io('http://localhost:3000');
-
-  //      // Send system information to the server
-  //   socket.emit('systemInfo', systeminfo);
-
-  //   // Clean up the WebSocket connection when the component unmounts
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
 
   return token ? (
     <Navigate to={'/home'} />
@@ -74,7 +57,7 @@ export default function AuthLayout() {
           minHeight={'100vh'}
         >
           <Box>
-            <img src={logo} alt={center_name} />
+            <img src={logo} alt={center_name} lazy="load" width={'120px'} height={'120px'} />
             <Outlet />
           </Box>
           <Box

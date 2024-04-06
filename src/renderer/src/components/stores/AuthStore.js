@@ -22,24 +22,23 @@ export const createAuthSlice = (set, get) => ({
     set({ loading: true })
     try {
       const { data } = await axiosClient.post('/login', payload)
-      console.log(data)
       const { id, center_name } = data.user
 
       set({
-        alert: 'success',
         center_id: id,
         center_name,
-        loading: false,
         settings: data.settings,
-        messages: 'Center Account set successfully.'
+        messages: 'Center Account set successfully.',
+        alert: 'success'
       })
 
       localStorage.setItem('center_id', JSON.stringify(id))
       localStorage.setItem('center_name', JSON.stringify(center_name))
       localStorage.setItem('settings', JSON.stringify(data.settings))
     } catch (err) {
-      console.log(err)
-      set({ messages: 'Failed to login', loading: false, alert: 'danger' })
+      set({ messages: 'Failed to login', alert: 'danger' })
+    } finally {
+      set({ loading: false })
     }
   },
   memberLogin: async (payload) => {
@@ -48,7 +47,7 @@ export const createAuthSlice = (set, get) => ({
       const { data } = await axiosClient.post('/members/login', payload)
 
       const { member, session, token, sessions } = data
-      const sessionType = member.balance > 1
+      const sessionType = member.balance > 1 ? 'balance' : 'credit'
 
       // TODO: Find a different way to handle credit session
       // const sessionType = member.balance > 0 || member.bonus_balance > 0 ? 'balance' : 'credit'
@@ -65,15 +64,14 @@ export const createAuthSlice = (set, get) => ({
       //   return
       // }
       set({
-        loading: false,
         member,
         session,
         token,
         start_time: Date.parse(session.start_time),
-        messages: 'You have successfully logged in.',
-        alert: 'success',
         sessionType,
-        sessions
+        sessions,
+        messages: 'You have successfully logged in.',
+        alert: 'success'
       })
 
       const localStorageItems = {
@@ -89,11 +87,9 @@ export const createAuthSlice = (set, get) => ({
         localStorage.setItem(key, JSON.stringify(value))
       })
     } catch (err) {
-      set({
-        messages: 'Provided username or password is incorrect',
-        loading: false,
-        alert: 'danger'
-      })
+      set({ messages: 'Provided username or password is incorrect', alert: 'danger' })
+    } finally {
+      set({ loading: false })
     }
   },
 
@@ -103,18 +99,11 @@ export const createAuthSlice = (set, get) => ({
       payload['center_id'] = get().center_id
 
       const response = await axiosClient.post('/members/signup', payload)
-      console.log(response)
-      set({
-        messages: response.data.message,
-        alert: 'success'
-      })
+      set({ messages: response.data.message, alert: 'success' })
     } catch (err) {
-      console.log(err)
       set({ messages: err.response.data.message, alert: 'danger' })
     } finally {
-      set({
-        loading: false
-      })
+      set({ loading: false })
     }
   },
   memberUpdate: async (id, payload) => {
@@ -122,25 +111,32 @@ export const createAuthSlice = (set, get) => ({
     try {
       const data = await updateData(`/members/${id}`, get().token, payload)
       set({ member: data })
+
       localStorage.setItem('member', JSON.stringify(data))
-      set({ loading: false, messages: 'Your profile is successfully updated.', alert: 'success' })
+
+      set({ messages: 'Your profile is successfully updated.', alert: 'success' })
     } catch (err) {
-      set({ messages: err.response.data.message, loading: false, alert: 'danger' })
+      set({ messages: err.response.data.message, alert: 'danger' })
+    } finally {
+      set({ loading: false })
     }
   },
   reset: () => {
-    set({
-      member: null,
-      session: null,
-      sessionType: null,
-      start_time: null,
-      token: null,
-      sessions: null,
-      favoriteGames: null
+    const keys = [
+      'member',
+      'session',
+      'sessionType',
+      'start_time',
+      'token',
+      'sessions',
+      'favoriteGames'
+    ]
+    keys.forEach((key) => {
+      set({ [key]: null })
     })
   },
   checkSession: () => {
-    ;[
+    const keys = [
       'token',
       'member',
       'start_time',
@@ -149,7 +145,8 @@ export const createAuthSlice = (set, get) => ({
       'center_id',
       'center_name',
       'settings'
-    ].forEach((key) => {
+    ]
+    keys.forEach((key) => {
       const item = localStorage.getItem(key)
       if (item) {
         set({ [key]: JSON.parse(item) })
@@ -181,7 +178,6 @@ export const createAuthSlice = (set, get) => ({
     const centerId = localStorage.getItem('center_id')
     const centerName = localStorage.getItem('center_name')
 
-    if (centerId) set({ center_id: JSON.parse(centerId) })
     if (centerId) set({ center_id: JSON.parse(centerId) })
     if (centerName) set({ center_name: JSON.parse(centerName) })
 

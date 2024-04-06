@@ -1,6 +1,6 @@
 import { shell, dialog, ipcMain } from 'electron'
 const regedit = require('regedit')
-const glob = require('glob')
+
 const si = require('systeminformation')
 const path = require('path')
 const fs = require('fs')

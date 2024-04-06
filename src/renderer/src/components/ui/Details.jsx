@@ -1,12 +1,36 @@
-import { useCallback, useContext, useEffect, useMemo } from 'react'
-import Carousel from 'react-bootstrap/Carousel'
-import Offcanvas from 'react-bootstrap/Offcanvas'
-import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage.js'
-// import axiosClient from '../../lib/axios-client.js'
-import { Button } from 'react-bootstrap'
+import { useCallback, useEffect, useMemo } from 'react'
+import { removeFromLocalStorage } from '../../utils/removeFromLocalStorage'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
-import notificationContext from '../../context/NotificationContext.js'
-import { useBoundStore } from '../stores/BoundStore.js'
+import { useBoundStore } from '../stores/BoundStore'
+import CloseIcon from '@mui/icons-material/Close'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import {
+  Badge,
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  Chip,
+  Divider,
+  Drawer,
+  Grid,
+  IconButton,
+  ImageList,
+  ImageListItem,
+  Typography,
+  styled
+} from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+  justifyContent: 'flex-end'
+}))
 const Details = () => {
   const {
     show,
@@ -69,7 +93,125 @@ const Details = () => {
   }, [running])
 
   return (
-    <Offcanvas
+    <>
+      <Drawer
+        anchor={'right'}
+        open={show}
+        onClose={handleClose}
+        PaperProps={{
+          sx: {
+            background: `url(${game?.videos == null ? game?.screenshots[2] : ''})`,
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover'
+          }
+        }}
+      >
+        <DrawerHeader>
+          <IconButton onClick={handleClose}>
+            <CloseIcon />
+          </IconButton>
+        </DrawerHeader>
+        <Divider />
+        <Box
+          sx={{ width: '100vw', height: '100vh', overflow: 'auto', position: 'relative' }}
+          className="no-scrollbar"
+        >
+          <Box
+            display={'grid'}
+            gridTemplateColumns={'320px 3fr'}
+            gap={5}
+            margin="1rem"
+            position={'relative'}
+            className="no-scrollbar"
+            sx={{ overflow: 'auto', flex: 1 }}
+          >
+            <Box>
+              <Card
+                sx={{
+                  backgroundImage: `url(${game?.poster})`,
+                  backgroundColor: '#ccc',
+                  width: '320px',
+                  height: 'auto',
+                  aspectRatio: '3 / 4',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: 'cover',
+                  borderRadius: '1rem',
+                  position: 'relative'
+                }}
+              >
+                <IconButton
+                  variant="outlined"
+                  color={isFavorited ? 'error' : 'success'}
+                  sx={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}
+                  onClick={() => handleFavorite()}
+                >
+                  {isFavorited ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                </IconButton>
+              </Card>
+
+              <LoadingButton
+                loading={running === game.id}
+                loadingIndicator="Running..."
+                variant="contained"
+                color="success"
+                size="large"
+                fullWidth
+                startIcon={<PlayArrowIcon />}
+                onClick={() => runExecutable()}
+                sx={{ my: 2 }}
+              >
+                Play {game.name}
+              </LoadingButton>
+              {game?.game_accounts?.length > 0 && (
+                <LoadingButton
+                  loading={running === game.id}
+                  loadingIndicator="Running..."
+                  role={'button'}
+                  variant="contained"
+                  color="info"
+                  size="large"
+                  fullWidth
+                  startIcon={<PlayArrowIcon />}
+                  onClick={() => runExecutable()}
+                >
+                  Play with center account
+                </LoadingButton>
+              )}
+            </Box>
+            <Box>
+              <Card sx={{ mb: 2, height: 'auto' }}>
+                <CardHeader
+                  title={game?.name}
+                  subheader={game?.game_type}
+                  sx={{ backgroundColor: 'rgb(0, 0, 0, 0.5)' }}
+                />
+                <CardContent>
+                  <Typography variant="h6">Summary</Typography>
+                  <Typography variant="body1">{game?.summary}</Typography>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader title="Screenshots" sx={{ backgroundColor: 'rgb(0, 0, 0, 0.5)' }} />
+                <CardContent>
+                  <ImageList
+                    sx={{ width: '100%', height: '500px', overflow: 'auto', position: 'relative', margin:0 }}
+                    cols={2}
+                    rowHeight={160}
+                    className="no-scrollbar"
+                  >
+                    {game?.screenshots?.map((item) => (
+                      <ImageListItem key={item}>
+                        <img src={item} alt={game?.name} loading="lazy" />
+                      </ImageListItem>
+                    ))}
+                  </ImageList>
+                </CardContent>
+              </Card>
+            </Box>
+          </Box>
+        </Box>
+      </Drawer>
+      {/* <Offcanvas
       show={show}
       onHide={handleClose}
       placement="end"
@@ -91,20 +233,20 @@ const Details = () => {
         <Offcanvas.Body className="text-light d-flex flex-column">
           <div className="top mx-5 sticky">
             <div className="d-grid gap-3 ">
-              {/* Poster div */}
+              
               <div
                 className="cover position-relative"
                 style={{ backgroundImage: `url(${game?.poster})`, backgroundColor: '#ccc' }}
               >
-                <Button variant="outline-danger" className="position-absolute top-0 end-0 m-3">
+                <button variant="outline-danger" className="position-absolute top-0 end-0 m-3">
                   <i
                     className={isFavorited ? 'bi bi-heart-fill' : 'bi bi-heart'}
                     style={{ fontSize: '2rem' }}
                     onClick={() => handleFavorite()}
                   ></i>
-                </Button>
+                </button>
               </div>
-              <Button
+              <button
                 variant={running === game.id ? 'secondary' : 'success'}
                 className="p-0 fs-2 d-flex justify-content-center align-items-center"
                 id="play-button"
@@ -125,9 +267,9 @@ const Details = () => {
                     <i className="bi bi-play-fill" style={{ fontSize: '2.5rem' }}></i> Play
                   </>
                 )}
-              </Button>
+              </button>
               {game?.game_accounts?.length > 0 ? (
-                <Button
+                <button
                   variant="secondary"
                   className="p-0 fs-5 d-flex justify-content-center align-items-center"
                   id="play-button"
@@ -135,7 +277,7 @@ const Details = () => {
                 >
                   <i className="bi bi-play-fill" style={{ fontSize: '2.5rem' }}></i> With Center
                   account
-                </Button>
+                </button>
               ) : (
                 ''
               )}
@@ -171,7 +313,8 @@ const Details = () => {
           </div>
         </Offcanvas.Body>
       </div>
-    </Offcanvas>
+    </Offcanvas> */}
+    </>
   )
 }
 

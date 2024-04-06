@@ -1,19 +1,18 @@
-import 'bootstrap-icons/font/bootstrap-icons.css'
-import { useCallback } from 'react'
-import { useBoundStore } from '../../components/stores/BoundStore'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import Button from '@mui/material/Button'
-import { Link as RouterLink } from 'react-router-dom'
-import { TextField, Typography, Link } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
+import { Link, TextField, Typography } from '@mui/material'
+import { useCallback, useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import { z } from 'zod'
+import { useBoundStore } from '../../components/stores/BoundStore'
 
 const schema = z.object({
   username: z.string().min(3),
   password: z.string().min(8)
 })
 export default function MemberLogin() {
+  const navigate = useNavigate()
   const { memberLogin, center_name } = useBoundStore((state) => ({
     memberLogin: state.memberLogin,
     center_name: state.center_name
@@ -42,6 +41,12 @@ export default function MemberLogin() {
     },
     [memberLogin, setError]
   )
+
+  useEffect(() => {
+    if (!center_name) {
+      navigate('/admin')
+    }
+  }, [])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -75,7 +80,7 @@ export default function MemberLogin() {
         Sign In
       </LoadingButton>
       <Typography variant="body2">
-        <span className="me-2">Don&apos;t have an account yet?</span>
+        Don&apos;t have an account yet? &nbsp;
         <Link component={RouterLink} to="/register" underline="none">
           Create account
         </Link>

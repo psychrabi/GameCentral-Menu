@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form'
 
 import { z } from 'zod'
 import { Link } from 'react-router-dom'
-import { Checkbox, FormControlLabel, TextField } from '@mui/material'
+import { Checkbox, FormControlLabel, TextField, Typography } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 
 const schema = z.object({
@@ -58,18 +58,18 @@ export default function AdminLogin() {
   if (!token) {
     return (
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h4 className="h5  fw-normal text-light">Please sign in</h4>
+        <Typography variant="h5">Please sign in</Typography>
 
         <TextField
           fullWidth
-          variant="filled"
+          variant="outlined"
           {...register('license')}
           label="License"
           error={errors.license}
         />
         <TextField
           fullWidth
-          variant="filled"
+          variant="outlined"
           {...register('username')}
           label="Username"
           error={errors.username}
@@ -77,7 +77,7 @@ export default function AdminLogin() {
         />
         <TextField
           fullWidth
-          variant="filled"
+          variant="outlined"
           {...register('password')}
           label="Password"
           error={errors.password}
@@ -88,18 +88,15 @@ export default function AdminLogin() {
           label="Remember me"
           {...register('remember')}
         />
-
         <LoadingButton
+          fullWidth
           variant="contained"
-          className="w-100 btn btn-lg btn-primary mb-2"
           type="submit"
           loading={isSubmitting}
           loadingIndicator="Signing In..."
         >
           Sign In
         </LoadingButton>
-
-        <Link to="/register">Create an account for GameCentral Menu</Link>
       </form>
     )
   }

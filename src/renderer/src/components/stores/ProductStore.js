@@ -18,9 +18,11 @@ export const createProductSlice = (set, get) => ({
     set({ loading: true, error: null })
     try {
       const products = await fetchData(`/clientProducts/${centerId}`, token)
-      set({ products, loading: false })
+      set({ products: products })
     } catch (error) {
-      set({ error: error.message, loading: false })
+      set({ messages: error.message, alert: 'danger' })
+    } finally {
+      set({ loading: false })
     }
   },
   fetchSingleProduct: async (id, token) => {
@@ -29,7 +31,9 @@ export const createProductSlice = (set, get) => ({
       const response = await fetchData(`/products/${id}`, token)
       set({ singleProduct: response.data, loading: false })
     } catch (error) {
-      set({ error: error.message, loading: false })
+      set({ messages: error.message, alert: 'danger' })
+    } finally {
+      set({ loading: false })
     }
   },
   checkOut: async (member_id, subTotal, tax, total) => {
@@ -41,8 +45,7 @@ export const createProductSlice = (set, get) => ({
       tax,
       total,
       paymentMode
-    }
-    console.log(payload)
+    }    
   },
   subTotal: () => get().cart.reduce((total, item) => total + item.sales_price * item.quantity, 0),
   tax: () => {

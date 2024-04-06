@@ -1,15 +1,11 @@
-import { useCallback, useEffect, useRef } from 'react'
-import { Navigate } from 'react-router-dom'
-import { useBoundStore } from '../../components/stores/BoundStore'
 import { zodResolver } from '@hookform/resolvers/zod'
-
+import { useCallback, useEffect } from 'react'
+import { useBoundStore } from '../../components/stores/BoundStore'
 import { useForm } from 'react-hook-form'
-
-import { z } from 'zod'
-import { Link as RouterLink } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
-import { Link, TextField, Typography } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
+import { Link, TextField, Typography } from '@mui/material'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import { z } from 'zod'
 
 const schema = z
   .object({
@@ -25,7 +21,7 @@ const schema = z
 
 export default function Register() {
   const navigate = useNavigate()
-  const { memberSignup, center_name, error } = useBoundStore((state) => ({
+  const { memberSignup, center_name } = useBoundStore((state) => ({
     memberSignup: state.memberSignup,
     center_name: state.center_name,
     error: state.error
@@ -57,6 +53,12 @@ export default function Register() {
     },
     [memberSignup, setError]
   )
+
+  useEffect(() => {
+    if (!center_name) {
+      navigate('/admin')
+    }
+  }, [])
 
   return (
     <>
@@ -92,7 +94,6 @@ export default function Register() {
           error={errors.password_confirmation}
           margin="dense"
         />
-
         <LoadingButton
           variant="contained"
           fullWidth
@@ -104,9 +105,8 @@ export default function Register() {
         >
           Sign Up
         </LoadingButton>
-
         <Typography variant="body2">
-          <span className="me-2">Don't have an account yet?</span>
+          Don't have an account yet?&nbsp;
           <Link component={RouterLink} to="/login" underline="none">
             Sign In
           </Link>

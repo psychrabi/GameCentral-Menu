@@ -5,7 +5,7 @@ import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import 'bootstrap-icons/font/bootstrap-icons.css'
+
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { submitData } from '../../utils/fetchData'
@@ -98,14 +98,14 @@ const Navigation = () => {
         <AppBar position="static">
           <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-            <Typography variant="h6" component="div">
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               GameCentral Menu
             </Typography>
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', mt: 1 }}>
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', mt: 0.5 }}>
               <Timer />
             </Box>
 
-            <Box className="non-draggable">
+            <Box className="non-draggable" display={'flex'} gap={1}>
               <Link to="/home">
                 <IconButton aria-label="home">
                   <HomeIcon />

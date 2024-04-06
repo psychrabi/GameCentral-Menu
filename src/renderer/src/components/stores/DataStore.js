@@ -21,37 +21,45 @@ export const createDataSlice = (set, get) => ({
     set({ loading: true })
     try {
       const games = await fetchData(`/clientGames/${centerId}`, token)
-      set({ games, loading: false })
+      set({ games: games })
     } catch (error) {
       // Renamed 'err' to 'error' for consistency
-      set({ messages: error.message, loading: false, alert: 'danger' })
+      set({ messages: error.message, alert: 'danger' })
+    } finally {
+      set({ loading: false })
     }
   },
   fetchFavoriteGames: async (memberId, token) => {
     set({ loading: true })
     try {
       const favoriteGames = await fetchData(`/favoriteGames/${memberId}`, token)
-      set({ favoriteGames, loading: false })
+      set({ favoriteGames: favoriteGames })
     } catch (error) {
-      set({ messages: error.message, loading: false, alert: 'danger' })
+      set({ messages: error.message, alert: 'danger' })
+    } finally {
+      set({ loading: false })
     }
   },
   fetchApplications: async (centerId, token) => {
     set({ loading: true })
     try {
       const applications = await fetchData(`/clientApps/${centerId}`, token)
-      set({ applications, loading: false })
+      set({ applications: applications })
     } catch (error) {
-      set({ messages: error.message, loading: false, alert: 'danger' })
+      set({ messages: error.message, alert: 'danger' })
+    } finally {
+      set({ loading: false })
     }
   },
   fetchProducts: async (centerId, token) => {
     set({ loading: true })
     try {
       const products = await fetchData(`/clientProducts/${centerId}`, token)
-      set({ products, loading: false })
+      set({ products: products })
     } catch (error) {
-      set({ messages: error.message, loading: false, alert: 'danger' })
+      set({ messages: error.message, alert: 'danger' })
+    } finally {
+      set({ loading: false })
     }
   },
   toggleFavoriteGame: async (centerId, memberId, gameId, token) => {
@@ -59,13 +67,14 @@ export const createDataSlice = (set, get) => ({
     set({ loading: true })
     try {
       const response = await submitData('/favoriteGame', token, payload)
-      // console.log(response);
       const gameName = get().game.name
+
       set({
+        show: !get().show,
         messages: `${gameName}: ${response.message}`,
-        alert: 'success',
-        show: !get().show
+        alert: 'success'
       })
+      
       get().fetchFavoriteGames(memberId, token)
     } catch (error) {
       set({ messages: error.message, alert: 'danger' })
@@ -81,7 +90,6 @@ export const createDataSlice = (set, get) => ({
       .then((response) => {
         if (response.status === 'file-exists') {
           const { status } = window.api.launchExecutable(executable, parameters)
-          // console.log(status)
         } else {
           throw new Error('Game executable missing')
         }
@@ -115,7 +123,6 @@ export const createDataSlice = (set, get) => ({
   setMessages: (messages) => set({ messages }),
   setAlert: (alert) => set({ alert }),
   setTitle: (title) => set({ title }),
-  setGameTypes: (types) => set({ gameTypes: types })
-  // setRunning: (running) => set({ running })
-  // ... (remaining properties and methods)
+  setGameTypes: (types) => set({ gameTypes: types }),
+  setRunning: (running) => set({ running })  
 })
