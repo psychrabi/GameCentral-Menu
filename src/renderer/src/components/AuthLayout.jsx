@@ -1,11 +1,11 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import logo from '/logo.png'
+import logo from '../public/logo.png'
 import { useBoundStore } from './stores/BoundStore'
 import SystemInfo from './ui/SystemInfo'
 import { lazy, useContext, useEffect, useMemo } from 'react'
 import notificationContext from '../context/NotificationContext'
 import { Box } from '@mui/material'
-import { invoke } from '@tauri-apps/api'
+
 
 const ImageBackground = lazy(() => import('./ui/ImageBackground'))
 const VideoBackground = lazy(() => import('./ui/VideoBackground'))
