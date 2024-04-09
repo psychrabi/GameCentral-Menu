@@ -24,7 +24,7 @@ export const createDataSlice = (set, get) => ({
       set({ games: games })
     } catch (error) {
       // Renamed 'err' to 'error' for consistency
-      set({ messages: error.message, alert: 'danger' })
+      set({ messages: error.message, alert: 'error' })
     } finally {
       set({ loading: false })
     }
@@ -35,7 +35,7 @@ export const createDataSlice = (set, get) => ({
       const favoriteGames = await fetchData(`/favoriteGames/${memberId}`, token)
       set({ favoriteGames: favoriteGames })
     } catch (error) {
-      set({ messages: error.message, alert: 'danger' })
+      set({ messages: error.message, alert: 'error' })
     } finally {
       set({ loading: false })
     }
@@ -46,7 +46,7 @@ export const createDataSlice = (set, get) => ({
       const applications = await fetchData(`/clientApps/${centerId}`, token)
       set({ applications: applications })
     } catch (error) {
-      set({ messages: error.message, alert: 'danger' })
+      set({ messages: error.message, alert: 'error' })
     } finally {
       set({ loading: false })
     }
@@ -57,7 +57,7 @@ export const createDataSlice = (set, get) => ({
       const products = await fetchData(`/clientProducts/${centerId}`, token)
       set({ products: products })
     } catch (error) {
-      set({ messages: error.message, alert: 'danger' })
+      set({ messages: error.message, alert: 'error' })
     } finally {
       set({ loading: false })
     }
@@ -74,10 +74,10 @@ export const createDataSlice = (set, get) => ({
         messages: `${gameName}: ${response.message}`,
         alert: 'success'
       })
-      
+
       get().fetchFavoriteGames(memberId, token)
     } catch (error) {
-      set({ messages: error.message, alert: 'danger' })
+      set({ messages: error.message, alert: 'error' })
     } finally {
       set({ loading: false })
     }
@@ -98,7 +98,7 @@ export const createDataSlice = (set, get) => ({
         set({ messages: 'Game launched successfully', alert: 'success' })
       })
       .catch((error) => {
-        set({ messages: error.message, alert: 'danger' })
+        set({ messages: error.message, alert: 'error' })
       })
       .finally(() => {
         set({ loading: false })
@@ -124,5 +124,5 @@ export const createDataSlice = (set, get) => ({
   setAlert: (alert) => set({ alert }),
   setTitle: (title) => set({ title }),
   setGameTypes: (types) => set({ gameTypes: types }),
-  setRunning: (running) => set({ running })  
+  setRunning: (running) => set({ running })
 })

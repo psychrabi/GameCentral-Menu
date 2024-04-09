@@ -20,7 +20,7 @@ export const createProductSlice = (set, get) => ({
       const products = await fetchData(`/clientProducts/${centerId}`, token)
       set({ products: products })
     } catch (error) {
-      set({ messages: error.message, alert: 'danger' })
+      set({ messages: error.message, alert: 'error' })
     } finally {
       set({ loading: false })
     }
@@ -31,7 +31,7 @@ export const createProductSlice = (set, get) => ({
       const response = await fetchData(`/products/${id}`, token)
       set({ singleProduct: response.data, loading: false })
     } catch (error) {
-      set({ messages: error.message, alert: 'danger' })
+      set({ messages: error.message, alert: 'error' })
     } finally {
       set({ loading: false })
     }
@@ -45,7 +45,7 @@ export const createProductSlice = (set, get) => ({
       tax,
       total,
       paymentMode
-    }    
+    }
   },
   subTotal: () => get().cart.reduce((total, item) => total + item.sales_price * item.quantity, 0),
   tax: () => {
@@ -63,9 +63,16 @@ export const createProductSlice = (set, get) => ({
 
     const cartItem = cart.find((item) => item.id === id)
     if (cartItem) {
-      cartItem.quantity += 1
-      set({ cart: [...cart] })
-      set({ messages: 'Cart updated successfully.', alert: 'success' })
+
+      
+      if (cartItem.quantity >= productToAdd.stock) {
+        set({ messages: 'Out of stock.', alert: 'error' })
+      } else {
+        cartItem.quantity += 1
+        set({ cart: [...cart] })
+        set({ messages: 'Cart quantity updated successfully.', alert: 'success' })
+      }
+
     } else {
       set({ cart: [...cart, { ...productToAdd, quantity: 1 }] })
       set({ messages: 'Added to cart successfully.', alert: 'success' })
