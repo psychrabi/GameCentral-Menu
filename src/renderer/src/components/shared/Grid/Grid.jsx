@@ -1,8 +1,19 @@
 import PropTypes from 'prop-types'
 import React, { useCallback, useEffect } from 'react'
-import { LazyLoadImage } from 'react-lazy-load-image-component'
 import { useBoundStore } from '../../stores/BoundStore'
-import { Box, Card, CardMedia, Container, Grid as LayoutGrid } from '@mui/material'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import ShareIcon from '@mui/icons-material/Share'
+import {
+  Box,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Container,
+  IconButton,
+  Grid as LayoutGrid,
+  Typography
+} from '@mui/material'
 import './Grid.scss'
 
 const Grid = React.memo(({ games, getData }) => {
@@ -58,10 +69,43 @@ const Grid = React.memo(({ games, getData }) => {
               image={game.poster}
               title={game.name}
               sx={{ objectFit: 'cover', aspectRatio: '3 / 4' }}
-              onClick={() => handleSelect(game.id)}
               width={'100%'}
               height={'auto'}
             />
+            <Card
+              onClick={() => handleSelect(game.id)}
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                textAlign: 'center'
+              }}
+            >
+              <CardContent>
+                <Typography variant="h6" textOverflow={'ellipsis'}>
+                  {game.name}
+                </Typography>
+              </CardContent>
+
+              <CardActions disableSpacing>
+                <IconButton
+                  aria-label="add to favorites"
+                  onClick={() => runExecutable(game.executable)}
+                  variant="filled"
+                  color="success"
+                  size='large'
+                >
+                  <PlayArrowIcon />
+                </IconButton>
+              </CardActions>
+            </Card>
           </Card>
         ))}
       </Box>

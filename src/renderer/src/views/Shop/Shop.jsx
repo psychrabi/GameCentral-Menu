@@ -3,9 +3,9 @@ import { useBoundStore } from '../../components/stores/BoundStore'
 import ProductTypes from '../../data/ProductTypes.js'
 
 import { useMemo } from 'react'
-import Product from './Product.jsx'
+import Product from '../../components/ui/Shop/Product.jsx'
 import { Box } from '@mui/material'
-
+import './Shop.scss'
 export default function Shop() {
   const {
     token,
@@ -74,7 +74,7 @@ export default function Shop() {
 
   return (
     <>
-      <Box className="products" px={2}>
+      <Box className="shop" px={2}>
         {filteredProducts?.map((product) => (
           <Product key={product.id} product={product} />
         ))}

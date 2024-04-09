@@ -47,11 +47,11 @@ export default function Billing() {
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 8
+                pageSize: 18
               }
             }
           }}
-          pageSizeOptions={[8]}
+          pageSizeOptions={[18]}
         />
       </div>
     </>

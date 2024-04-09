@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoadingButton } from '@mui/lab'
-import { Link, TextField, Typography } from '@mui/material'
+import { Divider, Link, TextField, Typography } from '@mui/material'
 import { useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
@@ -25,8 +25,8 @@ export default function MemberLogin() {
     formState: { errors, isSubmitting }
   } = useForm({
     defaultValues: {
-      username: 'psychrabi',
-      password: 'Rabi#123'
+      username: import.meta.env.VITE_USERNAME,
+      password: import.meta.env.VITE_PASSWORD
     },
     resolver: zodResolver(schema)
   })
@@ -79,7 +79,13 @@ export default function MemberLogin() {
       >
         Sign In
       </LoadingButton>
-      <Typography variant="body2">
+      <Typography variant="body2" margin={2}>
+        <Link component={RouterLink} to="/forgot-password" underline="none">
+          Forgot password?
+        </Link>
+      </Typography>
+      <Divider sx={{ my: 2 }}> OR </Divider>
+      <Typography variant="body2" margin={2}>
         Don&apos;t have an account yet? &nbsp;
         <Link component={RouterLink} to="/register" underline="none">
           Create account

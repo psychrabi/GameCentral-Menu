@@ -1,3 +1,4 @@
+
 import axiosClient from '../../lib/axios-client'
 import { updateData, submitData } from '../../utils/fetchData'
 
@@ -36,7 +37,7 @@ export const createAuthSlice = (set, get) => ({
       localStorage.setItem('center_name', JSON.stringify(center_name))
       localStorage.setItem('settings', JSON.stringify(data.settings))
     } catch (err) {
-      set({ messages: 'Failed to login', alert: 'danger' })
+      set({ messages: 'Failed to login', alert: 'error' })
     } finally {
       set({ loading: false })
     }
@@ -52,7 +53,7 @@ export const createAuthSlice = (set, get) => ({
       // TODO: Find a different way to handle credit session
       // const sessionType = member.balance > 0 || member.bonus_balance > 0 ? 'balance' : 'credit'
       // if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
-      //   set({ messages: 'Not enough balance. Please top up your account.', alert: 'danger', loading: false })
+      //   set({ messages: 'Not enough balance. Please top up your account.', alert: 'error', loading: false })
       //   return
       // }
       // if (member.credit > 30) {
@@ -87,7 +88,7 @@ export const createAuthSlice = (set, get) => ({
         localStorage.setItem(key, JSON.stringify(value))
       })
     } catch (err) {
-      set({ messages: 'Provided username or password is incorrect', alert: 'danger' })
+      set({ messages: 'Provided username or password is incorrect', alert: 'error' })
     } finally {
       set({ loading: false })
     }
@@ -101,7 +102,7 @@ export const createAuthSlice = (set, get) => ({
       const response = await axiosClient.post('/members/signup', payload)
       set({ messages: response.data.message, alert: 'success' })
     } catch (err) {
-      set({ messages: err.response.data.message, alert: 'danger' })
+      set({ messages: err.response.data.message, alert: 'error' })
     } finally {
       set({ loading: false })
     }
@@ -116,7 +117,7 @@ export const createAuthSlice = (set, get) => ({
 
       set({ messages: 'Your profile is successfully updated.', alert: 'success' })
     } catch (err) {
-      set({ messages: err.response.data.message, alert: 'danger' })
+      set({ messages: err.response.data.message, alert: 'error' })
     } finally {
       set({ loading: false })
     }
@@ -154,25 +155,24 @@ export const createAuthSlice = (set, get) => ({
     })
   },
   checkSystemInfo: async () => {
-    let systeminfo = localStorage.getItem('systemInfo')
-    if (!systeminfo) {
-      try {
-        const info = await window.api.getSystemInfo()
-        systeminfo = JSON.stringify({
-          cpu: `${info.cpu.manufacturer} ${info.cpu.brand}`,
-          graphics: info.graphics.controllers.find((controller) => controller.vram > 0).model,
-          ram: `${(info.mem.total / 1024 ** 3).toFixed(2)}GB`,
-          os: `${info.osInfo.distro} build ${info.osInfo.build}`,
-          ip4: info.networkInterfaces[0].ip4
-        })
-        localStorage.setItem('systemInfo', systeminfo)
-      } catch (error) {
-        console.error(error)
-        set({ message: error.message, alert: 'danger' })
-        return
-      }
-    }
-    set({ systeminfo: JSON.parse(systeminfo) })
+    // let systeminfo = localStorage.getItem('systemInfo')
+    // if (!systeminfo) {
+    //   try {
+    //     const info = await invoke('get_sys_info')
+    //     localStorage.setItem('systemInfo', info)
+    //   } catch (error) {
+    //     set({ message: error.message, alert: 'error' })
+    //     return
+    //   }
+    // }
+    // set({ systeminfo: JSON.parse(systeminfo) })
+
+    // window.__TAURI__.invoke('scan_epic_games_installations').then((response) => {
+    //   console.log(response)
+    // })
+    // window.__TAURI__.invoke('scan_ubisoft_installations').then((response) => {
+    //   console.log(response)
+    // })
   },
   checkCenterID: () => {
     const centerId = localStorage.getItem('center_id')

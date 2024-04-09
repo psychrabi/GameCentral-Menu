@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import Filter from '../../form/Filter.jsx'
+import Filter from '../Filter.jsx'
 import { useBoundStore } from '../../stores/BoundStore.js'
 import { Box, Typography } from '@mui/material'
 

@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton'
 import { CardContent, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 import * as React from 'react'
-import { useBoundStore } from '../../components/stores/BoundStore'
+import { useBoundStore } from '../../stores/BoundStore'
 
 const Product = React.memo(({ product }) => {
   const [expanded, setExpanded] = React.useState(false)
