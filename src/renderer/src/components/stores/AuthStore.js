@@ -1,4 +1,3 @@
-
 import axiosClient from '../../lib/axios-client'
 import { updateData, submitData } from '../../utils/fetchData'
 
@@ -166,7 +165,6 @@ export const createAuthSlice = (set, get) => ({
     //   }
     // }
     // set({ systeminfo: JSON.parse(systeminfo) })
-
     // window.__TAURI__.invoke('scan_epic_games_installations').then((response) => {
     //   console.log(response)
     // })

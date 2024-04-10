@@ -6,7 +6,6 @@ import { lazy, useContext, useEffect, useMemo } from 'react'
 import notificationContext from '../../context/NotificationContext'
 import { Box } from '@mui/material'
 
-
 const ImageBackground = lazy(() => import('../ui/Auth/ImageBackground'))
 const VideoBackground = lazy(() => import('../ui/Auth/VideoBackground'))
 
@@ -21,7 +20,7 @@ export default function AuthLayout() {
     session: state.session
   }))
 
-  const videoBackground = true
+  const videoBackground = false
   const backgroundComponent = useMemo(() => {
     return videoBackground ? <VideoBackground /> : <ImageBackground />
   }, [videoBackground])
@@ -43,9 +42,15 @@ export default function AuthLayout() {
   ) : (
     <>
       {backgroundComponent}
-      <Box height={'100vh'} width={'100vw'} display={'flex'} justifyContent={'center'} onContextMenu={(e) => {
-        e.preventDefault(); // prevent the default behaviour when right clicked        
-      }}>
+      <Box
+        height={'100vh'}
+        width={'100vw'}
+        display={'flex'}
+        justifyContent={'center'}
+        onContextMenu={(e) => {
+          e.preventDefault() // prevent the default behaviour when right clicked
+        }}
+      >
         <Box
           position={'relative'}
           width="450px"

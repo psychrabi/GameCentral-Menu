@@ -100,7 +100,7 @@ const Grid = React.memo(({ games, getData }) => {
                   onClick={() => runExecutable(game.executable)}
                   variant="filled"
                   color="success"
-                  size='large'
+                  size="large"
                 >
                   <PlayArrowIcon />
                 </IconButton>

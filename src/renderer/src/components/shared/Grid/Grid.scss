@@ -4,22 +4,18 @@
 
   @media (min-width: 1280px) and (max-width: 1440px) {
     --grid-column-count: 7;
-
   }
 
   @media (min-width: 1440px) and (max-width: 1600px) {
     --grid-column-count: 8;
-
   }
 
   @media (min-width: 1600px) and (max-width: 1920px) {
     --grid-column-count: 9;
-
   }
 
   @media (min-width: 1920px) {
     --grid-column-count: 10;
-
   }
 
   --grid-item--min-width: 7.5rem;
@@ -27,8 +23,10 @@
   --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
   --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
   display: grid;
-  grid-template-columns: repeat(auto-fill,
-    minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr)
+  );
   grid-gap: var(--grid-layout-gap);
 
   .game {

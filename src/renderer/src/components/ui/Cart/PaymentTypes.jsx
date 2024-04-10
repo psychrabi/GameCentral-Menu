@@ -26,7 +26,12 @@ export const PaymentTypes = React.memo(() => {
         onChange={handlePaymentModeChange}
       >
         {activePaymentModes.map((mode) => (
-          <FormControlLabel value={mode.category} control={<Radio />} label={mode.description} key={mode.id}/>
+          <FormControlLabel
+            value={mode.category}
+            control={<Radio />}
+            label={mode.description}
+            key={mode.id}
+          />
         ))}
       </RadioGroup>
     </FormControl>

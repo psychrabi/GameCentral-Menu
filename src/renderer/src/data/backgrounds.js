@@ -1,11 +1,11 @@
 const Backgrounds = [
-  'bg-1.jpg',
-  'bg-2.jpg',
-  'bg-3.jpg',
-  'bg-4.jpg',
-  'bg-5.jpg',
-  'bg-6.jpg',
-  'bg-7.jpg'
+  { url: '/src/renderer/src/public/backgrounds/bg-1.jpg' },
+  { url: '/backgrounds/bg-2.jpg' },
+  { url: '/backgrounds/bg-3.jpg' },
+  { url: '/backgrounds/bg-4.jpg' },
+  { url: '/backgrounds/bg-5.jpg' },
+  { url: '/backgrounds/bg-6.jpg' },
+  { url: '/backgrounds/bg-7.jpg' }
 ]
 
 export default Backgrounds

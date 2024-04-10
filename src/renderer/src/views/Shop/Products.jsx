@@ -12,9 +12,10 @@ export default function Products({ products }) {
   }, [products])
 
   // Use React.memo for Product to prevent unnecessary re-renders
-  const MemoizedProduct = useMemo(() => products?.map((product) => (
-    <Product key={product.id} product={product} />
-  )), [products])
+  const MemoizedProduct = useMemo(
+    () => products?.map((product) => <Product key={product.id} product={product} />),
+    [products]
+  )
 
   return (
     <div className="products" id="installed-games-container">

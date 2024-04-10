@@ -100,7 +100,7 @@ const Navigation = () => {
             </Box>
             <Box className="non-draggable" display={'flex'} gap={0}>
               <Link to="/home">
-                <IconButton aria-label="home" >
+                <IconButton aria-label="home">
                   <HomeIcon />
                 </IconButton>
               </Link>

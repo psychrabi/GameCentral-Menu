@@ -1,9 +1,4 @@
-import {
-  Box,
-  Button,
-  Card,
-  Divider
-} from '@mui/material'
+import { Box, Button, Card, Divider } from '@mui/material'
 import { useEffect, useMemo } from 'react'
 import { useBoundStore } from '../../components/stores/BoundStore'
 import { PaymentTypes } from '../../components/ui/Cart/PaymentTypes'

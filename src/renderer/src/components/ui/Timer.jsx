@@ -6,7 +6,9 @@ import { formatTime } from '../../utils/formatTime'
 const Timer = () => {
   const member = useBoundStore((state) => state.member)
   const start_time = useBoundStore((state) => state.start_time)
-  const logout = useBoundStore((state) => state.logout)
+  const setMessages = useBoundStore((state) => state.setMessages)
+  const setAlert = useBoundStore((state) => state.setAlert)
+  const reset = useBoundStore((state) => state.reset)
   const setNotification = useBoundStore((state) => state.setNotification)
   const [duration, setDuration] = useState('00:00:00')
   const [cost, setCost] = useState('0.00')
@@ -29,15 +31,17 @@ const Timer = () => {
 
   const checkCostAndNotify = () => {
     if (cost > member.balance + member.bonus_balance) {
-      setNotification(
+      setMessages(
         'Your session cost is higher than your balance. The difference will be added to your credit.'
       )
+      setAlert('error')
     }
     if (cost > member.balance + member.bonus_balance + NOTIFICATION_THRESHOLD) {
-      setNotification(
+      setMessages(
         'Your credit is over $30. You will be logged out shortly and will not be able to log in until your credit is cleared.'
       )
-      logout()
+      setAlert('error')
+      reset()
     }
   }
 
@@ -58,11 +62,16 @@ const Timer = () => {
   }, [])
 
   return (
-    <List component={'nav'} sx={{display: 'flex', justifyContent: 'space-between', flexGrow: 1}} > 
-      
-      <ListItem><Typography>Start Time:</Typography> {startTimeFormatted}</ListItem>
-      <ListItem><Typography>Duration:</Typography> {duration}</ListItem>
-      <ListItem><Typography>Session Cost:</Typography> $ {cost}</ListItem>
+    <List component={'nav'} sx={{ display: 'flex', justifyContent: 'space-between', flexGrow: 1 }}>
+      <ListItem>
+        <Typography>Start Time:</Typography> {startTimeFormatted}
+      </ListItem>
+      <ListItem>
+        <Typography>Duration:</Typography> {duration}
+      </ListItem>
+      <ListItem>
+        <Typography>Session Cost:</Typography> $ {cost}
+      </ListItem>
     </List>
   )
 }

@@ -63,8 +63,6 @@ export const createProductSlice = (set, get) => ({
 
     const cartItem = cart.find((item) => item.id === id)
     if (cartItem) {
-
-      
       if (cartItem.quantity >= productToAdd.stock) {
         set({ messages: 'Out of stock.', alert: 'error' })
       } else {
@@ -72,7 +70,6 @@ export const createProductSlice = (set, get) => ({
         set({ cart: [...cart] })
         set({ messages: 'Cart quantity updated successfully.', alert: 'success' })
       }
-
     } else {
       set({ cart: [...cart, { ...productToAdd, quantity: 1 }] })
       set({ messages: 'Added to cart successfully.', alert: 'success' })
