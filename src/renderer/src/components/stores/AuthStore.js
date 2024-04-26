@@ -47,47 +47,56 @@ export const createAuthSlice = (set, get) => ({
       const { data } = await axiosClient.post('/members/login', payload)
 
       const { member, session, token, sessions } = data
-      const sessionType = member.balance > 1 ? 'balance' : 'credit'
+      // const sessionType = member.balance > 1 ? 'balance' : 'credit'
 
       // TODO: Find a different way to handle credit session
-      // const sessionType = member.balance > 0 || member.bonus_balance > 0 ? 'balance' : 'credit'
-      // if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
-      //   set({ messages: 'Not enough balance. Please top up your account.', alert: 'error', loading: false })
-      //   return
-      // }
-      // if (member.credit > 30) {
-      //   set({
-      //     messages: `You have ${member.credit} credit to be paid. Please pay it first.`,
-      //     alert: 'info',
-      //     loading: false
-      //   })
-      //   return
-      // }
-      set({
-        member,
-        session,
-        token,
-        start_time: Date.parse(session.start_time),
-        sessionType,
-        sessions,
-        messages: 'You have successfully logged in.',
-        alert: 'success'
-      })
-
-      const localStorageItems = {
-        token,
-        member,
-        session,
-        start_time: Date.parse(session.start_time),
-        sessionType,
-        sessions
+      const sessionType = member.balance > 0 || member.bonus_balance > 0 ? 'balance' : 'credit'
+      // console.log(sessionType)
+      if (sessionType === 'credit' && !window.confirm('Do you want to continue on credit?')) {
+        console.log('credit check')
+        set({
+          messages: 'Not enough balance. Please top up your account.',
+          alert: 'error',
+          loading: false
+        })
+        return
       }
+      if (member.credit > 30) {
+        console.log('credit check')
 
-      Object.entries(localStorageItems).forEach(([key, value]) => {
-        localStorage.setItem(key, JSON.stringify(value))
-      })
+        set({
+          messages: `You have ${member.credit} credit to be paid. Please pay it first.`,
+          alert: 'info',
+          loading: false
+        })
+        return
+      } else {
+        set({
+          member,
+          session,
+          token,
+          start_time: Date.parse(session.start_time),
+          sessionType,
+          sessions,
+          messages: 'You have successfully logged in.',
+          alert: 'success'
+        })
+        const localStorageItems = {
+          token,
+          member,
+          session,
+          start_time: Date.parse(session.start_time),
+          sessionType,
+          sessions
+        }
+
+        Object.entries(localStorageItems).forEach(([key, value]) => {
+          localStorage.setItem(key, JSON.stringify(value))
+        })
+      }
     } catch (err) {
-      set({ messages: 'Provided username or password is incorrect', alert: 'error' })
+      // console.log(err)
+      set({ messages: err.response.data.message, alert: 'error' })
     } finally {
       set({ loading: false })
     }
@@ -129,9 +138,14 @@ export const createAuthSlice = (set, get) => ({
       'start_time',
       'token',
       'sessions',
-      'favoriteGames'
+      'favoriteGames',
+      'game',
+      'cart'
     ]
     keys.forEach((key) => {
+      if (localStorage.getItem(key)) {
+        localStorage.removeItem(key)
+      }
       set({ [key]: null })
     })
   },
@@ -154,21 +168,23 @@ export const createAuthSlice = (set, get) => ({
     })
   },
   checkSystemInfo: async () => {
-    // let systeminfo = localStorage.getItem('systemInfo')
-    // if (!systeminfo) {
-    //   try {
-    //     const info = await invoke('get_sys_info')
-    //     localStorage.setItem('systemInfo', info)
-    //   } catch (error) {
-    //     set({ message: error.message, alert: 'error' })
-    //     return
-    //   }
-    // }
-    // set({ systeminfo: JSON.parse(systeminfo) })
-    // window.__TAURI__.invoke('scan_epic_games_installations').then((response) => {
+    let systeminfo = localStorage.getItem('systemInfo')
+    if (!systeminfo) {
+      try {
+        const info = await invoke('get_sys_info')
+        localStorage.setItem('systemInfo', info)
+      } catch (error) {
+        set({ message: error.message, alert: 'error' })
+        return
+      }
+    }
+    set({ systeminfo: JSON.parse(systeminfo) })
+
+    // invoke('scan_epic_games_installations').then((response) => {
+    //   console.log('invoked')
     //   console.log(response)
     // })
-    // window.__TAURI__.invoke('scan_ubisoft_installations').then((response) => {
+    // invoke('scan_ubisoft_installations').then((response) => {
     //   console.log(response)
     // })
   },

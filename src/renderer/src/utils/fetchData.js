@@ -1,6 +1,6 @@
 import axiosClient from '../lib/axios-client'
 
-const handleRequest = async (method, endpoint, token, payload = null) => {
+const handleRequest = async (method, endpoint, token, payload) => {
   const config = {
     method,
     url: endpoint,
@@ -17,8 +17,11 @@ const handleRequest = async (method, endpoint, token, payload = null) => {
   }
 }
 
-export const fetchData = (endpoint, token) => handleRequest('get', endpoint, token)
+export const fetchData = (endpoint, token, payload) =>
+  handleRequest('get', endpoint, token, payload)
 export const submitData = (endpoint, token, payload) =>
   handleRequest('post', endpoint, token, payload)
 export const updateData = (endpoint, token, payload) =>
   handleRequest('put', endpoint, token, payload)
+export const deleteData = (endpoint, token, payload) =>
+  handleRequest('delete', endpoint, token, payload)

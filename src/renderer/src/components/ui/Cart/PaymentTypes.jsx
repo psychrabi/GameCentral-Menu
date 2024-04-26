@@ -1,13 +1,13 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import PaymentModes from '../../../data/PaymentModes.js'
 import { useBoundStore } from '../../stores/BoundStore.js'
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material'
-export const PaymentTypes = React.memo(() => {
+
+const PaymentTypes = () => {
   const { setPaymentMode, paymentMode } = useBoundStore((state) => ({
     setPaymentMode: state.setPaymentMode,
     paymentMode: state.paymentMode
   }))
-  const [value, setValue] = useState('female')
 
   const handlePaymentModeChange = (event) => {
     setPaymentMode(event.target.value)
@@ -17,23 +17,24 @@ export const PaymentTypes = React.memo(() => {
 
   return (
     <FormControl sx={{ my: 2 }}>
-      <FormLabel id="demo-radio-buttons-group-label">Payment Options</FormLabel>
+      <FormLabel id="paymentMode-label">Payment Options</FormLabel>
       <RadioGroup
-        aria-labelledby="demo-radio-buttons-group-label"
-        defaultValue="female"
-        name="radio-buttons-group"
+        aria-labelledby="paymentMode-label"
+        name="paymentMode"
         value={paymentMode}
-        onChange={handlePaymentModeChange}
+        onChange={(event) => handlePaymentModeChange(event)}
       >
-        {activePaymentModes.map((mode) => (
+        {activePaymentModes.map((item) => (
           <FormControlLabel
-            value={mode.category}
+            value={item.category}
             control={<Radio />}
-            label={mode.description}
-            key={mode.id}
+            label={item.description}
+            key={item.id}
           />
         ))}
       </RadioGroup>
     </FormControl>
   )
-})
+}
+
+export default PaymentTypes

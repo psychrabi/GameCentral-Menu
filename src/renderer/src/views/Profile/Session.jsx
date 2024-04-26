@@ -1,5 +1,5 @@
 import { useBoundStore } from '../../components/stores/BoundStore'
-import { formatTime } from '../../utils/formatTime'
+import { formatTime } from '../../utils/timerUtils'
 import { formatCurrency } from '../../utils/formatCurrency'
 import { DataGrid } from '@mui/x-data-grid'
 

@@ -1,44 +1,47 @@
-import { Navigate, Outlet } from 'react-router-dom'
-import logo from '../../public/logo.png'
-import { useBoundStore } from '../stores/BoundStore'
-import SystemInfo from '../ui/Auth/SystemInfo'
-import { lazy, useContext, useEffect, useMemo } from 'react'
-import notificationContext from '../../context/NotificationContext'
 import { Box } from '@mui/material'
+import { lazy, use, useEffect, useMemo } from 'react'
+import { Navigate, Outlet } from 'react-router-dom'
+import notificationContext from '../../context/NotificationContext'
+import { useBoundStore } from '../stores/BoundStore'
+import logo from '../../public/logo.png'
 
+const SystemInfo = lazy(() => import('../ui/Auth/SystemInfo'))
 const ImageBackground = lazy(() => import('../ui/Auth/ImageBackground'))
 const VideoBackground = lazy(() => import('../ui/Auth/VideoBackground'))
 
 export default function AuthLayout() {
-  const { token, center_name, messages, alert, checkSession } = useBoundStore((state) => ({
-    token: state.token,
-    center_id: state.center_id,
-    center_name: state.center_name,
-    messages: state.messages,
-    alert: state.alert,
-    checkSession: state.checkSession,
-    session: state.session
-  }))
+  const { token, center_id, center_name, messages, alert, checkSession, fetchData } = useBoundStore(
+    (state) => ({
+      token: state.token,
+      center_id: state.center_id,
+      center_name: state.center_name,
+      messages: state.messages,
+      alert: state.alert,
+      checkSession: state.checkSession,
+      session: state.session,
+      fetchData: state.fetchData
+    })
+  )
 
-  const videoBackground = false
+  const videoBackground = true
   const backgroundComponent = useMemo(() => {
     return videoBackground ? <VideoBackground /> : <ImageBackground />
   }, [videoBackground])
 
-  const { showAlert } = useContext(notificationContext)
-
-  useEffect(() => {
-    if (messages && alert) {
-      showAlert(messages, alert)
-    }
-  }, [messages, alert, showAlert])
+  const { showAlert } = use(notificationContext)
 
   useEffect(() => {
     checkSession()
-  }, [checkSession])
+    if (center_id) {
+      fetchData(center_id)
+    }
+    if (messages && alert) {
+      showAlert(messages, alert)
+    }
+  }, [center_id, messages, alert, showAlert])
 
   return token ? (
-    <Navigate to={'/home'} />
+    <Navigate to={'/member/home'} />
   ) : (
     <>
       {backgroundComponent}
@@ -64,7 +67,13 @@ export default function AuthLayout() {
           minHeight={'100vh'}
         >
           <Box>
-            <img src={logo} alt={center_name} lazy="load" width={'120px'} height={'120px'} />
+            <img
+              src={logo}
+              lazy="load"
+              width={'120px'}
+              height={'120px'}
+              alt={`${center_name}-logo`}
+            />
             <Outlet />
           </Box>
           <Box

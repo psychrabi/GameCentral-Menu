@@ -6,10 +6,13 @@ const VideoBackground = () => {
   const videoRef = useRef(null)
 
   useEffect(() => {
+
     const handleVideoEnd = () => {
       const nextVideoIndex = Math.floor(Math.random() * videos.length)
+          console.log(videoRef.current.src)
+
       if (videoRef.current) {
-        videoRef.current.src = `../src/public/videos/${videos[nextVideoIndex]}`
+        videoRef.current.src = `/videos/${videos[nextVideoIndex]}`
         videoRef.current.play()
       }
       setCurrentVideoIndex(nextVideoIndex)
@@ -29,11 +32,7 @@ const VideoBackground = () => {
 
   return (
     <video className="video url-video" autoPlay muted playsInline ref={videoRef}>
-      <source
-        type="video/mp4"
-        src={`../src/public/videos/${videos[currentVideoIndex]}`}
-        id="url-video"
-      />
+      <source type="video/mp4" src={`/videos/${videos[currentVideoIndex]}`} id="url-video" />
     </video>
   )
 }

@@ -44,9 +44,9 @@ const Details = () => {
     () => favoriteGames && favoriteGames?.some((favoriteGame) => favoriteGame.id == game.id)
   )
 
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     setShow(false)
-  }, [setShow])
+  }
 
   //TODO: Change this to use Rust invoke function
   // useEffect(() => {

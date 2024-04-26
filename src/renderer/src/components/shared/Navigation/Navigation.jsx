@@ -21,58 +21,12 @@ import { submitData } from '../../../utils/fetchData'
 import { useBoundStore } from '../../stores/BoundStore'
 import Timer from '../../ui/Timer'
 
-const Navigation = () => {
+const Navigation = ({ handleLogout }) => {
   const navigate = useNavigate()
-  const { member, token, setMessages, setAlert, sessionType, session, reset, start_time } =
-    useBoundStore((state) => ({
-      member: state.member,
-      token: state.token,
-      setMessages: state.setMessages,
-      setAlert: state.setAlert,
-      sessionType: state.sessionType,
-      session: state.session,
-      reset: state.reset,
-      start_time: state.start_time
-    }))
-  const COST_PER_HOUR = 60
+  const member = useBoundStore((state) => state.member)
+
   const memoizedTimer = useMemo(() => <Timer />, [])
   const [anchorEl, setAnchorEl] = useState()
-
-  const handleLogout = async () => {
-    const total_time = (Date.now() - start_time) / 1000 //in seconds
-    const usage_details = {
-      session_id: session.id,
-      total_time: total_time,
-      sessionType: sessionType,
-      session_cost: ((total_time / (60 * 60)) * COST_PER_HOUR).toFixed(2)
-    }
-    try {
-      const logout = await submitData('/members/logout', token, usage_details)
-      if (logout) {
-        ;[
-          'token',
-          'member',
-          'session',
-          'start_time',
-          'sessionType',
-          'sessions',
-          'settings'
-        ].forEach((key) => localStorage.removeItem(key))
-
-        setMessages('You have successfully logged out')
-        setAlert('success')
-      }
-      reset()
-
-      navigate('/login')
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const handleChange = (event) => {
-    setAuth(event.target.checked)
-  }
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget)
@@ -83,8 +37,8 @@ const Navigation = () => {
   }
 
   const handleNavigate = (path) => {
+    setAnchorEl(null)
     navigate(path)
-    handleClose()
   }
   return (
     <>
@@ -96,30 +50,30 @@ const Navigation = () => {
               GameCentral Menu
             </Typography>
             <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', mt: 0.5 }}>
-              <Timer />
+              {memoizedTimer}
             </Box>
             <Box className="non-draggable" display={'flex'} gap={0}>
-              <Link to="/home">
+              <Link to="/member/home">
                 <IconButton aria-label="home">
                   <HomeIcon />
                 </IconButton>
               </Link>
-              <Link to="/games">
+              <Link to="/member/games">
                 <IconButton aria-label="games">
                   <SportsEsportsIcon />
                 </IconButton>
               </Link>
-              <Link to="/applications">
+              <Link to="/member/applications">
                 <IconButton aria-label="applications">
                   <AppsIcon />
                 </IconButton>
               </Link>
-              <Link to="/shop">
+              <Link to="/member/shop">
                 <IconButton aria-label="shop">
                   <StoreIcon />
                 </IconButton>
               </Link>
-              <Link to="/cart">
+              <Link to="/member/cart">
                 <IconButton aria-label="cart">
                   <ShoppingCartIcon />
                 </IconButton>
@@ -151,9 +105,13 @@ const Navigation = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={() => handleNavigate('/profile/details')}>Profile</MenuItem>
-                <MenuItem onClick={() => handleNavigate('/profile/sessions')}>Sessions</MenuItem>
-                <MenuItem onClick={() => handleNavigate('/profile/security')}>
+                <MenuItem onClick={() => handleNavigate('/member/profile/details')}>
+                  Profile
+                </MenuItem>
+                <MenuItem onClick={() => handleNavigate('/member/profile/sessions')}>
+                  Sessions
+                </MenuItem>
+                <MenuItem onClick={() => handleNavigate('/member/profile/security')}>
                   Change Password
                 </MenuItem>
                 <MenuItem onClick={() => handleLogout()}>Logout</MenuItem>

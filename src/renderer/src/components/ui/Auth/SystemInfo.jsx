@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import PropTypes from 'prop-types'
 import { useBoundStore } from '../../stores/BoundStore'
 import { Box, List, ListItem, Paper, Typography } from '@mui/material'
 
@@ -32,8 +31,5 @@ const SystemInfo = () => {
   )
 }
 
-SystemInfo.propTypes = {
-  stats: PropTypes.object
-}
 
 export default SystemInfo

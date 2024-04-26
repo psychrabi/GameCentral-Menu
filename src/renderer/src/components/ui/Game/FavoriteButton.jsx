@@ -4,21 +4,16 @@ import { IconButton } from '@mui/material'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 
-export const FavoriteButton = ({ isFavorited, gameId }) => {
-  const { toggleFavoriteGame, token, member, center_id } = useBoundStore((state) => ({
-    toggleFavoriteGame: state.toggleFavoriteGame,
-    token: state.token,
-    member: state.member,
-    center_id: state.center_id
-  }))
+export const FavoriteButton = ({ isFavorited }) => {
+  const toggleFavoriteGame = useBoundStore((state) => state.toggleFavoriteGame)
   const handleFavorite = useCallback(async () => {
-    toggleFavoriteGame(center_id, member.id, gameId, token)
-  }, [gameId, toggleFavoriteGame])
+    toggleFavoriteGame()
+  }, [])
 
   return (
     <IconButton
       variant="outlined"
-      color={isFavorited ? 'error' : 'success'}
+      color={isFavorited ? 'error' : ''}
       onClick={() => handleFavorite()}
     >
       {isFavorited ? <FavoriteIcon /> : <FavoriteBorderIcon />}

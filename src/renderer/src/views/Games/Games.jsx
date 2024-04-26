@@ -57,11 +57,7 @@ function Games() {
     }, [])
   }, [games, filter, type])
 
-  return (
-    <>
-      <Grid games={filteredGames} getData={getGame} />
-    </>
-  )
+  return <Grid games={filteredGames} getData={getGame} />
 }
 
 export default Games

@@ -3,6 +3,7 @@ import { useBoundStore } from '../../components/stores/BoundStore'
 import Grid from '../../components/shared/Grid/Grid'
 import Header from '../../components/shared/Header/Header'
 import AppTypes from '../../data/AppTypes.js'
+import { Fade } from '@mui/material'
 
 function Applications() {
   const {
@@ -69,11 +70,7 @@ function Applications() {
     }, [])
   }, [applications, filter, type])
 
-  return (
-    <>
-      <Grid games={filteredApps} getData={getApplication} />
-    </>
-  )
+  return <Grid games={filteredApps} getData={getApplication} />
 }
 
 export default Applications

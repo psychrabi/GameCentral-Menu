@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
 import { NotificationProvider } from './NotificationContext'
-import PropTypes from 'prop-types'
 import { useBoundStore } from '../components/stores/BoundStore'
 import { Snackbar, Alert } from '@mui/material'
 
@@ -25,7 +24,7 @@ const Notification = ({ children }) => {
       setAlert(newAlert)
       setShowAlert(true)
     },
-    [setMessages, setAlert, setShowAlert]
+    []
   )
 
   return (
@@ -41,7 +40,5 @@ const Notification = ({ children }) => {
     </NotificationProvider>
   )
 }
-Notification.propTypes = {
-  children: PropTypes.any
-}
+
 export default Notification

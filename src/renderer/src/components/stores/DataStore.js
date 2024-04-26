@@ -16,57 +16,108 @@ export const createDataSlice = (set, get) => ({
   running: '',
   gameTypes: [],
   title: 'Favorite Games',
-  fetchGames: async (centerId, token) => {
-    // CamelCased parameters
-    set({ loading: true })
+  fetchGames: async (center_id, token) => {
     try {
-      const games = await fetchData(`/clientGames/${centerId}`, token)
-      set({ games: games })
+      if (localStorage.getItem('games')) {
+        set({ games: JSON.parse(localStorage.getItem('games')) })
+      } else {
+        const games = await fetchData(`/clientGames/${center_id}`)
+        set({ games: games })
+        localStorage.setItem('games', JSON.stringify(games))
+      }
     } catch (error) {
       // Renamed 'err' to 'error' for consistency
-      set({ messages: error.message, alert: 'error' })
-    } finally {
-      set({ loading: false })
+      set({ messages: error.message, alert: 'danger' })
     }
   },
-  fetchFavoriteGames: async (memberId, token) => {
-    set({ loading: true })
+  fetchFavoriteGames: async () => {
+    const { member, token } = get()
     try {
-      const favoriteGames = await fetchData(`/favoriteGames/${memberId}`, token)
+      const favoriteGames = localStorage.getItem('favoriteGames')
+
+      if (favoriteGames) {
+        set({ favoriteGames: JSON.parse(localStorage.getItem('favoriteGames')) })
+      } else {
+        const favoriteGames = await fetchData(`/favoriteGames/${member.id}`, token)
+        set({ favoriteGames: favoriteGames })
+        localStorage.setItem('favoriteGames', JSON.stringify(favoriteGames))
+      }
+    } catch (error) {
+      // Renamed 'err' to 'error' for consistency
+      // console.log(error)
+      set({ messages: error.response.data.message, alert: 'danger' })
+    }
+  },
+  checkFavoriteGames: async () => {
+    const { member, token } = get()
+
+    const favoriteGames = await fetchData(`/favoriteGames/${member.id}`, token)
+    const localFavoriteGames = JSON.parse(localStorage.getItem('favoriteGames'))?.length
+
+    if (favoriteGames.length !== localFavoriteGames) {
       set({ favoriteGames: favoriteGames })
+      localStorage.setItem('favoriteGames', JSON.stringify(favoriteGames))
+    } else {
+      set({ favoriteGames: JSON.parse(localStorage.getItem('favoriteGames')) })
+    }
+  },
+  fetchApplications: async (center_id, token) => {
+    set({ loading: true })
+
+    try {
+      if (localStorage.getItem('applications')) {
+        set({ applications: JSON.parse(localStorage.getItem('applications')) })
+      } else {
+        const applications = await fetchData(`/clientApps/${center_id}`)
+        set({ applications: applications })
+        localStorage.setItem('applications', JSON.stringify(applications))
+      }
     } catch (error) {
-      set({ messages: error.message, alert: 'error' })
+      // Renamed 'err' to 'error' for consistency
+      set({ messages: error.message, alert: 'danger' })
     } finally {
       set({ loading: false })
     }
   },
-  fetchApplications: async (centerId, token) => {
-    set({ loading: true })
+  fetchProducts: async (center_id, token) => {
     try {
-      const applications = await fetchData(`/clientApps/${centerId}`, token)
-      set({ applications: applications })
+      if (localStorage.getItem('products')) {
+        set({ products: JSON.parse(localStorage.getItem('products')) })
+      } else {
+        const products = await fetchData(`/clientProducts/${center_id}`, token)
+        set({ products: products })
+        localStorage.setItem('products', JSON.stringify(products))
+      }
     } catch (error) {
-      set({ messages: error.message, alert: 'error' })
-    } finally {
-      set({ loading: false })
+      // Renamed 'err' to 'error' for consistency
+      set({ messages: error.message, alert: 'danger' })
     }
   },
-  fetchProducts: async (centerId, token) => {
+  fetchData: async () => {
+    const { center_id, token } = get()
+    const data = ['games', 'applications', 'products']
     set({ loading: true })
-    try {
-      const products = await fetchData(`/clientProducts/${centerId}`, token)
-      set({ products: products })
-    } catch (error) {
-      set({ messages: error.message, alert: 'error' })
-    } finally {
-      set({ loading: false })
+    data.forEach(async (item) => {
+      if (localStorage.getItem(item)) {
+        set({ [item]: JSON.parse(localStorage.getItem(item)) })
+      }
+    })
+
+    if (!get().games.length || !get().applications.length || !get().products.length) {
+      await get().fetchGames(center_id, token)
+      await get().fetchApplications(center_id, token)
+      await get().fetchProducts(center_id, token)
     }
+
+    set({ loading: false })
   },
-  toggleFavoriteGame: async (centerId, memberId, gameId, token) => {
-    const payload = { centerId, memberId, gameId }
+  toggleFavoriteGame: async () => {
+    const { token, game } = get()
+
     set({ loading: true })
     try {
-      const response = await submitData('/favoriteGame', token, payload)
+      // console.log(payload)
+      const response = await submitData(`/toggleFavoriteGame/${game.id}`, token)
       const gameName = get().game.name
 
       set({
@@ -74,10 +125,9 @@ export const createDataSlice = (set, get) => ({
         messages: `${gameName}: ${response.message}`,
         alert: 'success'
       })
-
-      get().fetchFavoriteGames(memberId, token)
+      await get().checkFavoriteGames()
     } catch (error) {
-      set({ messages: error.message, alert: 'error' })
+      set({ messages: error.message, alert: 'danger' })
     } finally {
       set({ loading: false })
     }
@@ -98,7 +148,7 @@ export const createDataSlice = (set, get) => ({
         set({ messages: 'Game launched successfully', alert: 'success' })
       })
       .catch((error) => {
-        set({ messages: error.message, alert: 'error' })
+        set({ messages: error.message, alert: 'danger' })
       })
       .finally(() => {
         set({ loading: false })

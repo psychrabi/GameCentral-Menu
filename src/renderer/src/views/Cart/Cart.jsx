@@ -1,10 +1,15 @@
-import { Box, Button, Card, Divider } from '@mui/material'
-import { useEffect, useMemo } from 'react'
+import {
+  Box,
+  Button,
+  Card,
+  Divider
+} from '@mui/material'
+import { lazy, useEffect, useMemo } from 'react'
 import { useBoundStore } from '../../components/stores/BoundStore'
-import { PaymentTypes } from '../../components/ui/Cart/PaymentTypes'
-import CartItem from '../../components/ui/Cart/CartItem'
-import CartTotal from '../../components/ui/Cart/CartTotal'
 
+const CartTotal = lazy(() => import('../../components/ui/Cart/CartTotal'))
+const CartItem = lazy(() => import('../../components/ui/Cart/CartItem'))
+const PaymentTypes = lazy(() => import('../../components/ui/Cart/PaymentTypes'))
 const Cart = () => {
   const { checkOut, clearCart, cart, setTitle, setCount } = useBoundStore((state) => ({
     checkOut: state.checkOut,

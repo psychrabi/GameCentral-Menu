@@ -12,9 +12,9 @@
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "postinstall": "electron-builder install-app-deps",
-    "build:win": "npm run build && electron-builder --win --config",
-    "build:mac": "npm run build && electron-builder --mac --config",
-    "build:linux": "npm run build && electron-builder --linux --config"
+    "build:win": "bun run build && electron-builder --win --config",
+    "build:mac": "bun run build && electron-builder --mac --config",
+    "build:linux": "bun run build && electron-builder --linux --config"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
@@ -40,8 +40,8 @@
     "glob": "^10.3.12",
     "prettier": "^3.2.5",
     "prop-types": "^15.8.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "^19.0.0-beta-94eed63c49-20240425",
+    "react-dom": "^19.0.0-beta-94eed63c49-20240425",
     "react-hook-form": "^7.51.2",
     "react-lazy-load-image-component": "^1.6.0",
     "react-router-dom": "^6.22.3",

@@ -7,6 +7,7 @@ import Notification from './views/Profile/Notification'
 const MemberLogin = lazy(() => import('./views/Auth/MemberLogin'))
 const Register = lazy(() => import('./views/Auth/Register'))
 const AdminLogin = lazy(() => import('./views/Auth/AdminLogin'))
+const ForgotPassword = lazy(() => import('./views/Auth/ForgotPassword'))
 
 const MemberLayout = lazy(() => import('./components/layouts/MemberLayout'))
 const AuthLayout = lazy(() => import('./components/layouts/AuthLayout'))
@@ -40,13 +41,14 @@ const memberRoutes = [
 
 const authRoutes = [
   { path: 'admin', element: <AdminLogin /> },
-  { path: 'login', element: <MemberLogin /> },
-  { path: 'register', element: <Register /> }
+  { index: true, element: <MemberLogin /> },
+  { path: 'register', element: <Register /> },
+  { path: 'forgot-password', element: <ForgotPassword /> }
 ]
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: '/member',
     element: <MemberLayout />,
     children: memberRoutes,
     errorElement: <NotFound />

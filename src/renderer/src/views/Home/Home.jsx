@@ -3,12 +3,13 @@ import Header from '../../components/shared/Header/Header'
 import Grid from '../../components/shared/Grid/Grid'
 import GameTypes from '../../data/GameTypes.js'
 import { useBoundStore } from '../../components/stores/BoundStore'
+import { Navigate } from 'react-router-dom'
 
 const Home = () => {
   const {
     token,
     member,
-    fetchFavoriteGames,
+    checkFavoriteGames,
     favoriteGames,
     filter,
     setFilter,
@@ -21,7 +22,7 @@ const Home = () => {
   } = useBoundStore((state) => ({
     token: state.token,
     member: state.member,
-    fetchFavoriteGames: state.fetchFavoriteGames,
+    checkFavoriteGames: state.checkFavoriteGames,
     favoriteGames: state.favoriteGames,
     filter: state.filter,
     setFilter: state.setFilter,
@@ -34,14 +35,12 @@ const Home = () => {
   }))
 
   useEffect(() => {
-    if (!favoriteGames) {
-      fetchFavoriteGames(member.id, token)
-    }
+    checkFavoriteGames()
     setFilter('')
     setType('')
     setTitle('Favorite Games')
     setGameTypes(GameTypes)
-  }, [member.id, token, fetchFavoriteGames, favoriteGames, setFilter, setType, setTitle])
+  }, [])
 
   const filteredGames = useMemo(
     () =>
@@ -57,11 +56,7 @@ const Home = () => {
     setCount(filteredGames?.length)
   }, [filteredGames, setCount])
 
-  return (
-    <>
-      <Grid games={filteredGames} getData={getFavoriteGame} />
-    </>
-  )
+  return <Grid games={filteredGames} getData={getFavoriteGame} />
 }
 
 export default Home

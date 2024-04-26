@@ -10,10 +10,10 @@ export default function ProfileLayout() {
   }
 
   const navItems = [
-    { name: 'Profile', path: '/profile/details' },
-    { name: 'Sessions', path: '/profile/sessions' },
-    { name: 'Security', path: '/profile/security' },
-    { name: 'Notifications', path: '/profile/notifications' }
+    { name: 'Profile', path: '/member/profile/details' },
+    { name: 'Sessions', path: '/member/profile/sessions' },
+    { name: 'Security', path: '/member/profile/security' },
+    { name: 'Notifications', path: '/member/profile/notifications' }
   ]
 
   return (

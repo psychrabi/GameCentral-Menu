@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useBoundStore } from '../../components/stores/BoundStore'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -52,7 +52,7 @@ export default function AdminLogin() {
   }, [checkSession, checkCenterID])
 
   if (center_id) {
-    return <Navigate to="/login" />
+    return <Navigate to="/" />
   }
 
   if (!token) {

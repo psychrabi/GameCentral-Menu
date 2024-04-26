@@ -1,14 +1,22 @@
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart'
-import { Box, Button, ButtonGroup, Card, CardContent, CardMedia, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography
+} from '@mui/material'
 import { useBoundStore } from '../../stores/BoundStore'
 import { formatCurrency } from '../../../utils/formatCurrency'
 
-export default function CartItem({ item }) {
+const CartItem = ({ item }) => {
   const { addToCart, removeFromCart } = useBoundStore((state) => state)
   console.log(item)
   return (
-    <Card sx={{ display: 'flex' }}>
+    <Card sx={{ display: 'flex'}}>
       <CardMedia
         component="img"
         image={item.product_image}
@@ -39,3 +47,5 @@ export default function CartItem({ item }) {
     </Card>
   )
 }
+
+export default CartItem

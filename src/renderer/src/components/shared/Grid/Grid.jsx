@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types'
 import React, { useCallback, useEffect } from 'react'
 import { useBoundStore } from '../../stores/BoundStore'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
@@ -112,11 +111,5 @@ const Grid = React.memo(({ games, getData }) => {
     </>
   )
 })
-
-Grid.propTypes = {
-  games: PropTypes.array,
-  handleShow: PropTypes.func,
-  getData: PropTypes.func
-}
 
 export default Grid
